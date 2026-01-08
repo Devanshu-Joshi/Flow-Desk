@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '../../../../core/services/auth';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -28,7 +28,7 @@ export class Login {
     try {
       await this.authService.login(email!, password!);
       alert("Login Successful");
-      this.router.navigate(['/']);
+      this.router.navigate(['/dashboard']);
     } catch (error) {
       console.error(error);
     }

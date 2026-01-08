@@ -1,12 +1,12 @@
 export const environment = {
     production: false,
     firebase: {
-        apiKey: "AIzaSyAQBRPugUw61cMyRWVwPMW4xr2yfMW8CEA",
-        authDomain: "task-manager-da756.firebaseapp.com",
-        projectId: "task-manager-da756",
-        storageBucket: "task-manager-da756.appspot.com",
-        messagingSenderId: "249742761852",
-        appId: "1:249742761852:web:f9b647c9733c33c49c8ef9",
-        measurementId: "G-26DGSZM94Y"
+        apiKey: "AIzaSyD5iXJmHji_Mcn0rMvmzj7hhBCY05ICVbE",
+        authDomain: "placeholder-d4bc7.firebaseapp.com",
+        projectId: "placeholder-d4bc7",
+        storageBucket: "placeholder-d4bc7.firebasestorage.app",
+        messagingSenderId: "191437632686",
+        appId: "1:191437632686:web:986256ebfed587623b293f",
+        measurementId: "G-DRZ1ZKVKR9"
     }
 };
