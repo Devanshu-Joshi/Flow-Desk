@@ -17,7 +17,7 @@ export class Dashboard {
 
   fb = inject(FormBuilder);
 
-  constructor(private taskService: TaskService) { }
+  constructor(public taskService: TaskService) { }
 
 
   taskForm = this.fb.nonNullable.group({
