@@ -22,4 +22,15 @@ describe('Dashboard', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should toggle dialog state', () => {
+    expect(component.isDialogClosed).toBeTrue();
+
+    component.toggleDialog();
+    expect(component.isDialogClosed).toBeFalse();
+
+    component.toggleDialog();
+    expect(component.isDialogClosed).toBeTrue();
+  });
+
 });
