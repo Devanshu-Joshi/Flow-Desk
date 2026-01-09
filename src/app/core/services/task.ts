@@ -13,15 +13,7 @@ import {
 } from '@angular/fire/firestore';
 import { Unsubscribe } from 'firebase/auth';
 import { AuthService } from './auth';
-
-export interface Task {
-  id?: string;
-  title: string;
-  status: 'Incomplete' | 'Completed' | 'InProgress';
-  dueDate: string;
-  createdAt: number;
-  userId: string;
-}
+import { Task } from '../models/Task';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
