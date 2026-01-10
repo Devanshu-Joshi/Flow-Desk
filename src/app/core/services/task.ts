@@ -18,7 +18,6 @@ import { Task } from '../models/Task';
 @Injectable({ providedIn: 'root' })
 export class TaskService {
 
-  /** ✅ Reactive task state (single source of truth) */
   readonly tasks = signal<Task[]>([]);
 
   private unsubscribeTasks?: Unsubscribe;
@@ -30,14 +29,9 @@ export class TaskService {
     this.listenToAuth();
   }
 
-  /* ---------------------------------- */
-  /* 🔐 AUTH → TASKS CONNECTION */
-  /* ---------------------------------- */
-
   private listenToAuth() {
     this.authService.user$.subscribe(user => {
 
-      // Cleanup old listener
       this.unsubscribeTasks?.();
       this.unsubscribeTasks = undefined;
 
@@ -49,10 +43,6 @@ export class TaskService {
       this.startTaskListener(user.uid);
     });
   }
-
-  /* ---------------------------------- */
-  /* 🔥 FIRESTORE REALTIME LISTENER */
-  /* ---------------------------------- */
 
   private startTaskListener(uid: string) {
     const q = query(
@@ -77,10 +67,6 @@ export class TaskService {
     );
   }
 
-  /* ---------------------------------- */
-  /* ➕ ADD TASK */
-  /* ---------------------------------- */
-
   async addTask(task: {
     title: string;
     dueDate: string;
@@ -102,10 +88,6 @@ export class TaskService {
 
     await addDoc(collection(this.firestore, 'tasks'), newTask);
   }
-
-  /* ---------------------------------- */
-  /* ❌ DELETE TASK */
-  /* ---------------------------------- */
 
   async deleteTask(taskId: string) {
     const user = this.authService.currentUser;

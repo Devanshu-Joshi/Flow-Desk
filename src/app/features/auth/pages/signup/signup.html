@@ -61,7 +61,6 @@
             </form>
         </div>
 
-        <!-- Password Requirement Card -->
         <div class="w-115 p-6 rounded-2xl
      bg-white/20 backdrop-blur-xl
      border border-white/30 shadow-2xl">
@@ -72,7 +71,6 @@
 
             <ul class="space-y-4 text-sm">
 
-                <!-- At least 8 characters -->
                 <li class="flex items-center gap-3"
                     [ngClass]="hasMinLength ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
 
@@ -86,7 +84,6 @@
                     <span>At least 8 characters long</span>
                 </li>
 
-                <!-- Lowercase -->
                 <li class="flex items-center gap-3"
                     [ngClass]="hasLowercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
 
@@ -100,7 +97,6 @@
                     <span>Contains one lowercase letter</span>
                 </li>
 
-                <!-- Uppercase -->
                 <li class="flex items-center gap-3"
                     [ngClass]="hasUppercase ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
 
@@ -114,7 +110,6 @@
                     <span>Contains one uppercase letter</span>
                 </li>
 
-                <!-- Number -->
                 <li class="flex items-center gap-3"
                     [ngClass]="hasNumber ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
 
@@ -128,7 +123,6 @@
                     <span>Contains one numerical digit</span>
                 </li>
 
-                <!-- Special character -->
                 <li class="flex items-center gap-3"
                     [ngClass]="hasSpecialChar ? 'text-emerald-300 font-extrabold' : 'text-purple-100 font-semibold'">
 
@@ -145,6 +139,5 @@
             </ul>
         </div>
 
-        <!-- OR paste your card wrapper HTML directly here -->
     </div>
 </div>

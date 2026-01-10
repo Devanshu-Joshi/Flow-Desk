@@ -9,10 +9,6 @@ import { BehaviorSubject, firstValueFrom, isObservable } from 'rxjs';
 import { authGuard } from './auth-guard';
 import { AuthService } from '../services/auth';
 
-/* =======================
-   MOCK SERVICES
-   ======================= */
-
 class MockAuthService {
     authReady$ = new BehaviorSubject<boolean>(false);
     isAuthenticatedSync = jasmine.createSpy('isAuthenticatedSync');
@@ -21,10 +17,6 @@ class MockAuthService {
 class MockRouter {
     navigate = jasmine.createSpy('navigate');
 }
-
-/* =======================
-   TEST SUITE
-   ======================= */
 
 describe('authGuard', () => {
     let auth: MockAuthService;

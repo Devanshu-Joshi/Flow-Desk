@@ -73,7 +73,7 @@ export class Signup {
 
     const { email, password, cpassword } = this.signupForm.value;
 
-    if (password !== cpassword) { // Check if passwords match
+    if (password !== cpassword) {
       this.toastr.error('Passwords do not match', 'Validation Error');
       return;
     }

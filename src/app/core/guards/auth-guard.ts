@@ -8,7 +8,7 @@ export const authGuard: CanActivateFn = (route) => {
   const router = inject(Router);
 
   return auth.authReady$.pipe(
-    filter(ready => ready),     // ⏳ wait for Firebase
+    filter(ready => ready),
     take(1),
     map(() => {
       const isLoggedIn = auth.isAuthenticatedSync();
