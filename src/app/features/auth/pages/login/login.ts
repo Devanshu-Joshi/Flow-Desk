@@ -46,9 +46,9 @@ export class Login {
       await this.authService.login(email!, password!);
       this.router.navigate(['/dashboard']);
       this.toastr.success('Login successful', 'Success');
-    } catch (error) {
-      console.error(error);
-      this.toastr.error('Login failed', 'Error');
+    } catch (error: any) {
+      if (error.code === 'auth/invalid-credential') this.toastr.error('Invalid credentials', 'Error');
+      console.error("Error during login = ", error);
     }
   }
 

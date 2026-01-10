@@ -82,8 +82,9 @@ export class Signup {
       await this.authService.register(email!, password!);
       this.toastr.success('Registration successful', 'Success');
       this.router.navigate(['/login']);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      if (error.code === 'auth/email-already-in-use') this.toastr.error('Email already in use', 'Error');
+      console.error("Error during registration = ", error);
     }
   }
 
