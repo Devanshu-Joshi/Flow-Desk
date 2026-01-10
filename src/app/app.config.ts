@@ -35,6 +35,7 @@ export const appConfig: ApplicationConfig = {
       NgxDaterangepickerMd.forRoot({
         separator: ' - ',
         applyLabel: 'Apply',
+        cancelLabel: 'Cancel',
       }),
     ]),
   ]

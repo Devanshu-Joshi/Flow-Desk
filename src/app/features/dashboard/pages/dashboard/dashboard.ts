@@ -5,11 +5,14 @@ import { signal, computed } from '@angular/core';
 import { Task } from '../../../../core/models/Task';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+import dayjs from 'dayjs';
+import { FormsModule } from '@angular/forms';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -20,7 +23,9 @@ export class Dashboard implements OnInit {
   }
 
   fb = inject(FormBuilder);
+
   showStatusDropdown = false;
+  dateRange = signal<{ startDate: any; endDate: any } | null>(null);
   dropdownPosition = {
     top: 0,
     left: 0
@@ -29,20 +34,6 @@ export class Dashboard implements OnInit {
   tasks!: Signal<Task[]>;
   searchControl = new FormControl('');
   searchTerm = signal('');
-  filteredTasks = computed(() => {
-    const term = this.searchTerm().toLowerCase();
-    const status = this.selectedStatus();
-
-    return this.tasks().filter(task => {
-      const matchesSearch = !term
-        || task.title.toLowerCase().includes(term);
-
-      const matchesStatus = !status
-        || task.status === status;
-
-      return matchesSearch && matchesStatus;
-    });
-  });
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
@@ -95,6 +86,41 @@ export class Dashboard implements OnInit {
     };
 
     this.showStatusDropdown = true;
+  }
+
+  filteredTasks = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const status = this.selectedStatus();
+    const range = this.dateRange();
+
+    return this.tasks().filter(task => {
+
+      const matchesSearch =
+        !term || task.title.toLowerCase().includes(term);
+
+      const matchesStatus =
+        !status || task.status === status;
+
+      let matchesDate = true;
+
+      if (range?.startDate && range?.endDate) {
+
+        // 🔒 Normalize ALL dates to YYYY-MM-DD (no time, no TZ)
+        const taskDate = dayjs(task.dueDate).format('YYYY-MM-DD');
+        const startDate = dayjs(range.startDate).format('YYYY-MM-DD');
+        const endDate = dayjs(range.endDate).format('YYYY-MM-DD');
+
+        matchesDate =
+          taskDate >= startDate &&
+          taskDate <= endDate;
+      }
+
+      return matchesSearch && matchesStatus && matchesDate;
+    });
+  });
+
+  clearDateRange() {
+    this.dateRange.set(null);
   }
 
   selectStatus(status: string) {
