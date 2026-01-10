@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { AuthService } from './core/services/auth';
 import { Header } from './layouts/header/header';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-root',
@@ -12,5 +13,9 @@ import { Header } from './layouts/header/header';
 export class App {
   protected readonly title = signal('task-flow');
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private toastr: ToastrService) { }
+
+  showSuccess() {
+    this.toastr.success('Hello world!', 'Toastr fun!');
+  }
 }
