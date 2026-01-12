@@ -38,6 +38,7 @@ export class Dashboard implements OnInit {
   searchControl = new FormControl('');
   searchTerm = signal('');
   editingTaskId: string | null = null;
+  deletingTaskId: string | null = null;
   dialogTitle = signal('Add');
   isEditing = signal<boolean>(false);
   @ViewChild('dateRangeInput') dateRangeInput!: ElementRef<HTMLInputElement>;
@@ -50,6 +51,9 @@ export class Dashboard implements OnInit {
   isDeleting = signal<boolean>(false);
   dialogDescription = signal('Add task details below');
   dialogTitleColor = signal('text-primary');
+  filteredTasksCount = computed(() => this.filteredTasks().length);
+  @ViewChild('statusDropdown') statusDropdown!: ElementRef;
+  dialogSubmitText = signal('Save');
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
@@ -98,7 +102,13 @@ export class Dashboard implements OnInit {
   });
 
   openStatusDropdown(event: MouseEvent) {
-    if (this.showStatusDropdown) { this.closeStatusDropdown(); return; }
+    event.stopPropagation();
+
+    if (this.showStatusDropdown) {
+      this.closeStatusDropdown();
+      return;
+    }
+
     const button = (event.target as HTMLElement).closest('button');
     if (!button) return;
 
@@ -127,8 +137,18 @@ export class Dashboard implements OnInit {
     this.isTasksDropdownOpen = false;
   }
 
-  @HostListener('document:click')
-  closeTasksDropdown() {
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+
+    if (
+      this.showStatusDropdown &&
+      this.statusDropdown &&
+      !this.statusDropdown.nativeElement.contains(target)
+    ) {
+      this.closeStatusDropdown();
+    }
+
     this.isTasksDropdownOpen = false;
   }
 
@@ -152,8 +172,6 @@ export class Dashboard implements OnInit {
       let matchesDate = true;
 
       if (range?.startDate && range?.endDate) {
-
-        // 🔒 Normalize ALL dates to YYYY-MM-DD (no time, no TZ)
         const taskDate = dayjs(task.dueDate).format('YYYY-MM-DD');
         const startDate = dayjs(range.startDate).format('YYYY-MM-DD');
         const endDate = dayjs(range.endDate).format('YYYY-MM-DD');
@@ -182,7 +200,11 @@ export class Dashboard implements OnInit {
         ...value,
         id: this.editingTaskId
       } as Task);
-    } else {
+    }
+    else if (this.isDeleting()) {
+      await this.taskService.deleteTask(this.deletingTaskId!);
+    }
+    else {
       await this.taskService.addTask(value as Task);
     }
 
@@ -194,7 +216,7 @@ export class Dashboard implements OnInit {
 
     this.dialogTitle.set('Delete');
     this.isDeleting.set(true);
-    this.editingTaskId = task.id!;
+    this.deletingTaskId = task.id!;
     this.taskForm.patchValue({
       title: task.title,
       dueDate: task.dueDate,
@@ -204,6 +226,7 @@ export class Dashboard implements OnInit {
     this.taskForm.disable();
     this.dialogDescription = signal('Do you really want to delete this task?');
     this.dialogTitleColor.set('text-danger');
+    this.dialogSubmitText = signal('Delete');
     this.toggleDialog();
 
   }
@@ -219,6 +242,7 @@ export class Dashboard implements OnInit {
     });
     this.dialogDescription = signal('Edit task details below');
     this.dialogTitleColor.set('text-warn');
+    this.dialogSubmitText = signal('Update');
     this.toggleDialog();
   }
 
@@ -234,6 +258,7 @@ export class Dashboard implements OnInit {
     this.dialogTitle.set('Add');
     this.dialogDescription.set('Add task details below');
     this.dialogTitleColor.set('text-primary');
+    this.dialogSubmitText = signal('Add');
   }
 
 }
