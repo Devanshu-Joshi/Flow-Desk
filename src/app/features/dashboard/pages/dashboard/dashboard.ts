@@ -47,6 +47,9 @@ export class Dashboard implements OnInit {
   isTasksDropdownOpen = false;
   totalItems = computed(() => this.filteredTasks().length);
   selectedPageSize = signal<number | 'All'>(5);
+  isDeleting = signal<boolean>(false);
+  dialogDescription = signal('Add task details below');
+  dialogTitleColor = signal('text-primary');
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
@@ -187,17 +190,21 @@ export class Dashboard implements OnInit {
     this.toggleDialog();
   }
 
-  async delete(taskId: string) {
+  async delete(task: Task) {
 
-    if (!taskId) return;
+    this.dialogTitle.set('Delete');
+    this.isDeleting.set(true);
+    this.editingTaskId = task.id!;
+    this.taskForm.patchValue({
+      title: task.title,
+      dueDate: task.dueDate,
+      status: task.status
+    });
 
-    try {
-      console.log('Deleting task with ID:', taskId);
-      await this.taskService.deleteTask(taskId);
-      this.toggleDialog();
-    } catch (error) {
-      console.error('Error deleting task:', error);
-    }
+    this.taskForm.disable();
+    this.dialogDescription = signal('Do you really want to delete this task?');
+    this.dialogTitleColor.set('text-danger');
+    this.toggleDialog();
 
   }
 
@@ -210,6 +217,8 @@ export class Dashboard implements OnInit {
       dueDate: task.dueDate,
       status: task.status
     });
+    this.dialogDescription = signal('Edit task details below');
+    this.dialogTitleColor.set('text-warn');
     this.toggleDialog();
   }
 
@@ -223,6 +232,8 @@ export class Dashboard implements OnInit {
     this.editingTaskId = null;
     this.isEditing.set(false);
     this.dialogTitle.set('Add');
+    this.dialogDescription.set('Add task details below');
+    this.dialogTitleColor.set('text-primary');
   }
 
 }

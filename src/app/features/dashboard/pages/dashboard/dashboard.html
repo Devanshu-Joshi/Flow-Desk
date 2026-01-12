@@ -152,15 +152,15 @@
                             <td class="px-4 py-3 flex justify-center">
                                 <div class="flex items-center gap-2">
                                     <button
-                                        class="flex items-center gap-1 px-3 py-1.5 rounded-md text-yellow-700 hover:bg-yellow-50 transition"
+                                        class="flex items-center gap-1 px-3 py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer"
                                         (click)="edit(item)">
                                         <i class="bx bx-edit text-base"></i>
                                         <span class="cursor-pointer">Edit</span>
                                     </button>
 
                                     <button
-                                        class="flex items-center gap-1 px-3 py-1.5 rounded-md text-red-700 hover:bg-red-50 transition"
-                                        (click)="delete(item.id!)">
+                                        class="flex items-center gap-1 px-3 py-1.5 rounded-md text-red-700 hover:bg-red-200 transition cursor-pointer"
+                                        (click)="delete(item)">
                                         <i class="bx bx-trash text-base"></i>
                                         <span class="cursor-pointer">Delete</span>
                                     </button>
@@ -216,17 +216,18 @@
 
             <div class="absolute top-4 right-4">
                 <button type="button" (click)="toggleDialog()"
-                    class="rounded-full p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 transition">
+                    class="rounded-full p-1 text-gray-500 hover:text-gray-800 hover:bg-gray-100 flex items-center transition cursor-pointer">
                     <i class='bx bx-x text-2xl'></i>
                 </button>
             </div>
 
             <div class="px-8 pt-8 pb-4 text-center">
-                <p class="text-2xl font-semibold text-gray-800 tracking-tight">
+                <p class="text-2xl font-semibold tracking-tight"
+                    [ngClass]="{'text-primary': dialogTitleColor() === 'text-primary','text-yellow-500': dialogTitleColor() === 'text-warn','text-red-600': dialogTitleColor() === 'text-danger'}">
                     {{dialogTitle()}} Task
                 </p>
                 <p class="text-sm text-gray-500 mt-1">
-                    Manage task details below
+                    {{dialogDescription()}}
                 </p>
             </div>
 
@@ -268,12 +269,13 @@
                 </div>
 
                 <div class="mt-8">
-                    <button type="submit" [disabled]="taskForm.invalid" class="w-full py-3 rounded-xl font-medium text-white
+                    <button type="submit" [disabled]="taskForm.invalid"
+                        class="w-full py-3 rounded-xl font-medium text-white
                            bg-linear-to-r from-indigo-600 to-purple-600
                            shadow-lg shadow-indigo-500/30
                            hover:shadow-xl hover:shadow-indigo-500/40
                            hover:-translate-y-0.5 transition-all duration-200
-                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0">
+                           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 cursor-pointer">
                         {{dialogTitle()}} Task
                     </button>
                 </div>
