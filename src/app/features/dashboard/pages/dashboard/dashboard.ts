@@ -212,7 +212,7 @@ export class Dashboard implements OnInit {
     this.toggleDialog();
   }
 
-  async delete(task: Task) {
+  delete(task: Task) {
 
     this.dialogTitle.set('Delete');
     this.isDeleting.set(true);
@@ -259,6 +259,12 @@ export class Dashboard implements OnInit {
     this.dialogDescription.set('Add task details below');
     this.dialogTitleColor.set('text-primary');
     this.dialogSubmitText = signal('Save');
+    this.taskForm.enable();
+  }
+
+  cancelDialog() {
+    this.resetForm();
+    this.toggleDialog();
   }
 
 }
