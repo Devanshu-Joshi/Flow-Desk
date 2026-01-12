@@ -9,6 +9,7 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import dayjs from 'dayjs';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ToastrService } from 'ngx-toastr';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
@@ -56,7 +57,7 @@ export class Dashboard implements OnInit {
   @ViewChild('statusDropdown') statusDropdown!: ElementRef;
   dialogSubmitText = signal('Save');
 
-  constructor(public taskService: TaskService,) {
+  constructor(public taskService: TaskService, private toastr: ToastrService) {
     this.tasks = this.taskService.tasks;
   }
 
@@ -209,6 +210,15 @@ export class Dashboard implements OnInit {
       await this.taskService.addTask(value as Task);
     }
 
+    if (this.isEditing()) {
+      this.toastr.success('Task Updated successfully', 'Success');
+    }
+    else if (this.isDeleting()) {
+      this.toastr.success('Task Deleted successfully', 'Success');
+    }
+    else {
+      this.toastr.success('Task Added successfully', 'Success');
+    }
     this.resetForm();
     this.toggleDialog();
   }
