@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, Signal } from '@angular/core';
+import { Component, effect, ElementRef, HostListener, inject, OnInit, Signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '../../../../core/services/task';
 import { signal, computed } from '@angular/core';
@@ -8,11 +8,12 @@ import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import dayjs from 'dayjs';
 import { FormsModule } from '@angular/forms';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -39,10 +40,24 @@ export class Dashboard implements OnInit {
   editingTaskId: string | null = null;
   dialogTitle = signal('Add');
   isEditing = signal<boolean>(false);
+  @ViewChild('dateRangeInput') dateRangeInput!: ElementRef<HTMLInputElement>;
+  p: number = 1;
+  itemsPerPage = 5;
+  pageSizeOptions = [5, 10, 20, 'All'] as const;
+  isTasksDropdownOpen = false;
+  totalItems = computed(() => this.filteredTasks().length);
+  selectedPageSize = signal<number | 'All'>(5);
 
   constructor(public taskService: TaskService,) {
     this.tasks = this.taskService.tasks;
   }
+
+  syncAllPageSizeEffect = effect(() => {
+    if (this.selectedPageSize() === 'All') {
+      this.itemsPerPage = this.totalItems();
+      this.p = 1;
+    }
+  });
 
   ngOnInit() {
     this.searchControl.valueChanges
@@ -50,6 +65,10 @@ export class Dashboard implements OnInit {
       .subscribe(value => {
         this.searchTerm.set(value || '');
       });
+  }
+
+  ngAfterViewInit() {
+    this.dateRangeInput.nativeElement.value = '';
   }
 
   totalTasks = computed(() => this.tasks().length);
@@ -75,11 +94,8 @@ export class Dashboard implements OnInit {
     status: ['Incomplete' as TaskStatus, Validators.required]
   });
 
-  toggleStatusDropdown() {
-    this.showStatusDropdown = !this.showStatusDropdown;
-  }
-
   openStatusDropdown(event: MouseEvent) {
+    if (this.showStatusDropdown) { this.closeStatusDropdown(); return; }
     const button = (event.target as HTMLElement).closest('button');
     if (!button) return;
 
@@ -91,6 +107,30 @@ export class Dashboard implements OnInit {
     };
 
     this.showStatusDropdown = true;
+  }
+
+  openTasksDropdown(event: Event) {
+    event.stopPropagation();
+    this.isTasksDropdownOpen = !this.isTasksDropdownOpen;
+  }
+
+  setItemsPerPage(value: number | 'All') {
+    this.selectedPageSize.set(value);
+
+    this.itemsPerPage =
+      value === 'All' ? this.totalItems() : value;
+
+    this.p = 1;
+    this.isTasksDropdownOpen = false;
+  }
+
+  @HostListener('document:click')
+  closeTasksDropdown() {
+    this.isTasksDropdownOpen = false;
+  }
+
+  closeStatusDropdown() {
+    this.showStatusDropdown = false;
   }
 
   filteredTasks = computed(() => {
@@ -123,10 +163,6 @@ export class Dashboard implements OnInit {
       return matchesSearch && matchesStatus && matchesDate;
     });
   });
-
-  clearDateRange() {
-    this.dateRange.set(null);
-  }
 
   selectStatus(status: string) {
     this.selectedStatus.set(status);
