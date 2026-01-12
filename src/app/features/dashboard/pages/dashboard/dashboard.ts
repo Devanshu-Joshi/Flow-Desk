@@ -258,7 +258,7 @@ export class Dashboard implements OnInit {
     this.dialogTitle.set('Add');
     this.dialogDescription.set('Add task details below');
     this.dialogTitleColor.set('text-primary');
-    this.dialogSubmitText = signal('Add');
+    this.dialogSubmitText = signal('Save');
   }
 
 }
