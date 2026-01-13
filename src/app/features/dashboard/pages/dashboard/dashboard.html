@@ -1,8 +1,8 @@
 <div
-    class="min-h-screen w-full bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 flex items-center flex-col px-7">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    class="min-h-screen w-full bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 flex items-center flex-col px-7 py-7 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
-        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm mt-15">
+        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
             <div class="flex flex-col gap-3">
                 <p class="text-sm font-semibold text-gray-500">Total Tasks</p>
                 <p class="text-2xl font-bold text-gray-900">{{ totalTasks() }}</p>
@@ -13,7 +13,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm mt-15">
+        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
             <div class="flex flex-col gap-3">
                 <p class="text-sm font-semibold text-gray-500">Completed Tasks</p>
                 <p class="text-2xl font-bold text-gray-900">{{ completedTasks() }}</p>
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm mt-15">
+        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
             <div class="flex flex-col gap-3">
                 <p class="text-sm font-semibold text-gray-500">In Progress Tasks</p>
                 <p class="text-2xl font-bold text-gray-900">{{ inProgressTasks() }}</p>
@@ -35,7 +35,7 @@
             </div>
         </div>
 
-        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm mt-15">
+        <div class="bg-white rounded-xl p-5 flex justify-between items-center shadow-sm">
             <div class="flex flex-col gap-3">
                 <p class="text-sm font-semibold text-gray-500">Incomplete Tasks</p>
                 <p class="text-2xl font-bold text-gray-900">{{ incompleteTasks() }}</p>
@@ -48,9 +48,9 @@
 
     </div>
     <div class="w-full bg-white rounded-lg px-10 pb-10 pt-7">
-        <div class="flex w-full justify-between mb-5">
-            <div class="flex gap-3 relative">
-                <div class="relative w-72">
+        <div class="flex w-full justify-between mb-5 gap-3">
+            <div class="flex gap-3 relative w-full">
+                <div class="relative flex-1 min-w-0">
                     <input type="search"
                         class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg focus:outline-none"
                         placeholder="Search..." [formControl]="searchControl" />
@@ -58,10 +58,35 @@
                     <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
                 </div>
 
-                <div class="relative inline-block">
+                <div>
+                    <input #dateRangeInput ngxDaterangepickerMd [ngModel]="dateRange()"
+                        (ngModelChange)="dateRange.set($event)" [autoApply]="false" [alwaysShowCalendars]="true"
+                        [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
+                        [linkedCalendars]="true" placeholder="Filter by date range"
+                        class="border-2 border-gray-300 px-4 py-2 rounded-lg w-64 cursor-pointer shrink-0" />
+                </div>
+
+                <div class="relative shrink-0">
+                    <button
+                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition cursor-pointer"
+                        (click)="openStatusDropdown($event)">
+
+                        <span
+                            [ngClass]="{'text-gray-700': !selectedStatus(),'text-green-600': selectedStatus() === 'Completed','text-yellow-600': selectedStatus() === 'InProgress','text-red-600': selectedStatus() === 'Incomplete'}">
+
+                            {{ selectedStatus()
+                            ? (selectedStatus() === 'InProgress' ? 'In Progress' : selectedStatus())
+                            : 'Status' }}
+                        </span>
+
+                        <i class="bx bx-chevron-down text-sm text-gray-500"></i>
+                    </button>
+                </div>
+
+                <div class="relative shrink-0">
 
                     <button
-                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition"
+                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition cursor-pointer"
                         (click)="openTasksDropdown($event)">
 
                         <span>
@@ -85,31 +110,9 @@
 
                 </div>
 
-                <div class="relative">
-                    <button
-                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition cursor-pointer"
-                        (click)="openStatusDropdown($event)">
-
-                        <span
-                            [ngClass]="{'text-gray-700': !selectedStatus(),'text-green-600': selectedStatus() === 'Completed','text-yellow-600': selectedStatus() === 'InProgress','text-red-600': selectedStatus() === 'Incomplete'}">
-
-                            {{ selectedStatus()
-                            ? (selectedStatus() === 'InProgress' ? 'In Progress' : selectedStatus())
-                            : 'Status' }}
-                        </span>
-
-                        <i class="bx bx-chevron-down text-sm text-gray-500"></i>
-                    </button>
-                </div>
-
-                <input #dateRangeInput ngxDaterangepickerMd [ngModel]="dateRange()"
-                    (ngModelChange)="dateRange.set($event)" [autoApply]="false" [alwaysShowCalendars]="true"
-                    [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
-                    [linkedCalendars]="true" placeholder="Filter by date range"
-                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-64 cursor-pointer" />
             </div>
 
-            <div class="flex gap-2">
+            <div class="flex gap-2 shrink-0">
                 <button class="cursor-pointer py-2 px-2 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600
                  text-white
                  shadow-md shadow-purple-500/30
@@ -132,9 +135,17 @@
 
                             <th class="px-4 py-3 text-center w-1/3 cursor-pointer select-none"
                                 (click)="sortBy('title')">
-                                Task
-                                <i class="bx"
-                                    [ngClass]="{'bx-caret-up': sortField() === 'title' && sortDirection() === 'asc','bx-caret-down': sortField() === 'title' && sortDirection() === 'desc'}"></i>
+                                <span class="inline-flex items-center gap-1">
+                                    Task
+
+                                    <span class="flex flex-col text-xs leading-none">
+                                        <i class="bx bx-caret-up"
+                                            [ngClass]="{'text-gray-400': sortField() !== 'title' || sortDirection() === 'desc','text-gray-800': sortField() === 'title' && sortDirection() === 'asc'}"></i>
+
+                                        <i class="bx bx-caret-down -mt-1"
+                                            [ngClass]="{'text-gray-400': sortField() !== 'title' || sortDirection() === 'asc','text-gray-800': sortField() === 'title' && sortDirection() === 'desc'}"></i>
+                                    </span>
+                                </span>
                             </th>
                             <th class="px-4 py-3 font-semibold w-32 text-center">Status</th>
                             <th class="px-4 py-3 font-semibold w-32 text-center">Due Date</th>

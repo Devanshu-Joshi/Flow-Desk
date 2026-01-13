@@ -201,7 +201,6 @@ export class Dashboard implements OnInit {
       return matchesSearch && matchesStatus && matchesDate;
     });
 
-    // 🔽 SORTING LOGIC
     return filtered.sort((a, b) => {
       let valA: any;
       let valB: any;
@@ -275,6 +274,13 @@ export class Dashboard implements OnInit {
 
   }
 
+  /**
+   * Opens the dialog for editing a task.
+   * The dialog title is set to 'Edit' and the form is populated with the task's details.
+   * The dialog description is set to 'Edit task details below' and the submit button text is set to 'Update'.
+   * The dialog title color is set to 'text-warn'.
+   * @param task The task to edit.
+   */
   edit(task: Task) {
     this.dialogTitle.set('Edit');
     this.isEditing.set(true);
@@ -290,6 +296,15 @@ export class Dashboard implements OnInit {
     this.toggleDialog();
   }
 
+  /**
+   * Resets the form and its related state variables.
+   * It is called when the user clicks the cancel button on the dialog.
+   * It resets the form values to their default values,
+   * resets the editingTaskId to null,
+   * sets isEditing and isDeleting to false,
+   * sets the dialog title, description, title color and submit text,
+   * and enables the form.
+   */
   resetForm() {
     this.taskForm.reset({
       title: '',
@@ -307,6 +322,11 @@ export class Dashboard implements OnInit {
     this.taskForm.enable();
   }
 
+
+  /**
+   * Resets the form and closes the dialog.
+   * Called when the user clicks the cancel button on the dialog.
+   */
   cancelDialog() {
     this.resetForm();
     this.toggleDialog();
