@@ -151,12 +151,6 @@
     border: none;
 }
 
-:host ::ng-deep .tasks-per-page-select .ng-arrow::after {
-    content: "▼";
-    font-size: 0.75rem;
-    color: #6b7280;
-}
-
 /* Status */
 
 .status-select ::ng-deep .ng-select-container {
