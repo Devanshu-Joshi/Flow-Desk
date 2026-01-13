@@ -21,6 +21,7 @@ import { Task } from '../models/Task';
 export class TaskService {
 
   readonly tasks = signal<Task[]>([]);
+  readonly loading = signal<boolean>(true);
 
   private unsubscribeTasks?: Unsubscribe;
 
@@ -36,9 +37,11 @@ export class TaskService {
 
       this.unsubscribeTasks?.();
       this.unsubscribeTasks = undefined;
+      this.tasks.set([]);
+      this.loading.set(true);
 
       if (!user) {
-        this.tasks.set([]);
+        this.loading.set(false);
         return;
       }
 
@@ -53,6 +56,8 @@ export class TaskService {
       orderBy('createdAt', 'desc')
     );
 
+    let firstSnapshot = true;
+
     this.unsubscribeTasks = onSnapshot(
       q,
       snapshot => {
@@ -62,9 +67,15 @@ export class TaskService {
         }) as Task);
 
         this.tasks.set(tasks);
+
+        if (firstSnapshot) {
+          this.loading.set(false);
+          firstSnapshot = false;
+        }
       },
       error => {
         console.error('Firestore task listener error:', error);
+        this.loading.set(false);
       }
     );
   }

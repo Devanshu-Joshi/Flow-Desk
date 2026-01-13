@@ -83,6 +83,7 @@ export class Dashboard implements OnInit {
     { label: 'In Progress', value: 'InProgress' },
     { label: 'Incomplete', value: 'Incomplete' }
   ];
+  isLoading = computed(() => this.taskService.loading());
 
   constructor(public taskService: TaskService, private toastr: ToastrService) {
     this.tasks = this.taskService.tasks;
