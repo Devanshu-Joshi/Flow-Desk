@@ -40,8 +40,10 @@ export class Dashboard implements OnInit {
 
   isDialogClosed: boolean = true;
   toggleDialog() {
-    console.log(this.isDeleting());
     this.isDialogClosed = !this.isDialogClosed;
+
+    document.body.classList.toggle('body-lock', !this.isDialogClosed);
+
     if (this.isDialogClosed) {
       this.resetForm();
     }
@@ -106,6 +108,10 @@ export class Dashboard implements OnInit {
       .subscribe(value => {
         this.searchTerm.set(value || '');
       });
+  }
+
+  ngOnDestroy() {
+    document.body.classList.remove('body-lock');
   }
 
   ngAfterViewInit() {
