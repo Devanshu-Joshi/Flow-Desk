@@ -20,6 +20,24 @@ export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
   styleUrl: './dashboard.css',
 })
 export class Dashboard implements OnInit {
+  clearFilters(): void {
+    // Clear search box
+    this.searchControl.setValue('');
+
+    // Reset date range (show all dates)
+    this.dateRange.set(null);
+
+    // Reset status filter to "All"
+    this.selectedStatus.set(null);
+
+    // Reset tasks per page to default (5)
+    this.selectedPageSize.set(5);
+    this.itemsPerPage = 5;
+
+    // Reset pagination to first page
+    this.p = 1;
+  }
+
   isDialogClosed: boolean = true;
   toggleDialog() {
     console.log(this.isDeleting());
