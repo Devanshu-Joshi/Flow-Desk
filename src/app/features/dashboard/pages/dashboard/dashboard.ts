@@ -10,11 +10,12 @@ import dayjs from 'dayjs';
 import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrService } from 'ngx-toastr';
+import { NgSelectModule } from '@ng-select/ng-select';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -35,7 +36,7 @@ export class Dashboard implements OnInit {
     top: 0,
     left: 0
   };
-  selectedStatus = signal<string>(''); // '' means All
+  selectedStatus = signal<string | null>(null); // '' means All
   tasks!: Signal<Task[]>;
   searchControl = new FormControl('');
   searchTerm = signal('');
@@ -58,6 +59,12 @@ export class Dashboard implements OnInit {
   dialogSubmitText = signal('Save');
   sortField = signal<'title' | 'createdAt'>('createdAt');
   sortDirection = signal<'asc' | 'desc'>('desc');
+  statusOptions = [
+    { label: 'All', value: null },
+    { label: 'Completed', value: 'Completed' },
+    { label: 'In Progress', value: 'InProgress' },
+    { label: 'Incomplete', value: 'Incomplete' }
+  ];
 
   constructor(public taskService: TaskService, private toastr: ToastrService) {
     this.tasks = this.taskService.tasks;
@@ -69,6 +76,10 @@ export class Dashboard implements OnInit {
       this.p = 1;
     }
   });
+
+  onStatusChange(value: string) {
+    this.selectedStatus.set(value);
+  }
 
   ngOnInit() {
     this.searchControl.valueChanges

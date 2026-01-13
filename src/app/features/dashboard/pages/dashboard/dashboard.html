@@ -67,46 +67,60 @@
                 </div>
 
                 <div class="relative shrink-0">
-                    <button
-                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition cursor-pointer"
-                        (click)="openStatusDropdown($event)">
+                    <ng-select class="status-select w-auto" [items]="statusOptions" bindLabel="label" bindValue="value"
+                        [(ngModel)]="selectedStatus" (ngModelChange)="onStatusChange($event)" [clearable]="false"
+                        [searchable]="false" [closeOnSelect]="true">
 
-                        <span
-                            [ngClass]="{'text-gray-700': !selectedStatus(),'text-green-600': selectedStatus() === 'Completed','text-yellow-600': selectedStatus() === 'InProgress','text-red-600': selectedStatus() === 'Incomplete'}">
+                        <!-- Placeholder -->
+                        <ng-template ng-placeholder-tmp #placeholder>
+                            <span class="text-gray-700 font-semibold">Status</span>
+                        </ng-template>
 
-                            {{ selectedStatus()
-                            ? (selectedStatus() === 'InProgress' ? 'In Progress' : selectedStatus())
-                            : 'Status' }}
-                        </span>
+                        <!-- Selected value -->
+                        <ng-template ng-label-tmp let-item="item">
+                            <span *ngIf="item?.value !== null; else placeholder" [ngClass]="{
+        'text-green-600': item.value === 'Completed',
+        'text-yellow-600': item.value === 'InProgress',
+        'text-red-600': item.value === 'Incomplete'
+      }">
+                                {{ item.label }}
+                            </span>
+                        </ng-template>
 
-                        <i class="bx bx-chevron-down text-sm text-gray-500"></i>
-                    </button>
+                        <!-- Dropdown options -->
+                        <ng-template ng-option-tmp let-item="item">
+                            <span [ngClass]="{
+        'text-gray-700': item.value === null,
+        'text-green-600': item.value === 'Completed',
+        'text-yellow-600': item.value === 'InProgress',
+        'text-red-600': item.value === 'Incomplete'
+      }">
+                                {{ item.label }}
+                            </span>
+                        </ng-template>
+
+                    </ng-select>
                 </div>
 
                 <div class="relative shrink-0">
 
-                    <button
-                        class="flex items-center gap-2 border-2 border-gray-300 px-4 py-2 rounded-lg hover:border-indigo-500 transition cursor-pointer"
-                        (click)="openTasksDropdown($event)">
+                    <ng-select class="tasks-per-page-select w-auto" [items]="pageSizeOptions" [clearable]="false"
+                        [searchable]="false" [(ngModel)]="selectedPageSize" (change)="setItemsPerPage($event)"
+                        [closeOnSelect]="true">
 
-                        <span>
-                            Tasks per page: <strong>{{ selectedPageSize() }}</strong>
-                        </span>
+                        <!-- Custom label inside the selector -->
+                        <ng-template ng-label-tmp let-item="item">
+                            <span>
+                                Tasks per page: <strong>{{ item }}</strong>
+                            </span>
+                        </ng-template>
 
-                        <i class="bx bx-chevron-down text-sm text-gray-500"></i>
-                    </button>
+                        <!-- Custom option -->
+                        <ng-template ng-option-tmp let-item="item">
+                            {{ item }}
+                        </ng-template>
 
-                    @if (isTasksDropdownOpen) {
-                    <div class="absolute right-0 mt-2 w-40 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
-                        @for (option of pageSizeOptions; track option) {
-                        <button (click)="setItemsPerPage(option)"
-                            class="w-full px-4 py-2 text-left hover:bg-indigo-50 transition"
-                            [class.font-semibold]="option === selectedPageSize()">
-                            {{ option }}
-                        </button>
-                        }
-                    </div>
-                    }
+                    </ng-select>
 
                 </div>
 
