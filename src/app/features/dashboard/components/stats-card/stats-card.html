@@ -1,16 +1,18 @@
-<div class="bg-white rounded-xl p-5 flex flex-col sm:flex-row 
-            justify-between items-start sm:items-center shadow-sm gap-4">
+<div class="bg-white rounded-xl p-4 sm:p-5 shadow-sm relative">
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-5">
 
-    <!-- Text Content -->
-    <div class="flex flex-col gap-3">
-        <p class="text-sm font-semibold text-gray-500">{{ title }}</p>
-        <p class="text-2xl font-bold text-gray-900">{{ value }}</p>
-        <p class="text-sm" [ngClass]="subtitleColorClass">{{ subtitle }}</p>
+        <!-- Text Content -->
+        <div class="flex flex-col gap-2 sm:gap-3 min-w-0 pr-14 sm:pr-0">
+            <p class="text-xs sm:text-sm font-semibold text-gray-500 truncate">{{ title }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-gray-900 wrap-break-word">{{ value }}</p>
+            <p class="text-xs sm:text-sm" [ngClass]="subtitleColorClass">{{ subtitle }}</p>
+        </div>
+
+        <!-- Icon (top-right on small, normal on sm+) -->
+        <div class="rounded-lg p-2 sm:p-2.5 flex items-center
+             absolute top-4 right-4" [ngClass]="iconBgClass">
+            <i class="bx text-2xl sm:text-3xl" [ngClass]="[icon, iconColorClass]"></i>
+        </div>
+
     </div>
-
-    <!-- Icon -->
-    <div class="rounded-lg p-2 flex items-center" [ngClass]="iconBgClass">
-        <i class="bx text-3xl" [ngClass]="[icon, iconColorClass]"></i>
-    </div>
-
 </div>

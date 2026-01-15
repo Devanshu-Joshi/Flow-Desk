@@ -1,40 +1,26 @@
 <div class="page-wrapper" [class.loading]="isLoading()">
-    <div class="min-h-screen w-full bg-gradient-to-r from-purple-600 via-fuchsia-600 to-indigo-600 
-                flex items-center flex-col 
-                px-3 sm:px-4 md:px-6 lg:px-8 xl:px-12
-                py-4 sm:py-6 md:py-8 lg:py-10
-                gap-4 sm:gap-6 lg:gap-8">
+    <!-- your entire dashboard UI -->
+    <div class="min-h-full w-full bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 flex items-center flex-col
+           px-4 sm:px-6 lg:px-7
+           py-4 sm:py-6 lg:py-7
+           gap-6 sm:gap-8">
 
-        <!-- Container for max-width control on large screens -->
-        <div class="w-full max-w-7xl mx-auto">
+        <!-- Stats Card Component -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
+            <app-stats-card title="Total Tasks" [value]="totalTasks()" subtitle="Tasks created so far" icon="bx-list-ul"
+                theme="purple" />
 
-            <!-- Stats Card Grid - Improved Breakpoints -->
-            <div class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 
-                        gap-3 sm:gap-4 md:gap-6">
+            <app-stats-card title="Completed Tasks" [value]="completedTasks()" subtitle="Great job!"
+                icon="bx-check-circle" theme="green" />
 
-                <app-stats-card title="Total Tasks" [value]="totalTasks()" subtitle="Tasks created so far"
-                    icon="bx-list-ul" theme="purple" />
+            <app-stats-card title="In Progress Tasks" [value]="inProgressTasks()" subtitle="Keep going!"
+                icon="bx-loader-dots" theme="yellow" />
 
-                <app-stats-card title="Completed Tasks" [value]="completedTasks()" subtitle="Great job!"
-                    icon="bx-check-circle" theme="green" />
-
-                <app-stats-card title="In Progress Tasks" [value]="inProgressTasks()" subtitle="Keep going!"
-                    icon="bx-loader-dots" theme="yellow" />
-
-                <app-stats-card title="Incomplete Tasks" [value]="incompleteTasks()" subtitle="Needs attention"
-                    icon="bx-x-circle" theme="red" />
-
-            </div>
+            <app-stats-card title="Incomplete Tasks" [value]="incompleteTasks()" subtitle="Needs attention"
+                icon="bx-x-circle" theme="red" />
         </div>
 
-        <!-- Main Content Card - Improved Responsive Padding -->
-        <div class="w-full max-w-7xl mx-auto 
-                    bg-white rounded-lg shadow-xl
-                    px-3 sm:px-5 md:px-8 lg:px-10
-                    pb-4 sm:pb-6 md:pb-8 lg:pb-10
-                    pt-4 sm:pt-5 md:pt-6 lg:pt-7
-                    overflow-hidden">
-
+        <div class="w-full bg-white rounded-lg px-4 sm:px-6 lg:px-10 pb-8 sm:pb-10 pt-6 sm:pt-7">
             <!-- Task Filters Component -->
             <app-task-filters [statusOptions]="statusOptions" [pageSizeOptions]="pageSizeOptions"
                 [searchControl]="searchControl" [(dateRange)]="dateRange" [(selectedStatus)]="selectedStatus"
@@ -42,21 +28,14 @@
                 (addTask)="toggleDialog()">
             </app-task-filters>
 
-            <!-- Task Table Component - Add overflow handling -->
-            <div class="overflow-x-auto -mx-3 sm:-mx-5 md:-mx-8 lg:-mx-10">
-                <div class="min-w-full px-3 sm:px-5 md:px-8 lg:px-10">
-                    <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
-                        [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
-                        (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
-                        (sortByChange)="sortBy($event)">
-                    </app-task-table>
-                </div>
-            </div>
-
+            <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
+                [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
+                (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
+                (sortByChange)="sortBy($event)">
+            </app-task-table>
         </div>
 
-        <!-- TaskDialog Component - FIXED: Removed duplicate nesting -->
-        <app-task-dialog [open]="!isDialogClosed" (close)="toggleDialog()">
+        <app-task-dialog [open]="isDialogClosed == false" (close)="toggleDialog()">
             <app-task-form [form]="taskForm" [dialogTitle]="dialogTitle()" [dialogDescription]="dialogDescription()"
                 [dialogTitleColor]="dialogTitleColor()" [dialogSubmitText]="dialogSubmitText()"
                 [isDeleting]="isDeleting()" (submitForm)="submit()" (cancel)="cancelDialog()">
@@ -66,5 +45,4 @@
     </div>
 </div>
 
-<!-- LoadingOverlay Component -->
 <app-loading-overlay [show]="isLoading()" text="Loading tasks…"></app-loading-overlay>

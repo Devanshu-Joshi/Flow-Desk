@@ -1,15 +1,25 @@
 /*** Status ***/
 
+.status-select {
+    width: 100%;
+    min-width: 0;
+}
+
 .status-select ::ng-deep .ng-select-container {
     display: flex;
     align-items: center;
+
     border: 2px solid #d1d5db;
     /* gray-300 */
     border-radius: 0.5rem;
     /* rounded-lg */
-    padding: 0.5rem 1rem;
-    /* px-4 py-2 */
-    min-height: 42px;
+
+    padding: 0 1rem;
+    /* match input horizontal padding */
+    height: 2.75rem;
+    /* 44px (Tailwind h-11) */
+    min-height: 2.75rem;
+
     cursor: pointer;
     transition: border-color 150ms ease-in-out;
 }
@@ -17,6 +27,11 @@
 .status-select ::ng-deep .ng-select-container:hover {
     border-color: #6366f1;
     /* indigo-500 */
+}
+
+.status-select ::ng-deep .ng-value-container {
+    padding: 0;
+    align-items: center;
 }
 
 .status-select ::ng-deep .ng-arrow {
@@ -34,43 +49,47 @@
     /* shadow-lg */
 }
 
-.status-select {
-    min-width: max-content;
-}
-
-/* Ensure the selected value doesn’t shrink */
-.status-select ::ng-deep .ng-select-container {
-    min-width: 9rem;
-    /* adjust once, stays dynamic */
-}
-
 /* Prevent text wrapping */
 .status-select ::ng-deep .ng-value,
-.status-select ::ng-deep .ng-option {
+.status-select ::ng-deep .ng-option,
+.status-select ::ng-deep .ng-placeholder {
     white-space: nowrap;
+}
+
+:host ::ng-deep .status-select.ng-select-opened .ng-select-container {
+    z-index: 1;
+}
+
+:host ::ng-deep .status-select.ng-select-opened .ng-select-bottom {
+    z-index: 45;
 }
 
 /*** Tasks per page ***/
 
 :host ::ng-deep .tasks-per-page-select.ng-select {
-    min-width: auto;
+    width: 100%;
+    min-width: 0;
 }
 
 :host ::ng-deep .tasks-per-page-select .ng-select-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
     /* gap-2 */
+
     border-width: 2px;
     border-style: solid;
     border-color: #d1d5db;
     /* gray-300 */
-    padding: 0 1rem;
-    /* py-2 px-4 */
+
+    /* same as status */
     border-radius: 0.5rem;
     /* rounded-lg */
+
     cursor: pointer;
     transition: border-color 150ms ease-in-out;
+
+    height: 2.75rem;
+    /* 44px (Tailwind h-11) */
     min-height: 2.75rem;
 }
 
@@ -82,6 +101,7 @@
 /* Remove default input spacing */
 :host ::ng-deep .tasks-per-page-select .ng-value-container {
     padding: 0;
+    align-items: center;
 }
 
 /* Hide search caret spacing */
@@ -92,4 +112,29 @@
 /* Chevron icon */
 :host ::ng-deep .tasks-per-page-select .ng-arrow {
     border: none;
+}
+
+/* Prevent wrapping */
+:host ::ng-deep .tasks-per-page-select .ng-value,
+:host ::ng-deep .tasks-per-page-select .ng-option,
+:host ::ng-deep .tasks-per-page-select .ng-placeholder {
+    /* white-space: nowrap; */
+}
+
+:host ::ng-deep .tasks-per-page-select .ng-has-value {
+    padding: 0 10px;
+    gap: 0;
+}
+
+:host ::ng-deep .tasks-per-page-select .ng-has-value .ng-value-container {
+    display: flex;
+    justify-content: center;
+}
+
+:host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-container {
+    z-index: 1;
+}
+
+:host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-bottom {
+    z-index: 45;
 }

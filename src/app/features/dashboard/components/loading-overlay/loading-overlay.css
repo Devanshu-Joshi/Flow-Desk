@@ -1,4 +1,4 @@
-.loader-overlay {
+/* .loader-overlay {
     position: fixed;
     inset: 0;
     background: rgba(255, 255, 255, 0.7);
@@ -23,4 +23,4 @@
     to {
         transform: rotate(360deg);
     }
-}
+} */

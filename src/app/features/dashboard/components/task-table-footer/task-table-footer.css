@@ -1,0 +1,26 @@
+:host {
+    display: block;
+}
+
+.pagination-sm ::ng-deep .ngx-pagination {
+    margin-bottom: 0;
+}
+
+@media (max-width: 600px) {
+    .pagination-sm {
+        display: flex;
+        justify-content: center;
+    }
+
+    .pagination-sm ::ng-deep .small-screen {
+        display: flex;
+        align-items: center;
+        font-size: larger;
+    }
+
+    .clear-filters-button {
+        display: flex;
+        justify-content: center;
+        font-weight: 900;
+    }
+}
