@@ -138,3 +138,23 @@
 :host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-bottom {
     z-index: 45;
 }
+
+/*** Date Range Picker ***/
+
+@media (max-width: 1024px) {
+
+    :host ::ng-deep .md-drppicker,
+    .daterangepicker {
+        position: absolute !important;
+        top: 110px !important;
+    }
+}
+
+@media (max-width: 640px) {
+
+    :host ::ng-deep .md-drppicker,
+    .daterangepicker {
+        position: absolute !important;
+        top: 166px !important;
+    }
+}
