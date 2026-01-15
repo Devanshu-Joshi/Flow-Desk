@@ -15,11 +15,12 @@ import { StatsCard } from '@features/dashboard/components/stats-card/stats-card'
 import { TaskFilters } from '@features/dashboard/components/task-filters/task-filters';
 import { TaskTable } from '@features/dashboard/components/task-table/task-table';
 import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
+import { TaskForm } from '@features/dashboard/components/task-form/task-form';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog, TaskForm],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
@@ -71,7 +72,7 @@ export class Dashboard implements OnInit {
   selectedPageSize = signal<number | 'All'>(5);
   isDeleting = signal<boolean>(false);
   dialogDescription = signal('Add task details below');
-  dialogTitleColor = signal('text-primary');
+  dialogTitleColor = signal<'text-primary' | 'text-warn' | 'text-danger'>('text-primary');
   filteredTasksCount = computed(() => this.filteredTasks().length);
   dialogSubmitText = signal('Save');
   sortField = signal<'title' | 'createdAt'>('createdAt');
