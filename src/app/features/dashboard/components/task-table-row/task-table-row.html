@@ -1,0 +1,37 @@
+<td class="px-2 sm:px-4 py-2 sm:py-3 font-medium">
+    {{ displayIndex }}
+</td>
+
+<td class="px-2 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800 max-w-xs">
+    {{ task.title }}
+</td>
+
+<td class="px-2 sm:px-4 py-2 sm:py-3 text-center">
+    <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold" [ngClass]="{
+      'bg-green-50 text-green-600': task.status === 'Completed',
+      'bg-blue-50 text-yellow-600': task.status === 'InProgress',
+      'bg-red-50 text-red-600': task.status === 'Incomplete'
+    }">
+        {{ task.status }}
+    </span>
+</td>
+
+<td class="px-2 sm:px-4 py-2 sm:py-3 text-gray-600 text-center">
+    {{ task.dueDate | date: 'dd/MM/yyyy' }}
+</td>
+
+<td class="px-2 sm:px-4 py-2 sm:py-3 flex justify-center">
+    <div class="flex items-center gap-2">
+        <button class="flex items-center gap-1 px-3 py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition"
+            (click)="edit.emit(task)">
+            <i class="bx bx-edit text-base"></i>
+            Edit
+        </button>
+
+        <button class="flex items-center gap-1 px-3 py-1.5 rounded-md text-red-700 hover:bg-red-200 transition"
+            (click)="delete.emit(task)">
+            <i class="bx bx-trash text-base"></i>
+            Delete
+        </button>
+    </div>
+</td>

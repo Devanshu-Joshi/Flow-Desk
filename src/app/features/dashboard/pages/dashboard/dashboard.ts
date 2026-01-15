@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, HostListener, inject, OnInit, Signal, ViewChild } from '@angular/core';
+import { Component, effect, inject, OnInit, Signal, ViewChild } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '@core/services/task';
 import { signal, computed } from '@angular/core';
@@ -13,11 +13,12 @@ import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { StatsCard } from '@features/dashboard/components/stats-card/stats-card';
 import { TaskFilters } from '@features/dashboard/components/task-filters/task-filters';
+import { TaskTable } from '@features/dashboard/components/task-table/task-table';
 
 export type TaskStatus = 'Incomplete' | 'Completed' | 'InProgress';
 @Component({
   selector: 'app-dashboard',
-  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters],
+  imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
