@@ -4,6 +4,7 @@ import { AuthService } from '@core/services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
+import { UserAuth } from '@core/services/user-auth';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +21,7 @@ export class Login {
     this.showPassword = !this.showPassword;
   }
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService, private userAuth: UserAuth) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
@@ -48,7 +49,8 @@ export class Login {
     const { email, password } = this.loginForm.value;
 
     try {
-      await this.authService.login(email!, password!);
+      const response = await this.userAuth.login(email!, password!);
+      console.log(response);
       this.router.navigate(['/dashboard']);
       this.toastr.success('Login successful', 'Success');
     } catch (error: any) {
