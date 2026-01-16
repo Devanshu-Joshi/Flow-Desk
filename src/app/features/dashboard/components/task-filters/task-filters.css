@@ -126,10 +126,10 @@
     gap: 0;
 }
 
-:host ::ng-deep .tasks-per-page-select .ng-has-value .ng-value-container {
+/* :host ::ng-deep .tasks-per-page-select .ng-has-value .ng-value-container {
     display: flex;
     justify-content: center;
-}
+} */
 
 :host ::ng-deep .tasks-per-page-select.ng-select-opened .ng-select-container {
     z-index: 1;

@@ -1,9 +1,9 @@
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 font-medium">
-    {{ displayIndex }}
+    {{ task.displayId }}
 </td>
 
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800">
-    <span class="block truncate max-w-[180px] sm:max-w-none mx-auto">
+    <span class="block truncate max-w-45 sm:max-w-none mx-auto">
         {{ task.title }}
     </span>
 </td>
@@ -24,18 +24,19 @@
     {{ task.dueDate | date: 'dd/MM/yyyy' }}
 </td>
 
+
 <td class="px-1.5 sm:px-4 py-2 sm:py-3">
     <div class="flex justify-center">
         <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
             <button
-                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition"
+                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer"
                 (click)="edit.emit(task)">
                 <i class="bx bx-edit text-base"></i>
                 <span class="whitespace-nowrap">Edit</span>
             </button>
 
             <button
-                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition"
+                class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition cursor-pointer"
                 (click)="delete.emit(task)">
                 <i class="bx bx-trash text-base"></i>
                 <span class="whitespace-nowrap">Delete</span>

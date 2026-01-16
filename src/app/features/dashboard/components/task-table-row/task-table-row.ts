@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Task } from '@core/models/Task';
+import { TaskView } from '@core/models/Task';
 
 @Component({
   selector: 'tr[app-task-table-row]',
@@ -12,9 +12,9 @@ import { Task } from '@core/models/Task';
   }
 })
 export class TaskTableRow {
-  @Input({ required: true }) task!: Task;
+  @Input({ required: true }) task!: TaskView;
   @Input({ required: true }) displayIndex!: number;
 
-  @Output() edit = new EventEmitter<Task>();
-  @Output() delete = new EventEmitter<Task>();
+  @Output() edit = new EventEmitter<TaskView>();
+  @Output() delete = new EventEmitter<TaskView>();
 }

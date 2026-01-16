@@ -6,3 +6,7 @@ export interface Task {
     createdAt: number;
     userId: string;
 }
+
+export interface TaskView extends Task {
+    displayId: number;
+}

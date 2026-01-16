@@ -2,7 +2,7 @@ import { Component, effect, inject, OnInit, Signal, ViewChild } from '@angular/c
 import { ReactiveFormsModule, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { TaskService } from '@core/services/task';
 import { signal, computed } from '@angular/core';
-import { Task } from '@core/models/Task';
+import { TaskView } from '@core/models/Task';
 import { debounceTime } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
@@ -58,7 +58,7 @@ export class Dashboard implements OnInit {
   fb = inject(FormBuilder);
   dateRange = signal<{ startDate: any; endDate: any } | null>(null);
   selectedStatus = signal<string | null>(null); // '' means All
-  tasks!: Signal<Task[]>;
+  tasks!: Signal<TaskView[]>;
   searchControl = new FormControl('');
   searchTerm = signal('');
   editingTaskId: string | null = null;
@@ -87,7 +87,7 @@ export class Dashboard implements OnInit {
   isLoading = computed(() => this.taskService.loading());
 
   constructor(public taskService: TaskService, private toastr: ToastrService) {
-    this.tasks = this.taskService.tasks;
+    this.tasks = this.taskService.tasksView;
   }
 
   syncAllPageSizeEffect = effect(() => {
@@ -214,13 +214,13 @@ export class Dashboard implements OnInit {
       await this.taskService.updateTask({
         ...value,
         id: this.editingTaskId
-      } as Task);
+      } as TaskView);
     }
     else if (this.isDeleting()) {
       await this.taskService.deleteTask(this.deletingTaskId!);
     }
     else {
-      await this.taskService.addTask(value as Task);
+      await this.taskService.addTask(value as TaskView);
     }
 
     if (this.isEditing()) {
@@ -236,7 +236,7 @@ export class Dashboard implements OnInit {
     this.toggleDialog();
   }
 
-  delete(task: Task) {
+  delete(task: TaskView) {
 
     this.dialogTitle.set('Delete');
     this.isDeleting.set(true);
@@ -262,7 +262,7 @@ export class Dashboard implements OnInit {
    * The dialog title color is set to 'text-warn'.
    * @param task The task to edit.
    */
-  edit(task: Task) {
+  edit(task: TaskView) {
     this.dialogTitle.set('Edit');
     this.isEditing.set(true);
     this.editingTaskId = task.id!;

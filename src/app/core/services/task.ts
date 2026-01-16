@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, computed } from '@angular/core';
 import {
   collection,
   addDoc,
@@ -11,17 +11,27 @@ import {
   getDoc,
   Firestore,
   updateDoc
+
 } from '@angular/fire/firestore';
 import { Unsubscribe } from 'firebase/auth';
 import { AuthService } from './auth';
-import { Task } from '@core/models/Task';
+import { TaskView } from '@core/models/Task';
 // export let isEditing = signal<boolean>(false);
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
 
-  readonly tasks = signal<Task[]>([]);
+  readonly tasks = signal<TaskView[]>([]);
   readonly loading = signal<boolean>(true);
+  readonly tasksView = computed<TaskView[]>(() => {
+    return [...this.tasks()]
+      .sort((a, b) => a.createdAt - b.createdAt)
+      .map((task, index) => ({
+        ...task,
+        displayId: index + 1
+      }));
+  });
+
 
   private unsubscribeTasks?: Unsubscribe;
 
@@ -64,7 +74,7 @@ export class TaskService {
         const tasks = snapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
-        }) as Task);
+        }) as TaskView);
 
         this.tasks.set(tasks);
 
@@ -80,7 +90,7 @@ export class TaskService {
     );
   }
 
-  async addTask(task: Task) {
+  async addTask(task: TaskView) {
     const user = this.authService.currentUser;
     if (!user) throw new Error('User not authenticated');
 
@@ -93,7 +103,7 @@ export class TaskService {
     });
   }
 
-  async updateTask(task: Task) {
+  async updateTask(task: TaskView) {
     const user = this.authService.currentUser;
     if (!user) throw new Error('User not authenticated');
     if (!task.id) throw new Error('Task ID is required');
