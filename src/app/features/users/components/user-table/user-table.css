@@ -205,6 +205,93 @@
     z-index: 45;
 }
 
+/* ng-select container */
+.modern-select ::ng-deep .ng-select-container {
+    min-height: 44px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    padding: 0 0.75rem;
+    transition: all 0.2s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+/* Hover */
+.modern-select ::ng-deep .ng-select-container:hover {
+    border-color: #cbd5f5;
+}
+
+/* Focus */
+.modern-select.ng-select-focused ::ng-deep .ng-select-container {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+/* Dropdown panel */
+.modern-select ::ng-deep .ng-dropdown-panel {
+    border-radius: 12px;
+    margin-top: 6px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* Dropdown items */
+.modern-select ::ng-deep .ng-option {
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin: 2px 6px;
+    transition: background 0.15s ease;
+}
+
+/* Hover item */
+.modern-select ::ng-deep .ng-option:hover {
+    background-color: #f1f5f9;
+}
+
+/* Selected item */
+.modern-select ::ng-deep .ng-option-selected {
+    background-color: #eef2ff;
+    color: #3730a3;
+}
+
+/* Group header */
+.modern-select ::ng-deep .ng-optgroup {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+/* Checkbox styling */
+.modern-checkbox {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    border: 1.5px solid #cbd5e1;
+    accent-color: #6366f1;
+}
+
+/* Multi-label badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Badge variants */
+.badge-success {
+    background-color: #ecfdf5;
+    color: #065f46;
+}
+
+.badge-warning {
+    background-color: #fffbeb;
+    color: #92400e;
+}
+
 /*** Date Range Picker ***/
 
 :host ::ng-deep .md-drppicker {

@@ -23,9 +23,9 @@
                     <ng-template ng-label-tmp let-item="item">
                         @if (item?.value !== null) {
                         <span class="whitespace-nowrap" [ngClass]="{
-                'text-green-600': item.value === 'ROLE_ADMIN',
-                'text-yellow-600': item.value === 'ROLE_USER',
-                'text-red-600': item.value === 'ROLE_GUEST'
+                'text-green-500': item.value === 'ROLE_ADMIN',
+                'text-yellow-500': item.value === 'ROLE_USER',
+                'text-red-500': item.value === 'ROLE_GUEST'
               }">
                             {{ item.label }}
                         </span>
@@ -37,9 +37,9 @@
                     <ng-template ng-option-tmp let-item="item">
                         <span class="whitespace-nowrap" [ngClass]="{
               'text-gray-700': item.value === null,
-              'text-green-600': item.value === 'ROLE_ADMIN',
-              'text-yellow-600': item.value === 'ROLE_USER',
-              'text-red-600': item.value === 'ROLE_GUEST'
+              'text-green-500': item.value === 'ROLE_ADMIN',
+              'text-yellow-500': item.value === 'ROLE_USER',
+              'text-red-500': item.value === 'ROLE_GUEST'
             }">
                             {{ item.label }}
                         </span>
@@ -51,39 +51,34 @@
             <div class="relative w-full min-w-20 sm:col-span-1 lg:w-50">
                 <ng-select [items]="permissions" [multiple]="true" bindLabel="label" bindValue="key" groupBy="group"
                     [closeOnSelect]="false" placeholder="Permissions" [(ngModel)]="selectedPermissions"
-                    (change)="onSelectionChange()" class="permission-select w-full cursor-pointer">
+                    (change)="onSelectionChange()" class="permission-select modern-select">
 
                     <ng-template ng-optgroup-tmp>
-                        <label class="flex items-center gap-2 cursor-pointer">
-                            <input type="checkbox" [checked]="isAllSelected()"
+                        <label class="flex items-center gap-2 cursor-pointer select-none">
+                            <input type="checkbox" class="modern-checkbox" [checked]="isAllSelected()"
                                 [indeterminate]="selectedPermissions.length > 0 && !isAllSelected()"
                                 (click)="$event.stopPropagation()" (change)="toggleAll($event.target.checked)" />
-                            <strong>All</strong>
+                            <strong class="text-slate-700">All</strong>
                         </label>
                     </ng-template>
 
                     <ng-template ng-option-tmp let-item="item" let-item$="item$">
                         <div class="flex items-center gap-2">
-                            <input type="checkbox" [checked]="item$.selected" tabindex="-1" pointer-events="none" />
-                            {{ item.label }}
+                            <input type="checkbox" class="modern-checkbox" [checked]="item$.selected" tabindex="-1"
+                                pointer-events="none" />
+                            <span class="text-slate-700">{{ item.label }}</span>
                         </div>
                     </ng-template>
 
                     <ng-template ng-multi-label-tmp let-items="items">
-
                         @if (isAllSelected()) {
-                        <span class="text-green-500 font-semibold">Permissions</span>
+                        <span class="badge badge-success">All Permissions</span>
                         }
 
                         @if (!isAllSelected() && items.length > 0) {
-                        <!-- <ng-container>
-                            @for (i of items; track i.key; let last = $last) {
-                            <span class="font-semibold">
-                                {{ i.label }}@if (!last) {<span>,&nbsp;</span>}
-                            </span>
-                            }
-                        </ng-container> -->
-                        <span class="text-yellow-500 font-semibold">Permissions</span>
+                        <span class="badge badge-warning">
+                            {{ items.length }} Selected
+                        </span>
                         }
                     </ng-template>
 
