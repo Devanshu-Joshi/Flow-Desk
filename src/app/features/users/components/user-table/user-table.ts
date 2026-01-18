@@ -7,6 +7,7 @@ import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { TaskView } from '@core/models/Task';
 import dayjs from 'dayjs';
 import { TaskStatus } from '@features/dashboard/pages/dashboard/dashboard';
+import { PermissionItem } from '@core/models/PermissionItem';
 
 @Component({
   selector: 'app-user-table',
@@ -45,6 +46,41 @@ export class UserTable {
     dueDate: ['', Validators.required],
     status: ['Incomplete' as TaskStatus, Validators.required]
   });
+  permissions: PermissionItem[] = [
+    { key: 'view', label: 'View', group: 'ALL' },
+    { key: 'create', label: 'Create', group: 'ALL' },
+    { key: 'edit', label: 'Edit', group: 'ALL' },
+    { key: 'delete', label: 'Delete', group: 'ALL' },
+    { key: 'manageUsers', label: 'Manage Users', group: 'ALL' }
+  ];
+
+  selectedPermissions: string[] = [];
+
+  /** On init → select ALL */
+  ngOnInit(): void {
+    this.selectedPermissions = this.permissions.map(p => p.key);
+  }
+
+  get allPermissionKeys(): string[] {
+    return this.permissions.map(p => p.key);
+  }
+
+  isAllSelected(): boolean {
+    return (
+      this.selectedPermissions.length === this.allPermissionKeys.length &&
+      this.allPermissionKeys.every(k => this.selectedPermissions.includes(k))
+    );
+  }
+
+  toggleAll(checked: boolean): void {
+    this.selectedPermissions = checked ? [...this.allPermissionKeys] : [];
+  }
+
+  onSelectionChange(): void {
+    this.selectedPermissions = this.selectedPermissions.filter(k =>
+      this.allPermissionKeys.includes(k)
+    );
+  }
 
   toggleDatePicker() {
     const picker = document.querySelector(
