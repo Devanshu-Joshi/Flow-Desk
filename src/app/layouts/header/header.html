@@ -15,8 +15,13 @@
 
             @if(authService.isLoggedIn()){
 
+            <div routerLink="/users" routerLinkActive="text-purple-700"
+                class="hover:text-purple-700 transition-colors cursor-pointer font-bold">
+                Users
+            </div>
+
             <a routerLink="/dashboard" routerLinkActive="text-purple-700"
-                class="text-purple-700 hover:text-purple-700 transition-colors cursor-pointer font-bold">
+                class="hover:text-purple-700 transition-colors cursor-pointer font-bold">
                 Dashboard
             </a>
 
