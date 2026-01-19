@@ -1,6 +1,5 @@
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '@core/services/auth';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
@@ -8,68 +7,64 @@ import { UserAuth } from '@core/services/user-auth';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [ReactiveFormsModule, RouterLink, CommonModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
 
-  loginForm;
+  fb = inject(FormBuilder);
+
+  loginForm = this.fb.group({
+    email: ['', [Validators.required, Validators.email]],
+    password: ['', [Validators.required]]
+  });
+
   showPassword = false;
+
+  constructor(
+    private userAuth: UserAuth,
+    private router: Router,
+    private toastr: ToastrService
+  ) { }
 
   togglePassword() {
     this.showPassword = !this.showPassword;
   }
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService, private userAuth: UserAuth) {
-    this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required]]
-    });
-  }
-
-  private validationMessages: Record<string, Record<string, string>> = {
-    email: {
-      required: 'Email is required',
-      email: 'Please enter a valid email address',
-    },
-    password: {
-      required: 'Password is required'
-    },
-  };
-
-  async submit() {
+  submit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();
-      // this.showValidationToast();
       this.shakeFirstInvalidControl();
       return;
     }
 
     const { email, password } = this.loginForm.value;
 
-    try {
-      const response = await this.authService.login(email!, password!);
-      console.log(response);
-      this.router.navigate(['/dashboard']);
-      this.toastr.success('Login successful', 'Success');
-    } catch (error: any) {
-      if (error.code === 'auth/invalid-credential') this.toastr.error('Invalid credentials', 'Error');
-      console.error("Error during login = ", error);
-    }
+    this.userAuth.login({ email: email!, password: password! })
+      .subscribe({
+        next: () => {
+          this.toastr.success('Login Successfully', 'Success');
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          if (err.status === 400) {
+            this.toastr.error('Invalid email or password', 'Login failed');
+          } else {
+            this.toastr.error('Something went wrong', 'Error');
+          }
+          console.error('Login error:', err);
+        }
+      });
   }
 
   shakeFirstInvalidControl() {
-    const firstInvalidControl: HTMLElement | null =
-      document.querySelector('form .ng-invalid');
-
+    const firstInvalidControl = document.querySelector('form .ng-invalid') as HTMLElement;
     if (!firstInvalidControl) return;
 
     firstInvalidControl.classList.add('shake');
-
-    setTimeout(() => {
-      firstInvalidControl.classList.remove('shake');
-    }, 400);
+    setTimeout(() => firstInvalidControl.classList.remove('shake'), 400);
   }
 
   get email() {
@@ -79,23 +74,4 @@ export class Login {
   get password() {
     return this.loginForm.get('password');
   }
-
 }
-
-//   private showValidationToast(): void {
-//   for(const controlName of Object.keys(this.loginForm.controls)) {
-//   const control = this.loginForm.get(controlName);
-
-//   if (control && control.invalid && control.errors) {
-//     const firstErrorKey = Object.keys(control.errors)[0];
-
-//     const message =
-//       this.validationMessages[controlName]?.[firstErrorKey] ??
-//       'Invalid input';
-
-//     this.toastr.error(message, 'Validation Error');
-
-//     break;
-//   }
-// }
-//   }

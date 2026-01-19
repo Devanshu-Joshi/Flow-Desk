@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AuthService } from '@core/services/auth';
+import { UserAuth } from '@core/services/user-auth';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -13,7 +13,7 @@ export class Header {
 
   isMobileMenuOpen = false;
 
-  constructor(public authService: AuthService) {
+  constructor(public authService: UserAuth) {
   }
 
   async logout() {

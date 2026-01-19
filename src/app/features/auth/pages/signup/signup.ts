@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AuthService } from '@core/services/auth';
+import { UserAuth } from '@core/services/user-auth';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -34,7 +34,7 @@ export class Signup {
     this.showConfirmPassword = !this.showConfirmPassword;
   }
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private toastr: ToastrService) {
+  constructor(private fb: FormBuilder, private authService: UserAuth, private router: Router, private toastr: ToastrService) {
     this.signupForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator]],
@@ -89,7 +89,7 @@ export class Signup {
     const { email, password, cpassword } = this.signupForm.value;
 
     try {
-      await this.authService.register(email!, password!);
+      // await this.authService.register(email!, password!);
       this.toastr.success('Registration successful', 'Success');
       this.router.navigate(['/login']);
     } catch (error: any) {
