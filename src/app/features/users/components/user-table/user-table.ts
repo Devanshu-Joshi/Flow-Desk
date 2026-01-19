@@ -1,51 +1,110 @@
-import { Component, computed, inject, model, Signal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  model,
+  Signal,
+  signal
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators
+} from '@angular/forms';
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
+
 import { TaskView } from '@core/models/Task';
-import dayjs from 'dayjs';
 import { TaskStatus } from '@features/dashboard/pages/dashboard/dashboard';
 import { PermissionItem } from '@core/models/PermissionItem';
 
+import dayjs from 'dayjs';
+
+import { EmptyState } from '../empty-state/empty-state';
+
+import { NgxPaginationModule } from 'ngx-pagination';
+
 @Component({
   selector: 'app-user-table',
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, NgSelectModule, NgxDaterangepickerMd],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    FormsModule,
+    NgSelectModule,
+    NgxDaterangepickerMd,
+    NgxPaginationModule,
+    EmptyState
+  ],
   templateUrl: './user-table.html',
   styleUrl: './user-table.css',
 })
 export class UserTable {
 
-  // All Variables
+  /* -------------------------------------------------------------------------- */
+  /*                                 Injections                                 */
+  /* -------------------------------------------------------------------------- */
+
   fb = inject(FormBuilder);
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Form Controls                                */
+  /* -------------------------------------------------------------------------- */
+
   searchControl: FormControl = new FormControl('');
+
+  taskForm = this.fb.nonNullable.group({
+    title: [
+      '',
+      [
+        Validators.required,
+        Validators.minLength(3)
+      ]
+    ],
+    dueDate: ['', Validators.required],
+    status: ['Incomplete' as TaskStatus, Validators.required]
+  });
+
+  /* -------------------------------------------------------------------------- */
+  /*                                 Signals                                    */
+  /* -------------------------------------------------------------------------- */
+
+  searchTerm = signal('');
+  selectedRole = signal<string | null>(null);
+  dateRange = signal<{ startDate: any; endDate: any } | null>(null);
+
+  sortField = signal<'title' | 'createdAt'>('createdAt');
+  sortDirection = signal<'asc' | 'desc'>('desc');
+
+  selectedPageSize = model<number | 'All'>(5);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                Pagination                                  */
+  /* -------------------------------------------------------------------------- */
+
+  itemsPerPage = 5;
+  p: number = 1;
+  isTasksDropdownOpen = false;
+
+  pageSizeOptions = [5, 10, 20, 'All'] as const;
+
+  totalItems = computed(() => this.filteredTasks().length);
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Data                                     */
+  /* -------------------------------------------------------------------------- */
+
+  tasks = signal<TaskView[]>([]);
+
   roleOptions = [
     { label: 'All', value: null },
     { label: 'Admin', value: 'ROLE_ADMIN' },
     { label: 'User', value: 'ROLE_USER' },
     { label: 'Guest', value: 'ROLE_GUEST' }
   ];
-  selectedRole = signal<string | null>(null);
-  dateRange = signal<{ startDate: any; endDate: any } | null>(null);
-  selectedPageSize = model<number | 'All'>(5);
-  itemsPerPage = 5;
-  totalItems = computed(() => this.filteredTasks().length);
-  p: number = 1;
-  isTasksDropdownOpen = false;
-  searchTerm = signal('');
-  sortField = signal<'title' | 'createdAt'>('createdAt');
-  sortDirection = signal<'asc' | 'desc'>('desc');
-  tasks!: Signal<TaskView[]>;
-  pageSizeOptions = [5, 10, 20, 'All'] as const;
-  taskForm = this.fb.nonNullable.group({
-    title: ['', [
-      Validators.required,
-      Validators.minLength(3)
-    ]],
-    dueDate: ['', Validators.required],
-    status: ['Incomplete' as TaskStatus, Validators.required]
-  });
+
   permissions: PermissionItem[] = [
     { key: 'view', label: 'View', group: 'ALL' },
     { key: 'create', label: 'Create', group: 'ALL' },
@@ -56,10 +115,17 @@ export class UserTable {
 
   selectedPermissions: string[] = [];
 
-  /** On init → select ALL */
+  /* -------------------------------------------------------------------------- */
+  /*                                 Lifecycle                                  */
+  /* -------------------------------------------------------------------------- */
+
   ngOnInit(): void {
     this.selectedPermissions = this.permissions.map(p => p.key);
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                             Permissions Logic                               */
+  /* -------------------------------------------------------------------------- */
 
   get allPermissionKeys(): string[] {
     return this.permissions.map(p => p.key);
@@ -68,12 +134,16 @@ export class UserTable {
   isAllSelected(): boolean {
     return (
       this.selectedPermissions.length === this.allPermissionKeys.length &&
-      this.allPermissionKeys.every(k => this.selectedPermissions.includes(k))
+      this.allPermissionKeys.every(k =>
+        this.selectedPermissions.includes(k)
+      )
     );
   }
 
   toggleAll(checked: boolean): void {
-    this.selectedPermissions = checked ? [...this.allPermissionKeys] : [];
+    this.selectedPermissions = checked
+      ? [...this.allPermissionKeys]
+      : [];
   }
 
   onSelectionChange(): void {
@@ -82,32 +152,44 @@ export class UserTable {
     );
   }
 
-  toggleDatePicker() {
+  /* -------------------------------------------------------------------------- */
+  /*                              Date Picker                                   */
+  /* -------------------------------------------------------------------------- */
+
+  toggleDatePicker(): void {
     const picker = document.querySelector(
       '.md-drppicker'
     ) as HTMLElement;
-    if (picker.classList.contains("shown")) {
-      picker.classList.remove("shown");
-      picker.classList.add("hidden");
-    }
-    else {
-      picker.classList.remove("hidden");
-      picker.classList.add("shown");
+
+    if (picker.classList.contains('shown')) {
+      picker.classList.remove('shown');
+      picker.classList.add('hidden');
+    } else {
+      picker.classList.remove('hidden');
+      picker.classList.add('shown');
     }
   }
 
-  onPageSizeChange(value: number | 'All') {
-    this.selectedPageSize.set(value); // Update the model
-    this.setItemsPerPage(value); // Notify parent to run logic (like resetting page index)
+  /* -------------------------------------------------------------------------- */
+  /*                              Pagination Logic                               */
+  /* -------------------------------------------------------------------------- */
+
+  onPageSizeChange(value: number | 'All'): void {
+    this.selectedPageSize.set(value);
+    this.setItemsPerPage(value);
   }
 
-  setItemsPerPage(value: number | 'All') {
+  setItemsPerPage(value: number | 'All'): void {
     this.itemsPerPage =
       value === 'All' ? this.totalItems() : value;
 
     this.p = 1;
     this.isTasksDropdownOpen = false;
   }
+
+  /* -------------------------------------------------------------------------- */
+  /*                              Filtering & Sorting                            */
+  /* -------------------------------------------------------------------------- */
 
   filteredTasks = computed(() => {
     const term = this.searchTerm().toLowerCase();
@@ -157,23 +239,43 @@ export class UserTable {
     });
   });
 
+  sortBy(field: 'title' | 'createdAt') {
+    if (this.sortField() === field) {
+      this.sortDirection.set(
+        this.sortDirection() === 'asc' ? 'desc' : 'asc'
+      );
+    } else {
+      this.sortField.set(field);
+      this.sortDirection.set('asc');
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                               Dialog Logic                                  */
+  /* -------------------------------------------------------------------------- */
+
   isDialogClosed: boolean = true;
-  toggleDialog() {
+
+  toggleDialog(): void {
     this.isDialogClosed = !this.isDialogClosed;
 
-    document.body.classList.toggle('body-lock', !this.isDialogClosed);
+    document.body.classList.toggle(
+      'body-lock',
+      !this.isDialogClosed
+    );
 
     if (this.isDialogClosed) {
       this.resetForm();
     }
   }
 
-  resetForm() {
+  resetForm(): void {
     this.taskForm.reset({
       title: '',
       dueDate: '',
       status: 'Incomplete'
     });
+
     this.taskForm.enable();
   }
 
