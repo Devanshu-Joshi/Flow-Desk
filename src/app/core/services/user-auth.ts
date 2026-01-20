@@ -58,16 +58,10 @@ export class UserAuth {
   }
 
   // 🔹 Register
-  register(payload: { email: string; password: string, parent_Id: number }) {
+  register(payload: { email: string; password: string, parentId: number }) {
     console.log("Entered");
     return this.http
-      .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' })
-      .pipe(
-        tap(message => {
-          this.toastr.success(message || 'Registration successful', 'Success');
-          this.router.navigate(['/login']);
-        })
-      );
+      .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' });
   }
 
 

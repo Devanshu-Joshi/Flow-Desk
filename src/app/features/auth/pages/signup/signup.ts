@@ -78,26 +78,26 @@ export class Signup {
     this.hasSpecialChar = /[^A-Za-z0-9]/.test(password);
   }
 
-  async submit() {
+  submit() {
     if (this.signupForm.invalid) {
       this.signupForm.markAllAsTouched();
-      // this.showValidationToast();
       this.shakeFirstInvalidControl();
       return;
     }
 
-    console.log(this.signupForm.getRawValue());
+    const { email, password } = this.signupForm.getRawValue();
 
-    const { email, password, cpassword } = this.signupForm.getRawValue();
-
-    try {
-      await this.authService.register({ email: email, password: password, parent_Id: -1 });
-      this.toastr.success('Registration successful', 'Success');
-      this.router.navigate(['/login']);
-    } catch (error: any) {
-      if (error.code === 'auth/email-already-in-use') this.toastr.error('Email already in use', 'Error');
-      console.error("Error during registration = ", error);
-    }
+    this.authService
+      .register({ email, password, parentId: -1 })
+      .subscribe({
+        next: message => {
+          this.toastr.success(message || 'Registration successful', 'Success');
+          this.router.navigate(['/login']);
+        },
+        error: err => {
+          this.toastr.error(err?.error || 'Registration Failed');
+        }
+      });
   }
 
   shakeFirstInvalidControl() {
