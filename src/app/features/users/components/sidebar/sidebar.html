@@ -10,7 +10,12 @@
     [class.translate-x-full]="!isOpen">
     <!-- Header -->
     <div class="px-6 py-4 border-b border-white/20 flex items-center justify-between shrink-0">
-        <h2 class="text-xl font-semibold text-white">Add User</h2>
+        <h2 class="text-xl font-semibold text-white">
+            @if (mode === 'add') { Add User }
+            @else if (mode === 'edit') { Edit User }
+            @else if (mode === 'view') { View User }
+            @else { Delete User }
+        </h2>
         <button class="text-white/70 hover:text-white text-lg" (click)="closeSidebar()">
             ✕
         </button>
@@ -37,12 +42,14 @@
             </div>
 
             <!-- Password -->
+            @if (mode === 'add' || mode === 'edit') {
             <div>
                 <label class="text-sm font-medium mb-1 block text-white/80">Password</label>
                 <input type="password" formControlName="password" class="w-full rounded-xl bg-white/20 border border-white/30
-                 px-4 py-2.5 text-white placeholder-white/60
-                 focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="••••••••" />
+             px-4 py-2.5 text-white placeholder-white/60
+             focus:ring-2 focus:ring-indigo-400 outline-none" placeholder="••••••••" />
             </div>
+            }
 
             <!-- Permissions -->
             <div>
@@ -100,15 +107,30 @@
         <!-- Footer -->
         <div class="border-t border-white/20 px-6 py-4 flex gap-3">
             <button type="button" class="flex-1 rounded-xl bg-white/20 border border-white/30
-               px-4 py-2.5 text-white hover:bg-white/30 transition" (click)="closeSidebar()">
+           px-4 py-2.5 text-white hover:bg-white/30 transition" (click)="closeSidebar()">
                 Cancel
             </button>
 
+            @if (mode === 'add') {
             <button type="button" class="flex-1 rounded-xl bg-indigo-500 px-4 py-2.5
-               text-white hover:bg-indigo-600 disabled:opacity-50 transition" [disabled]="userForm.invalid"
-                (click)="addUser()">
+             text-white hover:bg-indigo-600 transition" [disabled]="userForm.invalid" (click)="addUser()">
                 Add User
             </button>
+            }
+
+            @if (mode === 'edit') {
+            <button type="button" class="flex-1 rounded-xl bg-indigo-500 px-4 py-2.5
+             text-white hover:bg-indigo-600 transition" [disabled]="userForm.invalid" (click)="updateUser()">
+                Save Changes
+            </button>
+            }
+
+            @if (mode === 'delete') {
+            <button type="button" class="flex-1 rounded-xl bg-red-500 px-4 py-2.5
+             text-white hover:bg-red-600 transition" (click)="deleteUser()">
+                Delete User
+            </button>
+            }
         </div>
     </form>
 </aside>

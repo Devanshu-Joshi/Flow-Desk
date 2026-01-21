@@ -33,8 +33,20 @@ export class User implements OnInit {
 
   @ViewChild('sidebar') sidebar!: Sidebar;
 
-  openSideBar() {
-    this.sidebar.openSidebar();
+  onAddUser() {
+    this.sidebar.openAdd();
+  }
+
+  onViewUser(user: UserModel) {
+    this.sidebar.openView(user);
+  }
+
+  onEditUser(user: UserModel) {
+    this.sidebar.openEdit(user);
+  }
+
+  onDeleteUser(user: UserModel) {
+    this.sidebar.openDelete(user);
   }
 
 }

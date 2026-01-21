@@ -7,6 +7,8 @@ import { UserService } from '@core/services/user';
 import { UserModel } from '@core/models/User';
 import { ToastrService } from 'ngx-toastr';
 
+export type UserSidebarMode = 'add' | 'edit' | 'view' | 'delete';
+
 @Component({
   selector: 'app-sidebar',
   imports: [FormsModule, ReactiveFormsModule, CommonModule],
@@ -14,7 +16,15 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements AfterViewInit {
+  deleteUser() {
+    throw new Error('Method not implemented.');
+  }
+  updateUser() {
+    throw new Error('Method not implemented.');
+  }
   isOpen = false;
+  mode: UserSidebarMode = 'add';
+  selectedUser?: UserModel;
 
   fb = inject(FormBuilder);
   PermissionKey = PermissionKey;
@@ -57,7 +67,6 @@ export class Sidebar implements AfterViewInit {
   userForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
     permissions: this.fb.array(this.permissionList.map((perm => this.fb.control(perm.key === PermissionKey.TASK_VIEW, [])))),
   });
 
@@ -83,6 +92,71 @@ export class Sidebar implements AfterViewInit {
 
   openSidebar() {
     this.isOpen = true;
+  }
+
+  openAdd() {
+    this.mode = 'add';
+    this.userForm.reset();
+    this.userForm.get('password')?.setValidators([
+      Validators.required,
+      Validators.minLength(6),
+    ]);
+    this.userForm.get('password')?.updateValueAndValidity();
+    this.userForm.enable();
+    this.isOpen = true;
+  }
+
+  openEdit(user: UserModel) {
+    this.mode = 'edit';
+
+    this.userForm.enable();
+
+    this.patchUserToForm(user);
+
+    this.isOpen = true;
+  }
+
+  openView(user: UserModel) {
+    this.mode = 'view';
+
+    this.patchUserToForm(user);
+
+    this.userForm.disable();
+
+    this.isOpen = true;
+  }
+
+  openDelete(user: UserModel) {
+    this.mode = 'delete';
+
+    this.patchUserToForm(user);
+
+    this.userForm.disable();
+
+    this.isOpen = true;
+  }
+
+  private mapUserPermissionsToForm(userPermissions: PermissionKey[]): boolean[] {
+    return this.permissionList.map(p =>
+      userPermissions.includes(p.key)
+    );
+  }
+
+  private patchUserToForm(user: UserModel) {
+    this.userForm.patchValue({
+      name: user.name,
+      email: user.email,
+      permissions: this.mapUserPermissionsToForm(user.permissions),
+    });
+
+    // 🔒 enforce required permission
+    const taskViewIndex = this.permissionList.findIndex(
+      p => p.key === PermissionKey.TASK_VIEW
+    );
+
+    if (taskViewIndex !== -1) {
+      this.permissionsArray.at(taskViewIndex).setValue(true, { emitEvent: false });
+    }
   }
 
   closeSidebar() {

@@ -47,8 +47,7 @@ import { Sidebar } from "../sidebar/sidebar";
     NgSelectModule,
     NgxDaterangepickerMd,
     NgxPaginationModule,
-    EmptyState,
-    Sidebar
+    EmptyState
   ],
   templateUrl: './user-table.html',
   styleUrl: './user-table.css',
@@ -57,19 +56,21 @@ export class UserTable {
 
   constructor(private userService: UserService, private toastr: ToastrService) { }
 
-  @Output() userDeleted = new EventEmitter<void>();
-  @Output() sidebarOpen = new EventEmitter<boolean>();
+  @Output() addUser = new EventEmitter<boolean>();
+  @Output() viewUser = new EventEmitter<UserModel>();
+  @Output() editUser = new EventEmitter<UserModel>();
+  @Output() deleteUser = new EventEmitter<UserModel>();
 
-  deleteUser(id: string) {
+
+  deleteUserMethod(id: string) {
     this.userService.deleteUser(id).subscribe({
       next: () => {
-        this.userDeleted.emit();
         this.toastr.success("User Deleted Successfully", "Action Confirmed")
       },
       error: (err) => console.error(err)
     })
   }
-  editUser(_t93: UserModel) {
+  editUserMethod(_t93: UserModel) {
     throw new Error('Method not implemented.');
   }
 
@@ -174,6 +175,9 @@ export class UserTable {
 
   ngOnInit(): void {
     this.selectedPermissions.set(this.permissions.map(p => p.key));
+    this.searchControl.valueChanges.subscribe(value => {
+      this.searchTerm.set(value ?? '');
+    });
   }
 
   /* -------------------------------------------------------------------------- */
@@ -297,9 +301,4 @@ export class UserTable {
 
     this.taskForm.enable();
   }
-
-  openSideBar() {
-    this.sidebarOpen.emit(true);
-  }
-
 }
