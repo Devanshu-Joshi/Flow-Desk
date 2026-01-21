@@ -50,8 +50,8 @@
             <!-- Permission Select -->
             <div class="relative w-full min-w-38 sm:col-span-1 lg:w-50">
                 <ng-select [items]="permissions" [multiple]="true" bindLabel="label" bindValue="key" groupBy="group"
-                    [closeOnSelect]="false" placeholder="Permissions" [(ngModel)]="selectedPermissions"
-                    (change)="onSelectionChange()" class="permission-select modern-select">
+                    [closeOnSelect]="false" placeholder="Permissions" [ngModel]="selectedPermissions()"
+                    (ngModelChange)="selectedPermissions.set($event)" class="permission-select modern-select">
 
                     <ng-template ng-optgroup-tmp>
                         <label class="flex items-center gap-2 cursor-pointer select-none">
@@ -148,7 +148,7 @@
 
                 <tbody class="divide-y divide-gray-200">
                     @for (
-                    user of (users() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
+                    user of (filteredTasks() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
                     let i = $index;
                     track user.id
                     ) {

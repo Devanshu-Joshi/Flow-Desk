@@ -1,3 +1,5 @@
+import { PermissionKey } from "./PermissionKey";
+
 export interface UserModel {
     id: string
     createdAt: string;
@@ -6,5 +8,5 @@ export interface UserModel {
     email: string;
     password: string;
     parentId: string;
-    permissions: []
+    permissions: PermissionKey[];
 }

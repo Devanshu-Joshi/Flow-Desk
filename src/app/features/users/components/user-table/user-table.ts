@@ -106,7 +106,6 @@ export class UserTable {
   selectedRole = signal<string | null>(null);
   dateRange = signal<{ startDate: any; endDate: any } | null>(null);
 
-  sortField = signal<'title' | 'createdAt'>('createdAt');
   sortDirection = signal<'asc' | 'desc'>('desc');
 
   selectedPageSize = model<number | 'All'>(5);
@@ -126,8 +125,6 @@ export class UserTable {
   /* -------------------------------------------------------------------------- */
   /*                                   Data                                     */
   /* -------------------------------------------------------------------------- */
-
-  tasks = signal<TaskView[]>([]);
 
   roleOptions = [
     { label: 'All', value: null },
@@ -169,43 +166,47 @@ export class UserTable {
     }
   ];
 
-  selectedPermissions: string[] = [];
+  selectedPermissions = signal<PermissionKey[]>([]);
 
   /* -------------------------------------------------------------------------- */
   /*                                 Lifecycle                                  */
   /* -------------------------------------------------------------------------- */
 
   ngOnInit(): void {
-    this.selectedPermissions = this.permissions.map(p => p.key);
+    this.selectedPermissions.set(this.permissions.map(p => p.key));
   }
 
   /* -------------------------------------------------------------------------- */
   /*                             Permissions Logic                               */
   /* -------------------------------------------------------------------------- */
 
-  get allPermissionKeys(): string[] {
+  get allPermissionKeys(): PermissionKey[] {
     return this.permissions.map(p => p.key);
   }
 
   isAllSelected(): boolean {
     return (
-      this.selectedPermissions.length === this.allPermissionKeys.length &&
+      this.selectedPermissions().length === this.allPermissionKeys.length &&
       this.allPermissionKeys.every(k =>
-        this.selectedPermissions.includes(k)
+        this.selectedPermissions().includes(k)
       )
     );
   }
 
   toggleAll(checked: boolean): void {
-    this.selectedPermissions = checked
+    this.selectedPermissions.set(checked
       ? [...this.allPermissionKeys]
-      : [];
+      : []);
   }
 
   onSelectionChange(): void {
-    this.selectedPermissions = this.selectedPermissions.filter(k =>
+    this.selectedPermissions.set(this.selectedPermissions().filter(k =>
       this.allPermissionKeys.includes(k)
-    );
+    ));
+  }
+
+  onPermissionsChange(values: PermissionKey[]): void {
+    this.selectedPermissions.set(values);
   }
 
   /* -------------------------------------------------------------------------- */
@@ -247,64 +248,39 @@ export class UserTable {
   /*                              Filtering & Sorting                            */
   /* -------------------------------------------------------------------------- */
 
-  filteredTasks = computed(() => {
+  filteredTasks = computed<UserModel[]>(() => {
+    console.log("filtering");
     const term = this.searchTerm().toLowerCase();
-    const status = this.selectedRole();
     const range = this.dateRange();
-    const sortField = this.sortField();
     const sortDirection = this.sortDirection();
+    const selectedPermissions = this.selectedPermissions();
 
-    const filtered = this.tasks().filter(task => {
-
+    const filtered = this.users().filter(user => {
       const matchesSearch =
-        !term || task.title.toLowerCase().includes(term);
+        !term || user.name.toLowerCase().includes(term);
 
-      const matchesStatus =
-        !status || task.status === status;
+      const matchesPermissions =
+        !selectedPermissions.length ||
+        selectedPermissions.some(permission =>
+          user.permissions?.includes(permission)
+        );
 
       let matchesDate = true;
 
       if (range?.startDate && range?.endDate) {
-        const taskDate = dayjs(task.dueDate).format('YYYY-MM-DD');
+        const userDate = dayjs(user.createdAt).format('YYYY-MM-DD');
         const startDate = dayjs(range.startDate).format('YYYY-MM-DD');
         const endDate = dayjs(range.endDate).format('YYYY-MM-DD');
 
         matchesDate =
-          taskDate >= startDate &&
-          taskDate <= endDate;
+          userDate >= startDate &&
+          userDate <= endDate;
       }
 
-      return matchesSearch && matchesStatus && matchesDate;
+      return matchesSearch && matchesPermissions && matchesDate;
     });
-
-    return filtered.sort((a, b) => {
-      let valA: any;
-      let valB: any;
-
-      if (sortField === 'title') {
-        valA = a.title.toLowerCase();
-        valB = b.title.toLowerCase();
-      } else {
-        valA = new Date(a.createdAt).getTime();
-        valB = new Date(b.createdAt).getTime();
-      }
-
-      return sortDirection === 'asc'
-        ? valA > valB ? 1 : -1
-        : valA < valB ? 1 : -1;
-    });
+    return filtered;
   });
-
-  sortBy(field: 'title' | 'createdAt') {
-    if (this.sortField() === field) {
-      this.sortDirection.set(
-        this.sortDirection() === 'asc' ? 'desc' : 'asc'
-      );
-    } else {
-      this.sortField.set(field);
-      this.sortDirection.set('asc');
-    }
-  }
 
   /* -------------------------------------------------------------------------- */
   /*                               Dialog Logic                                  */
