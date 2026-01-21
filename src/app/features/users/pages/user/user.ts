@@ -3,10 +3,11 @@ import { Component, OnInit, signal } from '@angular/core';
 import { UserService } from '@core/services/user';
 import { UserTable } from '@features/users/components/user-table/user-table';
 import { UserModel } from '@core/models/User';
+import { Sidebar } from '@features/users/components/sidebar/sidebar';
 
 @Component({
   selector: 'app-user',
-  imports: [UserTable],
+  imports: [UserTable, Sidebar],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
@@ -21,7 +22,7 @@ export class User implements OnInit {
   }
 
   loadUsers() {
-    this.userService.getAllUsers().subscribe({
+    this.userService.getUsersByParent().subscribe({
       next: (data) => {
         this.users.set(data);
         console.log(this.users());

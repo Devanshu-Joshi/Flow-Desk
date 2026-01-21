@@ -21,9 +21,9 @@
                 <ng-template ng-label-tmp let-item="item">
                     @if (item?.value !== null) {
                     <span class="whitespace-nowrap" [ngClass]="{
-                'text-green-600': item.value === 'Completed',
-                'text-yellow-600': item.value === 'InProgress',
-                'text-red-600': item.value === 'Incomplete'
+                'text-green-600': item.value === 'COMPLETED',
+                'text-yellow-600': item.value === 'IN_PROGRESS',
+                'text-red-600': item.value === 'INCOMPLETE'
               }">
                         {{ item.label }}
                     </span>
@@ -35,9 +35,9 @@
                 <ng-template ng-option-tmp let-item="item">
                     <span class="whitespace-nowrap" [ngClass]="{
               'text-gray-700': item.value === null,
-              'text-green-600': item.value === 'Completed',
-              'text-yellow-600': item.value === 'InProgress',
-              'text-red-600': item.value === 'Incomplete'
+              'text-green-600': item.value === 'COMPLETED',
+              'text-yellow-600': item.value === 'IN_PROGRESS',
+              'text-red-600': item.value === 'INCOMPLETE'
             }">
                         {{ item.label }}
                     </span>

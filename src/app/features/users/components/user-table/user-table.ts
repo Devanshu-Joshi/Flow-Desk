@@ -1,12 +1,15 @@
 import {
   Component,
   computed,
+  EventEmitter,
   inject,
   input,
   Input,
   model,
+  Output,
   Signal,
-  signal
+  signal,
+  ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -30,6 +33,10 @@ import { EmptyState } from '../empty-state/empty-state';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserModel } from '@core/models/User';
 import { PermissionKey } from '@core/models/PermissionKey';
+import { UserAuth } from '@core/services/user-auth';
+import { UserService } from '@core/services/user';
+import { ToastrService } from 'ngx-toastr';
+import { Sidebar } from "../sidebar/sidebar";
 
 @Component({
   selector: 'app-user-table',
@@ -40,14 +47,26 @@ import { PermissionKey } from '@core/models/PermissionKey';
     NgSelectModule,
     NgxDaterangepickerMd,
     NgxPaginationModule,
-    EmptyState
+    EmptyState,
+    Sidebar
   ],
   templateUrl: './user-table.html',
   styleUrl: './user-table.css',
 })
 export class UserTable {
-  deleteUser(arg0: string) {
-    throw new Error('Method not implemented.');
+
+  constructor(private userService: UserService, private toastr: ToastrService) { }
+
+  @Output() userDeleted = new EventEmitter<void>();
+
+  deleteUser(id: string) {
+    this.userService.deleteUser(id).subscribe({
+      next: () => {
+        this.userDeleted.emit();
+        this.toastr.success("User Deleted Successfully", "Action Confirmed")
+      },
+      error: (err) => console.error(err)
+    })
   }
   editUser(_t93: UserModel) {
     throw new Error('Method not implemented.');
@@ -292,17 +311,10 @@ export class UserTable {
 
   isDialogClosed: boolean = true;
 
-  toggleDialog(): void {
-    this.isDialogClosed = !this.isDialogClosed;
+  @ViewChild('sidebar') sidebar!: Sidebar;
 
-    document.body.classList.toggle(
-      'body-lock',
-      !this.isDialogClosed
-    );
-
-    if (this.isDialogClosed) {
-      this.resetForm();
-    }
+  openSideBar() {
+    this.sidebar.openSidebar();
   }
 
   resetForm(): void {

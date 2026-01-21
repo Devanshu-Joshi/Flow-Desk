@@ -130,7 +130,7 @@ export class Dashboard implements OnInit {
     ]],
     dueDate: ['', Validators.required],
     status: ['INCOMPLETE' as TaskStatus, Validators.required],
-    priority: ['Normal', Validators.required],
+    priority: ['NORMAL', Validators.required],
     assignedTo: [[] as string[]]
   });
 

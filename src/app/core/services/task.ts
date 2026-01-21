@@ -54,17 +54,14 @@ export class TaskService {
    * ------------------------- */
 
   fetchTasks() {
-    alert("Loading...");
     this.loading.set(true);
 
     this.http.get<Task[]>(this.API_URL + "/getTasksByParent").subscribe({
       next: tasks => {
-        alert("Loading Completed");
         this.tasks.set(tasks);
         this.loading.set(false);
       },
       error: () => {
-        alert("Loading Error");
         this.error.set('Failed to load tasks');
         this.loading.set(false);
       }

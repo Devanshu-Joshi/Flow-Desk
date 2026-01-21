@@ -1,5 +1,5 @@
 export const environment = {
-    API_URL: 'https://jsonplaceholder.typicode.com/posts',
+    API_URL: 'http://localhost:3080/api',
     production: false,
     firebase: {
         apiKey: "AIzaSyD5iXJmHji_Mcn0rMvmzj7hhBCY05ICVbE",

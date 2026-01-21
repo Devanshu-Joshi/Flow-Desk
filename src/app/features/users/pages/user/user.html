@@ -1,8 +1,8 @@
-<div class="py-10">
+<div class="py-10 min-h-full">
     <div class="px-10">
         <p class="text-3xl text-purple-700 font-bold">User Management</p>
     </div>
     <div>
-        <app-user-table [users]="users()"></app-user-table>
+        <app-user-table [users]="users()" (userDeleted)="loadUsers()"></app-user-table>
     </div>
 </div>
