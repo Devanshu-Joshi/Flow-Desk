@@ -23,12 +23,12 @@ export class UserService {
   }
 
   /** POST: add user */
-  addUser(user: UserModel): Observable<UserModel> {
+  addUser(user: Partial<UserModel>): Observable<UserModel> {
     return this.http.post<UserModel>(this.apiUrl, user);
   }
 
   /** PUT: update user */
-  updateUser(user: UserModel): Observable<UserModel> {
+  updateUser(user: Partial<UserModel>): Observable<UserModel> {
     return this.http.put<UserModel>(`${this.apiUrl}/${user.id}`, user);
   }
 

@@ -42,7 +42,7 @@
             </div>
 
             <!-- Password -->
-            @if (mode === 'add' || mode === 'edit') {
+            @if (userForm.contains('password')) {
             <div>
                 <label class="text-sm font-medium mb-1 block text-white/80">Password</label>
                 <input type="password" formControlName="password" class="w-full rounded-xl bg-white/20 border border-white/30
@@ -56,11 +56,13 @@
                 <div class="flex items-center justify-between mb-3">
                     <p class="text-sm font-semibold text-white/90">Permissions</p>
 
+                    @if (mode !== 'view' && mode !== 'delete') {
                     <button type="button" (click)="toggleAllPermissions()" class="text-xs px-3 py-1.5 rounded-lg
-             bg-white/20 border border-white/30
-             text-white hover:bg-white/30 transition">
+         bg-white/20 border border-white/30
+         text-white hover:bg-white/30 transition">
                         {{ allPermissionsEnabled ? 'Disable All' : 'Enable All' }}
                     </button>
+                    }
                 </div>
 
                 <div formArrayName="permissions" class="space-y-3">
@@ -77,8 +79,7 @@
                         </div>
 
                         <label class="relative inline-flex items-center cursor-pointer">
-                            <input type="checkbox" class="sr-only peer" [formControlName]="i"
-                                [disabled]="perm.key === PermissionKey.TASK_VIEW" />
+                            <input type="checkbox" class="sr-only peer" [formControlName]="i" />
 
                             <div class="w-11 h-6 rounded-full
          bg-white/30
@@ -127,7 +128,7 @@
 
             @if (mode === 'delete') {
             <button type="button" class="flex-1 rounded-xl bg-red-500 px-4 py-2.5
-             text-white hover:bg-red-600 transition" (click)="deleteUser()">
+             text-white hover:bg-red-600 transition" (click)="deleteUser(selectedUser?.id!)">
                 Delete User
             </button>
             }

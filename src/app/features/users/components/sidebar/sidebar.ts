@@ -16,12 +16,6 @@ export type UserSidebarMode = 'add' | 'edit' | 'view' | 'delete';
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements AfterViewInit {
-  deleteUser() {
-    throw new Error('Method not implemented.');
-  }
-  updateUser() {
-    throw new Error('Method not implemented.');
-  }
   isOpen = false;
   mode: UserSidebarMode = 'add';
   selectedUser?: UserModel;
@@ -29,7 +23,7 @@ export class Sidebar implements AfterViewInit {
   fb = inject(FormBuilder);
   PermissionKey = PermissionKey;
 
-  @Output() userAdded = new EventEmitter<void>();
+  @Output() userActionPerformed = new EventEmitter<void>();
 
   permissionList: PermissionItem[] = [
     {
@@ -67,7 +61,18 @@ export class Sidebar implements AfterViewInit {
   userForm = this.fb.group({
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
-    permissions: this.fb.array(this.permissionList.map((perm => this.fb.control(perm.key === PermissionKey.TASK_VIEW, [])))),
+
+    // 👇 declare once, optional by default
+    password: [{ value: '', disabled: true }],
+
+    permissions: this.fb.array(
+      this.permissionList.map(perm =>
+        this.fb.control({
+          value: perm.key === PermissionKey.TASK_VIEW,
+          disabled: false,
+        })
+      )
+    ),
   });
 
   constructor(private userService: UserService, private toastr: ToastrService) { }
@@ -90,6 +95,28 @@ export class Sidebar implements AfterViewInit {
     return this.userForm.get('permissions') as FormArray;
   }
 
+  private updatePermissionControls(): void {
+    const permissionsArray = this.permissionsArray;
+
+    permissionsArray.controls.forEach((control, index) => {
+      const perm = this.permissionList[index];
+
+      // TASK_VIEW is always enabled + locked ON
+      if (perm.key === PermissionKey.TASK_VIEW) {
+        control.setValue(true, { emitEvent: false });
+        control.disable({ emitEvent: false });
+        return;
+      }
+
+      // View & Delete → read-only
+      if (this.mode === 'view' || this.mode === 'delete') {
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+      }
+    });
+  }
+
   openSidebar() {
     this.isOpen = true;
   }
@@ -97,31 +124,40 @@ export class Sidebar implements AfterViewInit {
   openAdd() {
     this.mode = 'add';
     this.userForm.reset();
-    this.userForm.get('password')?.setValidators([
+    this.userForm.enable();
+
+    const password = this.userForm.get('password');
+    password?.setValidators([
       Validators.required,
       Validators.minLength(6),
     ]);
-    this.userForm.get('password')?.updateValueAndValidity();
-    this.userForm.enable();
+    password?.enable();
+    password?.updateValueAndValidity();
+
+    this.updatePermissionControls();
     this.isOpen = true;
   }
 
   openEdit(user: UserModel) {
     this.mode = 'edit';
-
     this.userForm.enable();
 
+    this.disablePassword();
     this.patchUserToForm(user);
+    this.updatePermissionControls();
 
+    this.selectedUser = user;
     this.isOpen = true;
   }
 
   openView(user: UserModel) {
     this.mode = 'view';
 
+    this.disablePassword();
     this.patchUserToForm(user);
 
-    this.userForm.disable();
+    this.userForm.disable({ emitEvent: false });
+    this.updatePermissionControls();
 
     this.isOpen = true;
   }
@@ -129,11 +165,22 @@ export class Sidebar implements AfterViewInit {
   openDelete(user: UserModel) {
     this.mode = 'delete';
 
+    this.disablePassword();
     this.patchUserToForm(user);
 
-    this.userForm.disable();
+    this.userForm.disable({ emitEvent: false });
+    this.updatePermissionControls();
 
+    this.selectedUser = user;
     this.isOpen = true;
+  }
+
+  private disablePassword(): void {
+    const password = this.userForm.get('password');
+    password?.clearValidators();
+    password?.setValue('');
+    password?.disable();
+    password?.updateValueAndValidity();
   }
 
   private mapUserPermissionsToForm(userPermissions: PermissionKey[]): boolean[] {
@@ -163,30 +210,81 @@ export class Sidebar implements AfterViewInit {
     this.isOpen = false;
     this.userForm.reset();
     this.permissionsArray.controls.forEach(c => c.setValue(false));
+    this.selectedUser = undefined;
+  }
+
+  private getSelectedPermissions(): PermissionKey[] {
+    const values = this.permissionsArray.getRawValue();
+
+    return this.permissionList
+      .filter((_, i) => values[i])
+      .map(p => p.key);
   }
 
   addUser() {
-    const selectedPermissions = this.permissionList
-      .filter((_, i) => this.permissionsArray.value[i])
-      .map(p => p.key);
+    const selectedPermissions = this.getSelectedPermissions();
 
-    const payload = {
-      ...this.userForm.value,
+    const formValue = this.userForm.value;
+
+    const payload: Partial<UserModel> = {
+      name: formValue.name ?? undefined,
+      email: formValue.email ?? undefined,
+      password: formValue.password ?? undefined,
       permissions: selectedPermissions,
     };
 
-    this.userService.addUser(payload as UserModel).subscribe({
-      next: (result) => {
-        console.log("Get User = " + result);
-        this.toastr.success("User added successfully", "Action Completed");
+    this.userService.addUser(payload).subscribe({
+      next: () => {
+        this.userActionPerformed.emit();
+        this.toastr.success('User added successfully', 'Action Completed');
+      },
+    });
+
+    this.closeSidebar();
+  }
+
+  updateUser() {
+    if (!this.selectedUser?.id) return;
+
+    const selectedPermissions = this.getSelectedPermissions();
+
+    const formValue = this.userForm.value;
+
+    const payload: Partial<UserModel> & { id: string } = {
+      id: this.selectedUser.id,
+      name: formValue.name ?? undefined,
+      email: formValue.email ?? undefined,
+      permissions: selectedPermissions,
+    };
+
+    // include password ONLY if enabled
+    if (this.userForm.get('password')?.enabled) {
+      payload.password = formValue.password ?? undefined;
+    }
+
+    this.userService.updateUser(payload).subscribe({
+      next: () => {
+        this.userActionPerformed.emit();
+        this.toastr.success('User Updated Successfully', 'Action Performed');
+      },
+    });
+
+    this.closeSidebar();
+  }
+
+  deleteUser(id: string) {
+    this.userService.deleteUser(id).subscribe({
+      next: () => {
+        this.userActionPerformed.emit();
+        this.toastr.success("User Deleted Successfully", "Action Confirmed")
       },
       error: (err) => {
-        console.error(err);
+        console.error(err)
+        this.toastr.error("User Not Deleted Successfully", "Action Can't be Confirmed")
       }
     })
 
-    this.userAdded.emit();
-    this.closeSidebar();
+    this.closeSidebar()
   }
 
   get allPermissionsEnabled(): boolean {

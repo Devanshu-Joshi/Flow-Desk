@@ -4,14 +4,17 @@ import { UserService } from '@core/services/user';
 import { UserTable } from '@features/users/components/user-table/user-table';
 import { UserModel } from '@core/models/User';
 import { Sidebar } from '@features/users/components/sidebar/sidebar';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-user',
-  imports: [UserTable, Sidebar],
+  imports: [UserTable, Sidebar, LoadingOverlay],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
 export class User implements OnInit {
+
+  isLoading = signal<boolean>(false);
 
   users = signal<UserModel[]>([]);
 
@@ -22,12 +25,17 @@ export class User implements OnInit {
   }
 
   loadUsers() {
+    this.isLoading.set(true);
     this.userService.getUsersByParent().subscribe({
       next: (data) => {
         this.users.set(data);
         console.log(this.users());
+        this.isLoading.set(false);
       },
-      error: (err) => console.error(err)
+      error: (err) => {
+        console.error(err)
+        this.isLoading.set(false);
+      }
     });
   }
 

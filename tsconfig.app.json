@@ -16,6 +16,9 @@
       "@layouts/*": [
         "src/app/layouts/*"
       ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ],
       "@environments/*": [
         "environments/*"
       ]

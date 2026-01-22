@@ -8,4 +8,6 @@
     </div>
 </div>
 
-<app-sidebar #sidebar (userAdded)="loadUsers()"></app-sidebar>
+<app-sidebar #sidebar (userActionPerformed)="loadUsers()"></app-sidebar>
+
+<app-loading-overlay [show]="isLoading()" text="Loading users..."></app-loading-overlay>

@@ -16,7 +16,7 @@ import { TaskFilters } from '@features/dashboard/components/task-filters/task-fi
 import { TaskTable } from '@features/dashboard/components/task-table/task-table';
 import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
 import { TaskForm } from '@features/dashboard/components/task-form/task-form';
-import { LoadingOverlay } from '@features/dashboard/components/loading-overlay/loading-overlay';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 @Component({

@@ -4,12 +4,9 @@ import {
   EventEmitter,
   inject,
   input,
-  Input,
   model,
   Output,
-  Signal,
   signal,
-  ViewChild
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -21,22 +18,18 @@ import {
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-
-import { TaskView } from '@core/models/Task';
 import { TaskStatus } from '@features/dashboard/pages/dashboard/dashboard';
 import { PermissionItem } from '@core/models/PermissionItem';
 
 import dayjs from 'dayjs';
 
-import { EmptyState } from '../empty-state/empty-state';
+import { EmptyState } from '@shared/components/empty-state/empty-state';
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { UserModel } from '@core/models/User';
 import { PermissionKey } from '@core/models/PermissionKey';
-import { UserAuth } from '@core/services/user-auth';
 import { UserService } from '@core/services/user';
 import { ToastrService } from 'ngx-toastr';
-import { Sidebar } from "../sidebar/sidebar";
 
 @Component({
   selector: 'app-user-table',
@@ -56,7 +49,7 @@ export class UserTable {
 
   constructor(private userService: UserService, private toastr: ToastrService) { }
 
-  @Output() addUser = new EventEmitter<boolean>();
+  @Output() addUser = new EventEmitter<void>();
   @Output() viewUser = new EventEmitter<UserModel>();
   @Output() editUser = new EventEmitter<UserModel>();
   @Output() deleteUser = new EventEmitter<UserModel>();
@@ -241,8 +234,12 @@ export class UserTable {
   }
 
   setItemsPerPage(value: number | 'All'): void {
-    this.itemsPerPage =
-      value === 'All' ? this.totalItems() : value;
+    if (this.totalItems == undefined)
+      this.itemsPerPage = 0;
+    else {
+      this.itemsPerPage =
+        value === 'All' ? this.totalItems() : value;
+    }
 
     this.p = 1;
     this.isTasksDropdownOpen = false;
@@ -253,13 +250,17 @@ export class UserTable {
   /* -------------------------------------------------------------------------- */
 
   filteredTasks = computed<UserModel[]>(() => {
-    console.log("filtering");
+    const users = this.users();
+
+    if (!users || users.length === 0) {
+      return [];
+    }
+
     const term = this.searchTerm().toLowerCase();
     const range = this.dateRange();
-    const sortDirection = this.sortDirection();
     const selectedPermissions = this.selectedPermissions();
 
-    const filtered = this.users().filter(user => {
+    return users.filter(user => {
       const matchesSearch =
         !term || user.name.toLowerCase().includes(term);
 
@@ -276,14 +277,11 @@ export class UserTable {
         const startDate = dayjs(range.startDate).format('YYYY-MM-DD');
         const endDate = dayjs(range.endDate).format('YYYY-MM-DD');
 
-        matchesDate =
-          userDate >= startDate &&
-          userDate <= endDate;
+        matchesDate = userDate >= startDate && userDate <= endDate;
       }
 
       return matchesSearch && matchesPermissions && matchesDate;
     });
-    return filtered;
   });
 
   /* -------------------------------------------------------------------------- */
