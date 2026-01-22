@@ -27,7 +27,7 @@ export class TaskForm {
   constructor(private userService: UserService) { }
 
   loadUsers() {
-    this.userService.getAllUsers().subscribe({
+    this.userService.getUsersByParent().subscribe({
       next: (data) => {
         this.users.set(data);
         console.log(this.users());

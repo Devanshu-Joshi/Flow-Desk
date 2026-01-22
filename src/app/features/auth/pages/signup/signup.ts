@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UserAuth } from '@core/services/user-auth';
 import { Router } from '@angular/router';
@@ -7,16 +7,19 @@ import { ToastrService } from 'ngx-toastr';
 import { passwordStrengthValidator } from '@core/functions/passwordStrengthValidator';
 import { CommonModule } from '@angular/common';
 import { confirmPasswordValidator } from '@core/functions/confirmPasswordValidator';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-signup',
-  imports: [ReactiveFormsModule, RouterModule, CommonModule],
+  imports: [ReactiveFormsModule, RouterModule, CommonModule, LoadingOverlay],
   templateUrl: './signup.html',
   styleUrl: './signup.css',
 })
 export class Signup {
 
   signupForm;
+
+  isLoading = signal<boolean>(false);
 
   hasMinLength = false;
   hasLowercase = false;
@@ -86,16 +89,20 @@ export class Signup {
       return;
     }
 
+    this.isLoading.set(true);
+
     const { username: name, email, password } = this.signupForm.getRawValue();
 
     this.authService
       .register({ name, email, password, parentId: -1 })
       .subscribe({
         next: message => {
+          this.isLoading.set(false);
           this.toastr.success(message || 'Registration successful', 'Success');
           this.router.navigate(['/login']);
         },
         error: err => {
+          this.isLoading.set(false);
           this.toastr.error(err?.error || 'Registration Failed');
         }
       });

@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, inject, Output } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, inject, Output, signal } from '@angular/core';
 import { FormBuilder, FormArray, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { PermissionItem } from '@core/models/PermissionItem';
@@ -6,16 +6,19 @@ import { PermissionKey } from '@core/models/PermissionKey';
 import { UserService } from '@core/services/user';
 import { UserModel } from '@core/models/User';
 import { ToastrService } from 'ngx-toastr';
+import { map, Subject, takeUntil } from 'rxjs';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 export type UserSidebarMode = 'add' | 'edit' | 'view' | 'delete';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, LoadingOverlay],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })
 export class Sidebar implements AfterViewInit {
+  isLoading = signal<boolean>(false);
   isOpen = false;
   mode: UserSidebarMode = 'add';
   selectedUser?: UserModel;
@@ -74,20 +77,53 @@ export class Sidebar implements AfterViewInit {
     ),
   });
 
-  constructor(private userService: UserService, private toastr: ToastrService) { }
+  userService = inject(UserService);
+
+  constructor(private toastr: ToastrService) {
+  }
+
+  canManageUsers$ = this.userService.currentUser$.pipe(
+    map(user => user?.permissions?.includes(PermissionKey.MANAGE_USER) ?? false)
+  );
+
+  private destroy$ = new Subject<void>();
 
   ngAfterViewInit() {
     const permissionsArray = this.userForm.get('permissions') as FormArray;
 
-    permissionsArray.valueChanges.subscribe(() => {
-      const taskViewIndex = this.permissionList.findIndex(
-        p => p.key === PermissionKey.TASK_VIEW
-      );
+    permissionsArray.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        const taskViewIndex = this.permissionList.findIndex(
+          p => p.key === PermissionKey.TASK_VIEW
+        );
 
-      if (taskViewIndex !== -1) {
-        permissionsArray.at(taskViewIndex).setValue(true, { emitEvent: false });
-      }
-    });
+        if (taskViewIndex !== -1) {
+          permissionsArray.at(taskViewIndex).setValue(true, { emitEvent: false });
+        }
+      });
+
+    this.userService.currentUser$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(user => {
+        const canManage = user?.permissions?.includes(PermissionKey.MANAGE_USER);
+
+        // If permission revoked while sidebar is open (any mode)
+        if (!canManage && this.isOpen) {
+          this.closeSidebar();
+          if (this.mode !== 'view') {
+            this.toastr.warning(
+              'Your permissions have changed',
+              'Access Updated'
+            );
+          }
+        }
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get permissionsArray(): FormArray {
@@ -119,6 +155,10 @@ export class Sidebar implements AfterViewInit {
   }
 
   openAdd() {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
     this.mode = 'add';
     this.userForm.reset();
     this.userForm.enable();
@@ -138,6 +178,10 @@ export class Sidebar implements AfterViewInit {
   }
 
   openEdit(user: UserModel) {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
     this.mode = 'edit';
     this.userForm.enable();
 
@@ -166,6 +210,10 @@ export class Sidebar implements AfterViewInit {
   }
 
   openDelete(user: UserModel) {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
     this.mode = 'delete';
 
     this.disablePassword();
@@ -238,6 +286,11 @@ export class Sidebar implements AfterViewInit {
   }
 
   addUser() {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
+    this.isLoading.set(true);
     const selectedPermissions = this.getSelectedPermissions();
 
     const formValue = this.userForm.value;
@@ -251,15 +304,25 @@ export class Sidebar implements AfterViewInit {
 
     this.userService.addUser(payload).subscribe({
       next: () => {
+        this.isLoading.set(false);
         this.userActionPerformed.emit();
         this.toastr.success('User added successfully', 'Action Completed');
       },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.error(err);
+      }
     });
 
     this.closeSidebar();
   }
 
   updateUser() {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
+    this.isLoading.set(true);
     if (!this.selectedUser?.id || this.userForm.pristine) return;
 
     const selectedPermissions = this.getSelectedPermissions();
@@ -276,22 +339,37 @@ export class Sidebar implements AfterViewInit {
     }
 
     this.userService.updateUser(payload).subscribe({
-      next: () => {
+      next: (updatedUser) => {
+        this.isLoading.set(false);
+        if (updatedUser.id === this.userService.currentUser?.id) {
+          this.userService.setCurrentUser(updatedUser);
+        }
         this.userActionPerformed.emit();
         this.toastr.success('User Updated Successfully', 'Action Performed');
       },
+      error: (err) => {
+        this.isLoading.set(false);
+        console.error(err);
+      }
     });
 
     this.closeSidebar();
   }
 
   deleteUser(id: string) {
+    if (!this.canManageUsers) {
+      this.showNoPermission();
+      return;
+    }
+    this.isLoading.set(true);
     this.userService.deleteUser(id).subscribe({
       next: () => {
+        this.isLoading.set(false);
         this.userActionPerformed.emit();
         this.toastr.success("User Deleted Successfully", "Action Confirmed")
       },
       error: (err) => {
+        this.isLoading.set(false);
         console.error(err)
         this.toastr.error("User Not Deleted Successfully", "Action Can't be Confirmed")
       }
@@ -309,6 +387,10 @@ export class Sidebar implements AfterViewInit {
     });
   }
 
+  get canManageUsers(): boolean {
+    return this.userService.hasPermission(PermissionKey.MANAGE_USER);
+  }
+
   toggleAllPermissions(): void {
     const permissionsArray = this.userForm.get('permissions') as FormArray;
 
@@ -324,6 +406,14 @@ export class Sidebar implements AfterViewInit {
 
       control.setValue(enable);
     });
+  }
+
+  private showNoPermission(): void {
+    console.log(this.userService.currentUser);
+    this.toastr.error(
+      'You have no permission for this task',
+      'Access Denied'
+    );
   }
 
 }

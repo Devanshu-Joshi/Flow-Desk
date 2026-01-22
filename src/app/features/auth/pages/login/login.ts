@@ -1,14 +1,15 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { CommonModule } from '@angular/common';
 import { UserAuth } from '@core/services/user-auth';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, CommonModule],
+  imports: [ReactiveFormsModule, RouterLink, CommonModule, LoadingOverlay],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -22,6 +23,7 @@ export class Login {
   });
 
   showPassword = false;
+  isLoading = signal<boolean>(false);
 
   constructor(
     private userAuth: UserAuth,
@@ -39,16 +41,19 @@ export class Login {
       this.shakeFirstInvalidControl();
       return;
     }
+    this.isLoading.set(true);
 
     const { email, password } = this.loginForm.value;
 
     this.userAuth.login({ email: email!, password: password! })
       .subscribe({
         next: () => {
+          this.isLoading.set(false);
           this.toastr.success('Login Successfully', 'Success');
           this.router.navigate(['/dashboard']);
         },
         error: (err) => {
+          this.isLoading.set(false);
           if (err.status === 400) {
             this.toastr.error('Invalid email or password', 'Login failed');
           } else {

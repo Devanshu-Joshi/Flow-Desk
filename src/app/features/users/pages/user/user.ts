@@ -5,6 +5,7 @@ import { UserTable } from '@features/users/components/user-table/user-table';
 import { UserModel } from '@core/models/User';
 import { Sidebar } from '@features/users/components/sidebar/sidebar';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
+import { UserAuth } from '@core/services/user-auth';
 
 @Component({
   selector: 'app-user',
@@ -18,13 +19,14 @@ export class User implements OnInit {
 
   users = signal<UserModel[]>([]);
 
-  constructor(private http: HttpClient, private userService: UserService) { }
+  constructor(private http: HttpClient, private userService: UserService, private userAuth: UserAuth) { }
 
   ngOnInit(): void {
     this.loadUsers();
   }
 
   loadUsers() {
+    this.userAuth.refreshCurrentUser();
     this.isLoading.set(true);
     this.userService.getUsersByParent().subscribe({
       next: (data) => {

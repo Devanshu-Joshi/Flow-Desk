@@ -4,6 +4,9 @@ import { BehaviorSubject } from 'rxjs';
 import { tap, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { UserService } from './user';
+import { UserModel } from '@core/models/User';
+import { TokenService } from './token-service';
 
 interface LoginResponse {
   token: string;
@@ -21,29 +24,40 @@ export class UserAuth {
   private apiUrl = 'http://localhost:3080/api/auth';
 
   // Signals (for components)
-  user = signal<any | null>(null);
+  user = signal<UserModel | null>(null);
   isLoggedIn = signal<boolean>(false);
 
   // RxJS (for guards/interceptors)
   private authReadySubject = new BehaviorSubject<boolean>(false);
   authReady$ = this.authReadySubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService) {
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private userService: UserService, private tokenService: TokenService) {
     this.initAuth();
+
+    // 🔔 React to token cleared (e.g. 401)
+    this.tokenService.tokenCleared$.subscribe(() => {
+      this.handleForcedLogout();
+    });
   }
 
   // 🔹 Runs once on app startup
   private initAuth() {
-    const token = this.getToken();
+    const token = this.tokenService.getToken();
 
     if (token && !this.isTokenExpired(token)) {
-      this.isLoggedIn.set(true);
-      this.user.set(this.decodeToken(token));
+
+      this.getMe()
+        .pipe(finalize(() => this.authReadySubject.next(true)))
+        .subscribe(user => {
+          this.user.set(user);
+          this.userService.setCurrentUser(user);
+          this.isLoggedIn.set(true);
+        });
+
     } else {
       this.clearAuth();
+      this.authReadySubject.next(true);
     }
-
-    this.authReadySubject.next(true);
   }
 
   // 🔹 Login
@@ -52,7 +66,11 @@ export class UserAuth {
       tap(res => {
         localStorage.setItem('token', res.token);
         this.isLoggedIn.set(true);
-        this.user.set(this.decodeToken(res.token));
+
+        this.getMe().subscribe(user => {
+          this.user.set(user);
+          this.userService.setCurrentUser(user);
+        });
       })
     );
   }
@@ -63,6 +81,21 @@ export class UserAuth {
       .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' });
   }
 
+  getMe() {
+    return this.http.get<any>(`${this.apiUrl}/me`);
+  }
+
+  refreshCurrentUser() {
+    return this.getMe()
+      .pipe(
+        finalize(() => this.authReadySubject.next(true))
+      )
+      .subscribe(user => {
+        this.user.set(user);
+        this.userService.setCurrentUser(user);
+        this.isLoggedIn.set(true);
+      });
+  }
 
   // 🔹 Logout
   logout() {
@@ -73,19 +106,24 @@ export class UserAuth {
     this.toastr.success('Logout successful', 'Success');
   }
 
+  private handleForcedLogout() {
+    this.userService.setCurrentUser(null as any);
+    this.user.set(null);
+    this.isLoggedIn.set(false);
+    this.router.navigate(['/login']);
+    this.toastr.warning('Session expired. Please login again.', 'Unauthorized');
+  }
+
   private clearAuth() {
+    this.userService.setCurrentUser(null as any);
     localStorage.removeItem('token');
     this.user.set(null);
     this.isLoggedIn.set(false);
   }
 
   isAuthenticatedSync(): boolean {
-    const token = this.getToken();
+    const token = this.tokenService.getToken();
     return !!token && !this.isTokenExpired(token);
-  }
-
-  getToken(): string | null {
-    return localStorage.getItem('token');
   }
 
   private decodeToken(token: string): any | null {
