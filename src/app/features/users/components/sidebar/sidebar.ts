@@ -62,7 +62,6 @@ export class Sidebar implements AfterViewInit {
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
 
-    // 👇 declare once, optional by default
     password: [{ value: '', disabled: true }],
 
     permissions: this.fb.array(
@@ -101,14 +100,12 @@ export class Sidebar implements AfterViewInit {
     permissionsArray.controls.forEach((control, index) => {
       const perm = this.permissionList[index];
 
-      // TASK_VIEW is always enabled + locked ON
       if (perm.key === PermissionKey.TASK_VIEW) {
         control.setValue(true, { emitEvent: false });
         control.disable({ emitEvent: false });
         return;
       }
 
-      // View & Delete → read-only
       if (this.mode === 'view' || this.mode === 'delete') {
         control.disable({ emitEvent: false });
       } else {
@@ -125,6 +122,8 @@ export class Sidebar implements AfterViewInit {
     this.mode = 'add';
     this.userForm.reset();
     this.userForm.enable();
+
+    this.updateFieldAccessByMode();
 
     const password = this.userForm.get('password');
     password?.setValidators([
@@ -144,6 +143,7 @@ export class Sidebar implements AfterViewInit {
 
     this.disablePassword();
     this.patchUserToForm(user);
+    this.updateFieldAccessByMode();
     this.updatePermissionControls();
 
     this.selectedUser = user;
@@ -157,6 +157,7 @@ export class Sidebar implements AfterViewInit {
     this.patchUserToForm(user);
 
     this.userForm.disable({ emitEvent: false });
+    this.updateFieldAccessByMode();
     this.updatePermissionControls();
 
     this.userForm.markAsPristine();
@@ -171,10 +172,24 @@ export class Sidebar implements AfterViewInit {
     this.patchUserToForm(user);
 
     this.userForm.disable({ emitEvent: false });
+    this.updateFieldAccessByMode();
     this.updatePermissionControls();
 
     this.selectedUser = user;
     this.isOpen = true;
+  }
+
+  private updateFieldAccessByMode(): void {
+    const name = this.userForm.get('name');
+    const email = this.userForm.get('email');
+
+    if (this.mode === 'edit' || this.mode === 'view' || this.mode === 'delete') {
+      name?.disable({ emitEvent: false });
+      email?.disable({ emitEvent: false });
+    } else {
+      name?.enable({ emitEvent: false });
+      email?.enable({ emitEvent: false });
+    }
   }
 
   private disablePassword(): void {
@@ -198,7 +213,6 @@ export class Sidebar implements AfterViewInit {
       permissions: this.mapUserPermissionsToForm(user.permissions),
     });
 
-    // 🔒 enforce required permission
     const taskViewIndex = this.permissionList.findIndex(
       p => p.key === PermissionKey.TASK_VIEW
     );
@@ -246,9 +260,7 @@ export class Sidebar implements AfterViewInit {
   }
 
   updateUser() {
-    if (this.userForm.pristine) return;
-
-    if (!this.selectedUser?.id) return;
+    if (!this.selectedUser?.id || this.userForm.pristine) return;
 
     const selectedPermissions = this.getSelectedPermissions();
 
@@ -256,12 +268,9 @@ export class Sidebar implements AfterViewInit {
 
     const payload: Partial<UserModel> & { id: string } = {
       id: this.selectedUser.id,
-      name: formValue.name ?? undefined,
-      email: formValue.email ?? undefined,
       permissions: selectedPermissions,
     };
 
-    // include password ONLY if enabled
     if (this.userForm.get('password')?.enabled) {
       payload.password = formValue.password ?? undefined;
     }
@@ -309,7 +318,7 @@ export class Sidebar implements AfterViewInit {
       const perm = this.permissionList[index];
 
       if (perm.key === PermissionKey.TASK_VIEW) {
-        control.setValue(true); // 🔒 force ON
+        control.setValue(true);
         return;
       }
 
