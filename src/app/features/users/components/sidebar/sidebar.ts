@@ -159,6 +159,8 @@ export class Sidebar implements AfterViewInit {
     this.userForm.disable({ emitEvent: false });
     this.updatePermissionControls();
 
+    this.userForm.markAsPristine();
+
     this.isOpen = true;
   }
 
@@ -244,6 +246,8 @@ export class Sidebar implements AfterViewInit {
   }
 
   updateUser() {
+    if (this.userForm.pristine) return;
+
     if (!this.selectedUser?.id) return;
 
     const selectedPermissions = this.getSelectedPermissions();
