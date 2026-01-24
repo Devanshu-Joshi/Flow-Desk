@@ -1,12 +1,13 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
-import { tap, finalize, switchMap } from 'rxjs/operators';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { tap, finalize, switchMap, shareReplay } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserModel } from '@core/models/UserModel';
 import { TokenService } from '@core/services/token-service/token-service';
 import { PermissionKey } from '@core/models/PermissionKey';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 interface LoginResponse {
   token: string;
@@ -23,12 +24,17 @@ export class UserAuth {
 
   private apiUrl = 'http://localhost:3080/api/auth';
 
-  isLoggedIn = computed(() => !!this.currentUserSubject.value);
 
   private authReadySubject = new BehaviorSubject<boolean>(false);
   authReady$ = this.authReadySubject.asObservable();
   private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+
+  currentUserSignal = toSignal(this.currentUser$, { initialValue: null });
+
+  isLoggedIn = computed(() => !!this.currentUserSignal());
+
+  private meRequest$?: Observable<UserModel>;
 
   constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private tokenService: TokenService) {
     this.initAuth();
@@ -73,7 +79,12 @@ export class UserAuth {
   }
 
   getMe() {
-    return this.http.get<any>(`${this.apiUrl}/me`);
+    if (!this.meRequest$) {
+      this.meRequest$ = this.http.get<UserModel>(`${this.apiUrl}/me`).pipe(
+        shareReplay(1)
+      );
+    }
+    return this.meRequest$;
   }
 
   refreshCurrentUser() {
@@ -92,12 +103,14 @@ export class UserAuth {
   }
 
   private handleForcedLogout() {
+    this.meRequest$ = undefined;
     this.setCurrentUser(null);
     this.router.navigate(['/login']);
     this.toastr.warning('Session expired. Please login again.', 'Unauthorized');
   }
 
   private clearAuth() {
+    this.meRequest$ = undefined;
     this.setCurrentUser(null);
     this.tokenService.clearToken();
   }
