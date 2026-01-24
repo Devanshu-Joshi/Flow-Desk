@@ -63,7 +63,8 @@
         </div>
 
         <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
-            [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom" appendTo="body">
+            [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom" appendTo="body"
+            dropdownPosition="auto">
 
             <!-- Optional: custom option template -->
             <ng-template ng-option-tmp let-item="item">

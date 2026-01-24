@@ -1,13 +1,16 @@
+<!-- Display ID -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 font-medium">
     {{ task.displayId }}
 </td>
 
+<!-- Title -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800">
     <span class="block truncate max-w-45 sm:max-w-none mx-auto">
         {{ task.title }}
     </span>
 </td>
 
+<!-- Status -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
     <span
         class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
@@ -20,13 +23,52 @@
     </span>
 </td>
 
+<!-- Due Date -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-gray-600 text-center whitespace-nowrap">
     {{ task.dueDate | date: 'dd/MM/yyyy' }}
 </td>
 
+<!-- ✅ Assigned Users (READ-ONLY) -->
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
+    <ng-select [items]="assignedUsers" [ngModel]="assignedUsers" [multiple]="true" bindLabel="name" [searchable]="false"
+        [clearable]="false" [closeOnSelect]="false" [readonly]="true" class="modern-ng-select w-full">
+        <!-- Selected value (collapsed, single row) -->
+        <ng-template ng-multi-label-tmp let-items="items">
+            <div class="flex items-center gap-1.5 overflow-hidden whitespace-nowrap">
+                <ng-container *ngFor="let user of items; let last = last">
+                    <div class="flex items-center gap-1 shrink-0">
+                        <img [src]="user.avatar" class="w-5 h-5 rounded-full" />
+                        <span class="text-xs font-medium text-gray-800">
+                            {{ user.name }}
+                        </span>
+                        <span *ngIf="!last" class="text-gray-400">,</span>
+                    </div>
+                </ng-container>
+            </div>
+        </ng-template>
+
+        <!-- Dropdown items -->
+        <ng-template ng-option-tmp let-item="item">
+            <div class="flex items-center gap-2 py-1.5">
+                <img [src]="item.avatar" class="w-6 h-6 rounded-full" />
+                <div class="flex flex-col">
+                    <span class="text-sm font-medium text-gray-800">
+                        {{ item.name }}
+                    </span>
+                    <span class="text-xs text-gray-500">
+                        {{ item.email }}
+                    </span>
+                </div>
+            </div>
+        </ng-template>
+    </ng-select>
+</td>
+
+<!-- Actions -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3">
     <div class="flex justify-center">
         <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
+
             <button
                 class="flex items-center justify-center gap-1 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer"
                 (click)="edit.emit(task)">
@@ -40,6 +82,7 @@
                 <i class="bx bx-trash text-base"></i>
                 <span class="whitespace-nowrap">Delete</span>
             </button>
+
         </div>
     </div>
 </td>

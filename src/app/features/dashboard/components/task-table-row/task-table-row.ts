@@ -1,10 +1,14 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskView } from '@core/models/Task';
+import { UserModel } from '@core/models/UserModel';
+import { NgSelectComponent } from '@ng-select/ng-select';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'tr[app-task-table-row]',
-  imports: [CommonModule],
+  standalone: true,
+  imports: [CommonModule, NgSelectComponent, FormsModule],
   templateUrl: './task-table-row.html',
   styleUrl: './task-table-row.css',
   host: {
@@ -12,8 +16,22 @@ import { TaskView } from '@core/models/Task';
   }
 })
 export class TaskTableRow {
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Inputs                                   */
+  /* -------------------------------------------------------------------------- */
+
   @Input({ required: true }) task!: TaskView;
-  @Input({ required: true }) displayIndex!: number;
+
+  // ✅ Assigned users for THIS task (read-only display)
+  @Input({ required: true }) assignedUsers!: UserModel[];
+
+  // Optional: only keep if you really use it
+  @Input() displayIndex?: number;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Outputs                                  */
+  /* -------------------------------------------------------------------------- */
 
   @Output() edit = new EventEmitter<TaskView>();
   @Output() delete = new EventEmitter<TaskView>();

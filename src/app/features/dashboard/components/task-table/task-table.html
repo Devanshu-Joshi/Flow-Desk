@@ -1,21 +1,27 @@
 <div class="border border-gray-200 rounded-xl shadow-sm overflow-hidden bg-white">
-    <!-- Scroll ONLY the table, not the footer -->
+
+    <!-- Scroll ONLY the table -->
     <div class="overflow-x-auto">
         <table
             class="w-full min-w-160 md:min-w-180 text-xs sm:text-sm text-left border-collapse table-auto sm:table-fixed">
+
+            <!-- ============================== HEADER ============================== -->
             <thead class="bg-gray-50 text-gray-600 uppercase text-[10px] sm:text-xs sticky top-0 z-10">
                 <tr>
+
+                    <!-- S.No -->
                     <th class="px-1.5 sm:px-4 py-2 sm:py-3 cursor-pointer w-10 sm:w-16 select-none"
                         (click)="onSortBy('createdAt')">
                         <span class="inline-flex items-center gap-1">
                             S.No
                             <i class="bx" [ngClass]="{
-            'bx-caret-up': sortField === 'createdAt' && sortDirection === 'asc',
-            'bx-caret-down': sortField === 'createdAt' && sortDirection === 'desc'
-          }"></i>
+                'bx-caret-up': sortField === 'createdAt' && sortDirection === 'asc',
+                'bx-caret-down': sortField === 'createdAt' && sortDirection === 'desc'
+              }"></i>
                         </span>
                     </th>
 
+                    <!-- Task -->
                     <th class="px-1.5 sm:px-4 py-2 sm:py-3 text-center cursor-pointer select-none w-20 sm:w-1/3"
                         (click)="onSortBy('title')">
                         <span class="inline-flex items-center justify-center gap-2 w-full">
@@ -23,37 +29,57 @@
 
                             <span class="flex flex-col text-xs leading-none">
                                 <i class="bx bx-caret-up" [ngClass]="{
-              'text-gray-400': sortField !== 'title' || sortDirection === 'desc',
-              'text-gray-800': sortField === 'title' && sortDirection === 'asc'
-            }"></i>
+                  'text-gray-400': sortField !== 'title' || sortDirection === 'desc',
+                  'text-gray-800': sortField === 'title' && sortDirection === 'asc'
+                }"></i>
 
                                 <i class="bx bx-caret-down -mt-1" [ngClass]="{
-              'text-gray-400': sortField !== 'title' || sortDirection === 'asc',
-              'text-gray-800': sortField === 'title' && sortDirection === 'desc'
-            }"></i>
+                  'text-gray-400': sortField !== 'title' || sortDirection === 'asc',
+                  'text-gray-800': sortField === 'title' && sortDirection === 'desc'
+                }"></i>
                             </span>
                         </span>
                     </th>
 
-                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-24 sm:w-32 text-center">Status</th>
-                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-24 sm:w-32 text-center">Due Date</th>
-                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 font-semibold w-28 sm:w-40 text-center">Action</th>
+                    <!-- Status -->
+                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 w-24 sm:w-32 text-center">
+                        Status
+                    </th>
+
+                    <!-- Due Date -->
+                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 w-24 sm:w-32 text-center">
+                        Due Date
+                    </th>
+
+                    <!-- ✅ Assigned Users -->
+                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 w-32 sm:w-48 text-center">
+                        Assigned To
+                    </th>
+
+                    <!-- Actions -->
+                    <th class="px-1.5 sm:px-4 py-2 sm:py-3 w-28 sm:w-40 text-center">
+                        Action
+                    </th>
                 </tr>
             </thead>
 
+            <!-- ============================== BODY ============================== -->
             <tbody class="divide-y divide-gray-200">
                 @for (
                 item of tasks | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage };
                 let index = $index;
                 track item.id
                 ) {
-                <tr app-task-table-row [task]="item" [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1"
-                    (edit)="onEdit($event)" (delete)="onDelete($event)">
+
+                <tr app-task-table-row [task]="item" [assignedUsers]="taskAssignedUsersMap.get(item.id) || []"
+                    [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1" (edit)="onEdit($event)"
+                    (delete)="onDelete($event)">
                 </tr>
+
                 }
                 @empty {
                 <tr>
-                    <td colspan="5" class="p-4 sm:p-6">
+                    <td colspan="6" class="p-4 sm:p-6">
                         <app-empty-state></app-empty-state>
                     </td>
                 </tr>
@@ -62,8 +88,9 @@
         </table>
     </div>
 
-    <!-- Footer OUTSIDE scroll -->
+    <!-- ============================== FOOTER ============================== -->
     <app-task-table-footer [total]="tasks.length" [itemsPerPage]="itemsPerPage" (clearFilters)="onClearFilters()"
         (pageChange)="onPageChange($event)">
     </app-task-table-footer>
+
 </div>

@@ -1,0 +1,52 @@
+.modern-ng-select ::ng-deep .ng-select-container {
+    min-height: 34px;
+    padding: 0 10px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background-color: #fafafa;
+    transition: all 0.15s ease;
+    cursor: pointer;
+}
+
+.modern-ng-select ::ng-deep .ng-select-container:hover {
+    border-color: #d1d5db;
+    background-color: #ffffff;
+}
+
+.modern-ng-select ::ng-deep .ng-value-container {
+    padding: 0;
+    gap: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+/* Ellipsis behavior */
+.modern-ng-select ::ng-deep .ng-value-container>div {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Dropdown panel */
+.modern-ng-select ::ng-deep .ng-dropdown-panel {
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Dropdown items */
+.modern-ng-select ::ng-deep .ng-option {
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin: 2px 6px;
+}
+
+.modern-ng-select ::ng-deep .ng-option:hover {
+    background-color: #f3f4f6;
+}
+
+/* Remove clear & remove icons */
+.modern-ng-select ::ng-deep .ng-clear,
+.modern-ng-select ::ng-deep .ng-value-icon {
+    display: none;
+}

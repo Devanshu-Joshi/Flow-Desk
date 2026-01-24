@@ -2,7 +2,7 @@ export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 export type TaskPriority = 'HIGH' | 'NORMAL' | 'LOW';
 
 export interface Task {
-    id?: string;
+    id: string;
     title: string;
     status: TaskStatus;
     priority: TaskPriority;
