@@ -33,7 +33,7 @@ export class TaskService {
    * ------------------------- */
   private listenToAuth() {
     effect(() => {
-      const user = this.authService.user();
+      const user = this.authService.currentUserSignal();
 
       this.tasks.set([]);
       this.error.set(null);

@@ -7,7 +7,7 @@ export const authGuard: CanActivateFn = (route) => {
   const auth = inject(UserAuth);
   const router = inject(Router);
 
-  return auth.authReady$.pipe(
+  return auth.authInitialized$.pipe(
     filter(Boolean),
     take(1),
     map(() => {

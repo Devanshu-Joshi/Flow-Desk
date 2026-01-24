@@ -1,7 +1,7 @@
 import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { tap, finalize, switchMap, shareReplay } from 'rxjs/operators';
+import { tap, finalize, switchMap, shareReplay, catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserModel } from '@core/models/UserModel';
@@ -25,8 +25,8 @@ export class UserAuth {
   private apiUrl = 'http://localhost:3080/api/auth';
 
 
-  private authReadySubject = new BehaviorSubject<boolean>(false);
-  authReady$ = this.authReadySubject.asObservable();
+  private authInitializedSubject = new BehaviorSubject<boolean>(false);
+  authInitialized$ = this.authInitializedSubject.asObservable();
   private currentUserSubject = new BehaviorSubject<UserModel | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
@@ -50,14 +50,14 @@ export class UserAuth {
     if (token && !this.isTokenExpired(token)) {
 
       this.getMe()
-        .pipe(finalize(() => this.authReadySubject.next(true)))
+        .pipe(finalize(() => this.authInitializedSubject.next(true)))
         .subscribe(user => {
           this.setCurrentUser(user);
         });
 
     } else {
       this.clearAuth();
-      this.authReadySubject.next(true);
+      this.authInitializedSubject.next(true);
     }
   }
 
@@ -78,10 +78,14 @@ export class UserAuth {
       .post<string>(`${this.apiUrl}/signup`, payload, { responseType: 'text' as 'json' });
   }
 
-  getMe() {
+  getMe(): Observable<UserModel> {
     if (!this.meRequest$) {
       this.meRequest$ = this.http.get<UserModel>(`${this.apiUrl}/me`).pipe(
-        shareReplay(1)
+        shareReplay(1),
+        catchError(err => {
+          this.meRequest$ = undefined;
+          throw err;
+        })
       );
     }
     return this.meRequest$;
