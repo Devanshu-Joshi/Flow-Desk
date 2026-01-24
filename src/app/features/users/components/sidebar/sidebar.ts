@@ -308,6 +308,7 @@ export class Sidebar implements AfterViewInit {
       error: (err) => {
         this.isLoading.set(false);
         console.error(err);
+        this.toastr.error("A user with this email already exists.", "Registration Failed");
       }
     });
 
@@ -346,6 +347,7 @@ export class Sidebar implements AfterViewInit {
       error: (err) => {
         this.isLoading.set(false);
         console.error(err);
+        this.toastr.error("The user you want to update is not exists", "Some error occured");
       }
     });
 

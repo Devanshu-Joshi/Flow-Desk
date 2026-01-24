@@ -1,7 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject } from 'rxjs';
-import { tap, finalize } from 'rxjs/operators';
+import { tap, finalize, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { UserModel } from '@core/models/UserModel';
@@ -23,8 +23,7 @@ export class UserAuth {
 
   private apiUrl = 'http://localhost:3080/api/auth';
 
-  user = signal<UserModel | null>(null);
-  isLoggedIn = signal<boolean>(false);
+  isLoggedIn = computed(() => !!this.currentUserSubject.value);
 
   private authReadySubject = new BehaviorSubject<boolean>(false);
   authReady$ = this.authReadySubject.asObservable();
@@ -47,9 +46,7 @@ export class UserAuth {
       this.getMe()
         .pipe(finalize(() => this.authReadySubject.next(true)))
         .subscribe(user => {
-          this.user.set(user);
           this.setCurrentUser(user);
-          this.isLoggedIn.set(true);
         });
 
     } else {
@@ -61,13 +58,11 @@ export class UserAuth {
   login(credentials: { email: string; password: string }) {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, credentials).pipe(
       tap(res => {
-        localStorage.setItem('token', res.token);
-        this.isLoggedIn.set(true);
-
-        this.getMe().subscribe(user => {
-          this.user.set(user);
-          this.setCurrentUser(user);
-        });
+        this.tokenService.setToken(res.token);
+      }),
+      switchMap(() => this.getMe()),
+      tap(user => {
+        this.setCurrentUser(user);
       })
     );
   }
@@ -84,36 +79,27 @@ export class UserAuth {
   refreshCurrentUser() {
     return this.getMe()
       .pipe(
-        finalize(() => this.authReadySubject.next(true))
+        tap(user => {
+          this.setCurrentUser(user);
+        })
       )
-      .subscribe(user => {
-        this.user.set(user);
-        this.setCurrentUser(user);
-        this.isLoggedIn.set(true);
-      });
   }
 
   logout() {
     this.clearAuth();
-    this.user.set(null);
-    this.isLoggedIn.set(false);
     this.router.navigate(['/login']);
     this.toastr.success('Logout successful', 'Success');
   }
 
   private handleForcedLogout() {
-    this.setCurrentUser(null as any);
-    this.user.set(null);
-    this.isLoggedIn.set(false);
+    this.setCurrentUser(null);
     this.router.navigate(['/login']);
     this.toastr.warning('Session expired. Please login again.', 'Unauthorized');
   }
 
   private clearAuth() {
-    this.setCurrentUser(null as any);
-    localStorage.removeItem('token');
-    this.user.set(null);
-    this.isLoggedIn.set(false);
+    this.setCurrentUser(null);
+    this.tokenService.clearToken();
   }
 
   isAuthenticatedSync(): boolean {
@@ -143,7 +129,7 @@ export class UserAuth {
     return this.currentUserSubject.value;
   }
 
-  setCurrentUser(user: UserModel): void {
+  setCurrentUser(user: UserModel | null): void {
     this.currentUserSubject.next(user);
   }
 }

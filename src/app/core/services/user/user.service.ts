@@ -22,7 +22,7 @@ export class UserService {
   getUsersByParent(force = false): Observable<UserModel[]> {
     if (!this.loaded || force) {
       this.loaded = true;
-      this.userAuth.refreshCurrentUser();
+      // this.userAuth.refreshCurrentUser();
 
       this.http
         .get<UserModel[]>(`${this.apiUrl}/by-parent`)
