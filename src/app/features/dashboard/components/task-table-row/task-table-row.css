@@ -9,10 +9,55 @@
     overflow: hidden;
 }
 
+
+/* Inner scrolling layer */
+.assignees-scroll {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+}
+
+/* Expanded → scroll only inner layer */
+.assignees-container.expanded .assignees-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-bottom: 6px;
+    /* space so scrollbar doesn't overlap chips */
+}
+
+/* Modern overlay scrollbar look */
+.assignees-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.assignees-scroll::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}
+
+.assignees-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 🔥 Expanded mode → show full names */
+.assignees-container.expanded .assignee-chip {
+    min-width: unset;
+    max-width: none;
+    flex: 0 0 auto;
+}
+
+.assignees-container.expanded .name {
+    overflow: visible;
+    text-overflow: clip;
+    /* still keep inline */
+}
+
 /* 📱 Smaller screens */
 @media (max-width: 640px) {
     .assignees-container {
-        max-width: 160px;
+        width: 150px;
+        max-width: 150px;
         gap: 4px;
     }
 }
@@ -63,9 +108,11 @@
     /* REQUIRED inside flex */
 }
 
-/* ✨ WHEN USERS ARE FEW → remove limits */
+/* When only 1–2 users → let chip grow naturally */
 .assignees-container.few-users .assignee-chip {
+    min-width: unset;
     max-width: none;
+    flex: 0 0 auto;
 }
 
 .assignees-container.few-users .name {

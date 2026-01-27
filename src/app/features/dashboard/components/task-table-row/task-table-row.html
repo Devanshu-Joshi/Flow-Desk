@@ -30,19 +30,25 @@
 
 <!-- ✅ Assigned Users (Signal Version) -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
-    <div #assigneeContainer class="assignees-container flex justify-evenly bordered"
-        [class.few-users]="assignedUsersSig().length <= 2"
-        [attr.title]="hiddenCountSig() > 0 ? getUsersTooltip(assignedUsersSig()) : null">
-        <ng-container *ngFor="let user of visibleUsersSig()">
+    <div #assigneeContainer class="assignees-container bordered" [class.expanded]="expandedSig()"
+        [attr.title]="!expandedSig() && hiddenCountSig() > 0 ? getUsersTooltip(assignedUsersSig()) : null"
+        [class.few-users]="visibleUsersSig().length <= 2">
+
+        <div class="assignees-scroll flex justify-evenly">
+            @for (user of visibleUsersSig(); track user.id) {
             <span class="assignee-chip">
                 <img [src]="user.avatar" class="avatar" />
                 <span class="name">{{ user.name }}</span>
             </span>
-        </ng-container>
+            }
 
-        <span class="assignee-chip more-chip" *ngIf="hiddenCountSig() > 0">
-            +{{ hiddenCountSig() }} more
-        </span>
+            @if (!expandedSig() && hiddenCountSig() > 0) {
+            <span class="assignee-chip more-chip" (click)="toggleExpanded()">
+                +{{ hiddenCountSig() }} more
+            </span>
+            }
+
+        </div>
     </div>
 </td>
 

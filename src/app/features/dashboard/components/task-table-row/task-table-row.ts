@@ -55,11 +55,17 @@ export class TaskTableRow implements AfterViewInit {
   private readonly IDEAL_CHIP_WIDTH = 90;
   private readonly MIN_CHIP_WIDTH = 65;
   private readonly MORE_CHIP_WIDTH = 60;
+  expandedSig = signal(false);
+
+  toggleExpanded() {
+    this.expandedSig.update(v => !v);
+  }
 
   visibleUsersSig = computed(() => {
     const users = this.assignedUsersSig();
     const totalWidth = this.containerWidthSig();
 
+    if (this.expandedSig()) return users;
     if (!totalWidth || !users.length) return [];
 
     let usedWidth = 0;
@@ -73,24 +79,20 @@ export class TaskTableRow implements AfterViewInit {
       const reservedForMore = needMoreChip ? this.MORE_CHIP_WIDTH : 0;
       const available = spaceLeft - reservedForMore;
 
-      // If ideal fits → great
       if (available >= this.IDEAL_CHIP_WIDTH) {
         visible.push(users[i]);
         usedWidth += this.IDEAL_CHIP_WIDTH;
-      }
-      // If ideal doesn't fit but minimum does → allow truncated chip
-      else if (available >= this.MIN_CHIP_WIDTH) {
+      } else if (available >= this.MIN_CHIP_WIDTH) {
         visible.push(users[i]);
         usedWidth += this.MIN_CHIP_WIDTH;
-      }
-      // Otherwise stop
-      else {
+      } else {
         break;
       }
     }
 
     return visible;
   });
+
 
   hiddenCountSig = computed(() =>
     this.assignedUsersSig().length - this.visibleUsersSig().length

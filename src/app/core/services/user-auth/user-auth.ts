@@ -8,6 +8,7 @@ import { UserModel } from '@core/models/UserModel';
 import { TokenService } from '@core/services/token-service/token-service';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { environment } from '@environments/environment';
 
 interface LoginResponse {
   token: string;
@@ -22,7 +23,7 @@ interface RegisterResponse {
 @Injectable({ providedIn: 'root' })
 export class UserAuth {
 
-  private apiUrl = 'http://localhost:3080/api/auth';
+  private apiUrl = environment.API_URL + "/auth";
 
 
   private authInitializedSubject = new BehaviorSubject<boolean>(false);

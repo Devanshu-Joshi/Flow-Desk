@@ -2,11 +2,12 @@ import { Injectable, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Task, TaskView } from '@core/models/Task';
 import { UserAuth } from '@core/services/user-auth/user-auth';
+import { environment } from '@environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class TaskService {
 
-  private readonly API_URL = 'http://localhost:3080/api/tasks';
+  private readonly API_URL = environment.API_URL + '/tasks';
 
   readonly tasks = signal<Task[]>([]);
   readonly loading = signal<boolean>(false);
