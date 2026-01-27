@@ -189,33 +189,6 @@ body {
     @apply text-sm;
 }
 
-.ng-select .ng-select-container {
-    @apply bg-white border border-gray-200 rounded-lg shadow-sm min-h-[36px];
-}
-
-/* Selected value */
-.ng-select .ng-value {
-    @apply font-semibold;
-}
-
-/* Dropdown panel */
-.ng-dropdown-panel {
-    @apply bg-white border border-gray-200 rounded-lg shadow-lg mt-1;
-}
-
-/* Options */
-.ng-option {
-    @apply px-4 py-2 cursor-pointer transition;
-}
-
-.ng-option:hover {
-    @apply bg-indigo-50;
-}
-
-.ng-option-selected {
-    @apply font-semibold bg-indigo-50;
-}
-
 /*** Custom Scrollbar ***/
 
 /* Chrome, Edge, Safari – Premium Glass Scrollbar (Black Background) */

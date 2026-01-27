@@ -15,10 +15,10 @@
     <span
         class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
         [ngClass]="{
-      'bg-green-50 text-green-600': task.status === 'COMPLETED',
-      'bg-blue-50 text-yellow-600': task.status === 'IN_PROGRESS',
-      'bg-red-50 text-red-600': task.status === 'INCOMPLETE'
-    }">
+          'bg-green-50 text-green-600': task.status === 'COMPLETED',
+          'bg-blue-50 text-yellow-600': task.status === 'IN_PROGRESS',
+          'bg-red-50 text-red-600': task.status === 'INCOMPLETE'
+        }">
         {{ task.status }}
     </span>
 </td>
@@ -28,40 +28,22 @@
     {{ task.dueDate | date: 'dd/MM/yyyy' }}
 </td>
 
-<!-- ✅ Assigned Users (READ-ONLY) -->
+<!-- ✅ Assigned Users (Signal Version) -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
-    <ng-select [items]="assignedUsers" [ngModel]="assignedUsers" [multiple]="true" bindLabel="name" [searchable]="false"
-        [clearable]="false" [closeOnSelect]="false" [readonly]="true" class="modern-ng-select w-full">
-        <!-- Selected value (collapsed, single row) -->
-        <ng-template ng-multi-label-tmp let-items="items">
-            <div class="flex items-center gap-1.5 overflow-hidden whitespace-nowrap">
-                <ng-container *ngFor="let user of items; let last = last">
-                    <div class="flex items-center gap-1 shrink-0">
-                        <img [src]="user.avatar" class="w-5 h-5 rounded-full" />
-                        <span class="text-xs font-medium text-gray-800">
-                            {{ user.name }}
-                        </span>
-                        <span *ngIf="!last" class="text-gray-400">,</span>
-                    </div>
-                </ng-container>
-            </div>
-        </ng-template>
+    <div #assigneeContainer class="assignees-container flex justify-evenly bordered"
+        [class.few-users]="assignedUsersSig().length <= 2"
+        [attr.title]="hiddenCountSig() > 0 ? getUsersTooltip(assignedUsersSig()) : null">
+        <ng-container *ngFor="let user of visibleUsersSig()">
+            <span class="assignee-chip">
+                <img [src]="user.avatar" class="avatar" />
+                <span class="name">{{ user.name }}</span>
+            </span>
+        </ng-container>
 
-        <!-- Dropdown items -->
-        <ng-template ng-option-tmp let-item="item">
-            <div class="flex items-center gap-2 py-1.5">
-                <img [src]="item.avatar" class="w-6 h-6 rounded-full" />
-                <div class="flex flex-col">
-                    <span class="text-sm font-medium text-gray-800">
-                        {{ item.name }}
-                    </span>
-                    <span class="text-xs text-gray-500">
-                        {{ item.email }}
-                    </span>
-                </div>
-            </div>
-        </ng-template>
-    </ng-select>
+        <span class="assignee-chip more-chip" *ngIf="hiddenCountSig() > 0">
+            +{{ hiddenCountSig() }} more
+        </span>
+    </div>
 </td>
 
 <!-- Actions -->

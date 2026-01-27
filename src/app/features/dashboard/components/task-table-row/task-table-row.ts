@@ -1,21 +1,29 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+  signal,
+  computed
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskView } from '@core/models/Task';
 import { UserModel } from '@core/models/UserModel';
-import { NgSelectComponent } from '@ng-select/ng-select';
-import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'tr[app-task-table-row]',
   standalone: true,
-  imports: [CommonModule, NgSelectComponent, FormsModule],
+  imports: [CommonModule],
   templateUrl: './task-table-row.html',
   styleUrl: './task-table-row.css',
   host: {
     class: 'hover:bg-gray-50 transition'
   }
 })
-export class TaskTableRow {
+export class TaskTableRow implements AfterViewInit {
 
   /* -------------------------------------------------------------------------- */
   /*                                   Inputs                                   */
@@ -23,11 +31,70 @@ export class TaskTableRow {
 
   @Input({ required: true }) task!: TaskView;
 
-  // ✅ Assigned users for THIS task (read-only display)
-  @Input({ required: true }) assignedUsers!: UserModel[];
+  @Input({ required: true })
+  set assignedUsers(value: UserModel[]) {
+    this.assignedUsersSig.set(value || []);
+  }
 
-  // Optional: only keep if you really use it
   @Input() displayIndex?: number;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  ViewChild                                 */
+  /* -------------------------------------------------------------------------- */
+
+  @ViewChild('assigneeContainer') container!: ElementRef<HTMLDivElement>;
+
+  /* -------------------------------------------------------------------------- */
+  /*                                   Signals                                  */
+  /* -------------------------------------------------------------------------- */
+
+  assignedUsersSig = signal<UserModel[]>([]);
+  private containerWidthSig = signal<number>(0);
+
+  /* Smart width rules */
+  private readonly IDEAL_CHIP_WIDTH = 90;
+  private readonly MIN_CHIP_WIDTH = 65;
+  private readonly MORE_CHIP_WIDTH = 60;
+
+  visibleUsersSig = computed(() => {
+    const users = this.assignedUsersSig();
+    const totalWidth = this.containerWidthSig();
+
+    if (!totalWidth || !users.length) return [];
+
+    let usedWidth = 0;
+    const visible: UserModel[] = [];
+
+    for (let i = 0; i < users.length; i++) {
+      const remainingUsers = users.length - (i + 1);
+      const needMoreChip = remainingUsers > 0;
+
+      const spaceLeft = totalWidth - usedWidth;
+      const reservedForMore = needMoreChip ? this.MORE_CHIP_WIDTH : 0;
+      const available = spaceLeft - reservedForMore;
+
+      // If ideal fits → great
+      if (available >= this.IDEAL_CHIP_WIDTH) {
+        visible.push(users[i]);
+        usedWidth += this.IDEAL_CHIP_WIDTH;
+      }
+      // If ideal doesn't fit but minimum does → allow truncated chip
+      else if (available >= this.MIN_CHIP_WIDTH) {
+        visible.push(users[i]);
+        usedWidth += this.MIN_CHIP_WIDTH;
+      }
+      // Otherwise stop
+      else {
+        break;
+      }
+    }
+
+    return visible;
+  });
+
+  hiddenCountSig = computed(() =>
+    this.assignedUsersSig().length - this.visibleUsersSig().length
+  );
 
   /* -------------------------------------------------------------------------- */
   /*                                   Outputs                                  */
@@ -35,4 +102,30 @@ export class TaskTableRow {
 
   @Output() edit = new EventEmitter<TaskView>();
   @Output() delete = new EventEmitter<TaskView>();
+
+  /* -------------------------------------------------------------------------- */
+  /*                              Lifecycle Logic                               */
+  /* -------------------------------------------------------------------------- */
+
+  ngAfterViewInit() {
+    setTimeout(() => this.updateWidth());
+
+    window.addEventListener('resize', () => this.updateWidth());
+  }
+
+  private updateWidth() {
+    if (!this.container) return;
+    const width = this.container.nativeElement.offsetWidth;
+    if (width > 0) {
+      this.containerWidthSig.set(width);
+    }
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /*                                  Helpers                                   */
+  /* -------------------------------------------------------------------------- */
+
+  getUsersTooltip(users: UserModel[]): string {
+    return users?.map(u => u.name).join(', ') || '';
+  }
 }

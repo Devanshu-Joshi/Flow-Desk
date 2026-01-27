@@ -1,52 +1,105 @@
-.modern-ng-select ::ng-deep .ng-select-container {
-    min-height: 34px;
-    padding: 0 10px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    background-color: #fafafa;
-    transition: all 0.15s ease;
-    cursor: pointer;
-}
-
-.modern-ng-select ::ng-deep .ng-select-container:hover {
-    border-color: #d1d5db;
-    background-color: #ffffff;
-}
-
-.modern-ng-select ::ng-deep .ng-value-container {
-    padding: 0;
+.assignees-container {
+    display: flex;
+    align-items: center;
     gap: 6px;
+
+    width: 100%;
+    max-width: 220px;
+    /* desktop cap */
     overflow: hidden;
-    white-space: nowrap;
 }
 
-/* Ellipsis behavior */
-.modern-ng-select ::ng-deep .ng-value-container>div {
+/* 📱 Smaller screens */
+@media (max-width: 640px) {
+    .assignees-container {
+        max-width: 160px;
+        gap: 4px;
+    }
+}
+
+.assignee-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    padding: 2px 6px;
+    background: #f3f4f6;
+    border-radius: 9999px;
+    font-size: 12px;
+
+    /* 👇 IMPORTANT */
+    flex: 0 1 auto;
+    /* allow shrinking */
+    min-width: 65px;
+    /* matches TS MIN_CHIP_WIDTH */
+    max-width: 90px;
+    /* matches TS IDEAL_CHIP_WIDTH */
+    overflow: hidden;
+    /* ensures content stays inside */
+}
+
+/* 📱 smaller chips on mobile */
+@media (max-width: 640px) {
+    .assignee-chip {
+        max-width: 70px;
+        font-size: 11px;
+        padding: 2px 5px;
+    }
+}
+
+.avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* 🔥 THE IMPORTANT PART */
+.name {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    min-width: 0;
+    /* REQUIRED inside flex */
 }
 
-/* Dropdown panel */
-.modern-ng-select ::ng-deep .ng-dropdown-panel {
-    border-radius: 12px;
+/* ✨ WHEN USERS ARE FEW → remove limits */
+.assignees-container.few-users .assignee-chip {
+    max-width: none;
+}
+
+.assignees-container.few-users .name {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.more-chip {
+    background: #e5e7eb;
+    font-weight: 600;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 60px;
+    /* 🔥 fixed width (match TS) */
+    min-width: 60px;
+    max-width: 60px;
+
+    padding: 2px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    flex-shrink: 0;
+    /* never shrink */
+}
+
+/* Container field look */
+.bordered {
     border: 1px solid #e5e7eb;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
-}
-
-/* Dropdown items */
-.modern-ng-select ::ng-deep .ng-option {
-    padding: 6px 10px;
     border-radius: 8px;
-    margin: 2px 6px;
-}
-
-.modern-ng-select ::ng-deep .ng-option:hover {
-    background-color: #f3f4f6;
-}
-
-/* Remove clear & remove icons */
-.modern-ng-select ::ng-deep .ng-clear,
-.modern-ng-select ::ng-deep .ng-value-icon {
-    display: none;
+    padding: 4px 6px;
+    background: #ffffff;
+    min-height: 32px;
 }
