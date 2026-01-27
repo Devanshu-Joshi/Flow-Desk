@@ -189,6 +189,59 @@ body {
     @apply text-sm;
 }
 
+/* task - form ng select */
+.filter-select .ng-select-container {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    min-height: 44px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filter-select .ng-select-container:hover {
+    border-color: #9ca3af;
+}
+
+/* Selected value text */
+.filter-select .ng-value {
+    font-weight: 600;
+    color: #374151;
+}
+
+/* Arrow alignment fix */
+.filter-select .ng-arrow-wrapper {
+    padding-right: 6px;
+}
+
+/* Dropdown panel */
+.filter-select {
+    background: #ffffff;
+    border-radius: 0.5rem;
+    margin-top: 4px;
+    /* box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12); */
+}
+
+/* Dropdown options */
+.filter-select .ng-option {
+    padding: 8px 12px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+/* Hover state */
+.filter-select .ng-option:hover {
+    background: #eef2ff;
+}
+
+/* Selected option */
+.filter-select .ng-option-selected {
+    font-weight: 600;
+    background: #eef2ff;
+}
+
 /*** Custom Scrollbar ***/
 
 /* Chrome, Edge, Safari – Premium Glass Scrollbar (Black Background) */

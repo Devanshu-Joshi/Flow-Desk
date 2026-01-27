@@ -15,7 +15,7 @@
     </div>
 
     <!-- SCROLLABLE FORM CONTENT -->
-    <div class="flex-1 overflow-y-auto px-5 sm:px-8">
+    <div class="flex-1 overflow-y-auto px-5 sm:px-8 main-container">
         <form [formGroup]="form" (ngSubmit)="submitForm.emit()" class="pb-6">
 
             <!-- TITLE -->
@@ -72,7 +72,7 @@
 
                 <ng-select formControlName="assignedTo" [items]="users$ | async" bindLabel="name" bindValue="id"
                     [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
-                    appendTo="body" dropdownPosition="auto">
+                    class="filter-select" appendTo="body">
                 </ng-select>
             </div>
 

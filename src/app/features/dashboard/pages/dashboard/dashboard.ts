@@ -294,7 +294,8 @@ export class Dashboard implements OnInit {
     this.taskForm.patchValue({
       title: task.title,
       dueDate: task.dueDate,
-      status: task.status
+      status: task.status,
+      assignedTo: task.assignedTo
     });
     this.dialogDescription = signal('Edit task details below');
     this.dialogTitleColor.set('text-warn');
