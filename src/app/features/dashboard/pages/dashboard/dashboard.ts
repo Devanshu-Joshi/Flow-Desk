@@ -48,6 +48,8 @@ export class Dashboard implements OnInit {
     this.p = 1;
 
     this.clearExpandedTrigger.update(v => (v % 2) + 1);
+
+    this.selectedAssignedUser.set(null);
   }
 
   isDialogClosed: boolean = true;
@@ -94,6 +96,7 @@ export class Dashboard implements OnInit {
   isLoading = computed(() => this.taskService.loading());
   users = signal<UserModel[]>([]);
   users$!: Observable<UserModel[]>;
+  selectedAssignedUser = signal<string | null>(null);
 
   constructor(public taskService: TaskService, private toastr: ToastrService, private userService: UserService) {
     this.tasks = this.taskService.tasksView;
@@ -189,6 +192,7 @@ export class Dashboard implements OnInit {
     const range = this.dateRange();
     const sortField = this.sortField();
     const sortDirection = this.sortDirection();
+    const assignedUser = this.selectedAssignedUser();
 
     const filtered = this.tasks().filter(task => {
 
@@ -197,6 +201,9 @@ export class Dashboard implements OnInit {
 
       const matchesStatus =
         !status || task.status === status;
+
+      const matchesAssignedUsers =
+        !assignedUser || task.assignedTo.includes(assignedUser);
 
       let matchesDate = true;
 
@@ -210,7 +217,7 @@ export class Dashboard implements OnInit {
           taskDate <= endDate;
       }
 
-      return matchesSearch && matchesStatus && matchesDate;
+      return matchesSearch && matchesStatus && matchesDate && matchesAssignedUsers;
     });
 
     return filtered.sort((a, b) => {

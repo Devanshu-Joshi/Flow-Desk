@@ -10,27 +10,11 @@
         </div>
 
         <div class="min-w-33.75">
-            <ng-select class="user-select filter-select w-full" [items]="assignedUserOptions()" bindLabel="label"
-                bindValue="value" [(ngModel)]="selectedAssignedUsers" [clearable]="false" [searchable]="false"
-                [closeOnSelect]="true">
+            <ng-select class="user-select filter-select w-full" [items]="assignedUserOptions()" [clearable]="false"
+                bindLabel="name" bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false"
+                [closeOnSelect]="true" [clearable]="true">
                 <ng-template ng-placeholder-tmp #placeholder>
                     <span class="text-gray-700 font-semibold whitespace-nowrap">Users</span>
-                </ng-template>
-
-                <ng-template ng-label-tmp let-item="item">
-                    @if (item !== null) {
-                    <span class="whitespace-nowrap">
-                        {{ item.name }}
-                    </span>
-                    } @else {
-                    <ng-template [ngTemplateOutlet]="placeholder"></ng-template>
-                    }
-                </ng-template>
-
-                <ng-template ng-option-tmp let-item="item">
-                    <span class="whitespace-nowrap">
-                        {{ item.name }}
-                    </span>
                 </ng-template>
             </ng-select>
         </div>

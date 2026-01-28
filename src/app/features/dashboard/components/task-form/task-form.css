@@ -277,7 +277,6 @@
 /* Dropdown panel */
 .filter-select ::ng-deep .ng-dropdown-panel {
     background: #ffffff;
-    border: 1px solid #e5e7eb;
     border-radius: 0.5rem;
     margin-top: 4px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);

@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef } from '@angular/core';
+import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -16,6 +16,7 @@ import { UserModel } from '@core/models/UserModel';
   styleUrl: './task-filters.css',
 })
 export class TaskFilters {
+
   // Inputs from Parent (Static data)
   statusOptions = input.required<any[]>();
   pageSizeOptions = input.required<readonly (number | string)[]>();
@@ -29,7 +30,7 @@ export class TaskFilters {
   dateRange = model<{ startDate: any; endDate: any } | null>(null);
   selectedStatus = model<string | null>(null);
   selectedPageSize = model<number | 'All'>(5);
-  selectedAssignedUsers = model<UserModel | null>(null);
+  selectedAssignedUser = model<string | null>(null);
 
   // Outputs (Events)
   @Output() addTask = new EventEmitter<void>();
