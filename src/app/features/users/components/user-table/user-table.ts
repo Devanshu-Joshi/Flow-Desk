@@ -211,6 +211,21 @@ export class UserTable {
       : []);
   }
 
+  clearFilters(): void {
+    // Clear search box
+    this.searchControl.setValue('');
+
+    // Reset date range (show all dates)
+    this.dateRange.set(null);
+
+    // Reset tasks per page to default (5)
+    this.selectedPageSize.set(5);
+    this.itemsPerPage = 5;
+
+    // Reset pagination to first page
+    this.p = 1;
+  }
+
   onSelectionChange(): void {
     this.selectedPermissions.set(this.selectedPermissions().filter(k =>
       this.allPermissionKeys.includes(k)
