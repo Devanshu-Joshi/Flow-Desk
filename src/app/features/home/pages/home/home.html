@@ -1,0 +1,186 @@
+<section class="relative overflow-hidden bg-linear-to-br from-purple-50 via-white to-indigo-50 py-24 px-6">
+
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center">
+
+        <!-- Left -->
+        <div>
+            <h1 class="text-5xl md:text-6xl font-extrabold leading-tight tracking-tight">
+                Organize Work.
+                <span
+                    class="bg-linear-to-r from-purple-600 via-fuchsia-600 to-indigo-600 bg-clip-text text-transparent">
+                    Empower Teams.
+                </span>
+            </h1>
+
+            <p class="mt-6 text-lg text-gray-600 leading-relaxed">
+                TaskFlow helps you manage tasks, users, and permissions in one powerful platform.
+                Assign work, control access, and keep your team aligned.
+            </p>
+
+            <div class="mt-8 flex gap-4">
+                <a routerLink="/login"
+                    class="px-6 py-3 rounded-xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-semibold shadow-lg shadow-purple-500/30 hover:scale-105 transition">
+                    Get Started
+                </a>
+
+                <a routerLink="/tasks"
+                    class="px-6 py-3 rounded-xl bg-white border border-purple-200 text-purple-700 font-semibold hover:bg-purple-50 transition">
+                    View Tasks
+                </a>
+            </div>
+        </div>
+
+        <!-- Right (UI Mock Card) -->
+        <div class="bg-white rounded-3xl shadow-[0_20px_50px_rgba(168,85,247,0.25)] 
+            p-6 border border-purple-100">
+
+            <!-- Card Header -->
+            <div class="mb-4">
+                <h3 class="font-bold text-lg text-purple-700">
+                    Tasks are waiting for you 👋
+                </h3>
+                <p class="text-sm text-gray-500">
+                    Click now and manage your tasks
+                </p>
+            </div>
+
+            <!-- Fake Table -->
+            <div class="overflow-hidden rounded-xl border border-gray-100">
+
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-purple-50 text-purple-700">
+                        <tr>
+                            <th class="px-4 py-3 font-semibold">Task</th>
+                            <th class="px-4 py-3 font-semibold">Assigned To</th>
+                            <th class="px-4 py-3 font-semibold">Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="divide-y divide-gray-100">
+
+                        <tr class="hover:bg-purple-50/40 transition">
+                            <td class="px-4 py-3 font-medium">Design Dashboard UI</td>
+                            <td class="px-4 py-3 text-gray-600">Alice Johnson</td>
+                            <td class="px-4 py-3">
+                                <span
+                                    class="px-2 py-1 text-xs rounded-full bg-yellow-100 text-yellow-700 font-semibold">
+                                    In Progress
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-purple-50/40 transition">
+                            <td class="px-4 py-3 font-medium">Setup Role Permissions</td>
+                            <td class="px-4 py-3 text-gray-600">Michael Lee</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 text-xs rounded-full bg-red-100 text-red-700 font-semibold">
+                                    Incomplete
+                                </span>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-purple-50/40 transition">
+                            <td class="px-4 py-3 font-medium">Fix Login Bug</td>
+                            <td class="px-4 py-3 text-gray-600">Sarah Kim</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 text-xs rounded-full bg-green-100 text-green-700 font-semibold">
+                                    Completed
+                                </span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+
+            </div>
+
+            <!-- Fake CTA button -->
+            <div class="mt-5">
+                <a routerLink="/dashboard"
+                    class="w-full text-center py-2 rounded-lg bg-linear-to-r from-purple-500 to-indigo-500 text-white font-semibold pl-3 pr-3">
+                    Go to Dashboard →
+                </a>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-white">
+    <div class="max-w-6xl mx-auto text-center">
+        <h2 class="text-4xl font-bold">Everything you need to manage work</h2>
+        <p class="mt-4 text-gray-600">Built for teams, managers, and admins.</p>
+
+        <div class="mt-16 grid md:grid-cols-3 gap-8">
+
+            <div class="p-8 rounded-2xl bg-purple-50 border border-purple-100 hover:shadow-lg transition">
+                <div class="text-3xl">📋</div>
+                <h3 class="mt-4 font-bold text-lg">Task Management</h3>
+                <p class="mt-2 text-gray-600 text-sm">
+                    Create, assign, track and update tasks with full visibility.
+                </p>
+            </div>
+
+            <div class="p-8 rounded-2xl bg-indigo-50 border border-indigo-100 hover:shadow-lg transition">
+                <div class="text-3xl">👥</div>
+                <h3 class="mt-4 font-bold text-lg">User Control</h3>
+                <p class="mt-2 text-gray-600 text-sm">
+                    Manage team members, roles, and access levels easily.
+                </p>
+            </div>
+
+            <div class="p-8 rounded-2xl bg-fuchsia-50 border border-fuchsia-100 hover:shadow-lg transition">
+                <div class="text-3xl">🔐</div>
+                <h3 class="mt-4 font-bold text-lg">Permissions System</h3>
+                <p class="mt-2 text-gray-600 text-sm">
+                    Fine-grained permissions for secure and structured workflows.
+                </p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 bg-linear-to-br from-purple-50 to-indigo-50">
+    <div class="max-w-5xl mx-auto text-center">
+        <h2 class="text-4xl font-bold">How TaskFlow Works</h2>
+
+        <div class="mt-16 grid md:grid-cols-3 gap-10 text-left">
+
+            <div>
+                <div class="text-purple-600 text-xl font-bold">01</div>
+                <h4 class="mt-2 font-bold">Create Users</h4>
+                <p class="mt-2 text-gray-600 text-sm">Add team members and define their roles.</p>
+            </div>
+
+            <div>
+                <div class="text-purple-600 text-xl font-bold">02</div>
+                <h4 class="mt-2 font-bold">Assign Tasks</h4>
+                <p class="mt-2 text-gray-600 text-sm">Distribute work based on responsibility.</p>
+            </div>
+
+            <div>
+                <div class="text-purple-600 text-xl font-bold">03</div>
+                <h4 class="mt-2 font-bold">Control Access</h4>
+                <p class="mt-2 text-gray-600 text-sm">Permissions ensure users only see what they should.</p>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section class="py-24 px-6 text-center bg-white">
+    <h2 class="text-4xl font-extrabold">
+        Ready to streamline your workflow?
+    </h2>
+
+    <p class="mt-4 text-gray-600">
+        Start managing tasks and teams the smart way.
+    </p>
+
+    <a routerLink="/login"
+        class="mt-8 inline-block px-8 py-4 rounded-2xl bg-linear-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-xl shadow-purple-500/30 hover:scale-105 transition">
+        Start Using TaskFlow
+    </a>
+</section>

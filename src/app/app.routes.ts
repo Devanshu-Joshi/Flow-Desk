@@ -4,8 +4,15 @@ import { Signup } from '@features/auth/pages/signup/signup';
 import { Dashboard } from '@features/dashboard/pages/dashboard/dashboard';
 import { authGuard } from '@core/guards/auth-guard';
 import { User } from '@features/users/pages/user/user';
+import { Home } from '@features/home/pages/home/home';
 
 export const routes: Routes = [
+    {
+        path: '',
+        component: Home,
+        canActivate: [authGuard],
+        data: { guestOnly: true }
+    },
     {
         path: 'login',
         component: Login,
