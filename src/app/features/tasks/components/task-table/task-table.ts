@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 import { TaskView } from '@core/models/Task';
-import { TaskTableRow } from '@features/dashboard/components/task-table-row/task-table-row';
+import { TaskTableRow } from '@features/tasks/components/task-table-row/task-table-row';
 import { EmptyState } from '@shared/components/empty-state/empty-state';
 import { TaskTableFooter } from '../task-table-footer/task-table-footer';
 import { UserService } from '@core/services/user/user.service';

@@ -11,11 +11,11 @@ import { FormsModule } from '@angular/forms';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ToastrService } from 'ngx-toastr';
 import { NgSelectModule } from '@ng-select/ng-select';
-import { StatsCard } from '@features/dashboard/components/stats-card/stats-card';
-import { TaskFilters } from '@features/dashboard/components/task-filters/task-filters';
-import { TaskTable } from '@features/dashboard/components/task-table/task-table';
-import { TaskDialog } from '@features/dashboard/components/task-dialog/task-dialog';
-import { TaskForm } from '@features/dashboard/components/task-form/task-form';
+import { StatsCard } from '@features/tasks/components/stats-card/stats-card';
+import { TaskFilters } from '@features/tasks/components/task-filters/task-filters';
+import { TaskTable } from '@features/tasks/components/task-table/task-table';
+import { TaskDialog } from '@features/tasks/components/task-dialog/task-dialog';
+import { TaskForm } from '@features/tasks/components/task-form/task-form';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 import { UserService } from '@core/services/user/user.service';
 import { UserModel } from '@core/models/UserModel';
@@ -23,12 +23,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 @Component({
-  selector: 'app-dashboard',
+  selector: 'app-tasks',
   imports: [ReactiveFormsModule, CommonModule, NgxDaterangepickerMd, FormsModule, NgxPaginationModule, NgSelectModule, StatsCard, TaskFilters, TaskTable, TaskDialog, TaskForm, LoadingOverlay],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+  templateUrl: './tasks.html',
+  styleUrl: './tasks.css',
 })
-export class Dashboard implements OnInit {
+export class Tasks implements OnInit {
   clearExpandedTrigger = signal(0);
   clearFilters(): void {
     // Clear search box

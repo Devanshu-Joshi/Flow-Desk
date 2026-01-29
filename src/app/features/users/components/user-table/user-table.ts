@@ -20,7 +20,7 @@ import {
 import { FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { TaskStatus } from '@features/dashboard/pages/dashboard/dashboard';
+import { TaskStatus } from '@features/tasks/pages/tasks/tasks';
 import { PermissionItem } from '@core/models/PermissionItem';
 
 import dayjs from 'dayjs';
