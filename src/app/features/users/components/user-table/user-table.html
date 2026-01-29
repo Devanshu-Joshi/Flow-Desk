@@ -55,9 +55,11 @@
             <div class="w-full sm:col-span-2 lg:w-[18rem]">
                 <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                     [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
-                    [linkedCalendars]="true" placeholder="Filter by date range"
-                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11"
-                    (click)="toggleDatePicker()" />
+                    [linkedCalendars]="true" placeholder="Date range"
+                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
+                    (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate 
+  ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
+  : ''" />
             </div>
 
             <!-- Page Size Select (fixed width; fits label well) -->
