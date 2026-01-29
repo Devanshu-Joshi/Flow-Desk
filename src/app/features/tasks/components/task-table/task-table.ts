@@ -8,7 +8,6 @@ import {
   SimpleChanges
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NgxPaginationModule } from 'ngx-pagination';
 
 import { TaskView } from '@core/models/Task';
 import { TaskTableRow } from '@features/tasks/components/task-table-row/task-table-row';
@@ -22,7 +21,6 @@ import { UserModel } from '@core/models/UserModel';
   standalone: true,
   imports: [
     CommonModule,
-    NgxPaginationModule,
     TaskTableRow,
     EmptyState,
     TaskTableFooter
@@ -62,6 +60,17 @@ export class TaskTable implements OnInit, OnChanges {
   /** Map: taskId -> assigned users */
   taskAssignedUsersMap = new Map<string, UserModel[]>();
 
+  totalPages = 1;
+  pagedTasks: TaskView[] = [];
+
+  private updatePagedTasks(): void {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+
+    this.totalPages = Math.ceil(this.tasks.length / this.itemsPerPage) || 1;
+    this.pagedTasks = this.tasks.slice(start, end);
+  }
+
   constructor(private userService: UserService) { }
 
   /* -------------------------------------------------------------------------- */
@@ -73,8 +82,16 @@ export class TaskTable implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['tasks'] && this.users.length) {
-      this.mapAllTasksAssignedUsers();
+
+    if (changes['tasks']) {
+      if (this.users.length) {
+        this.mapAllTasksAssignedUsers();
+      }
+      this.updatePagedTasks();
+    }
+
+    if (changes['currentPage'] || changes['itemsPerPage']) {
+      this.updatePagedTasks();
     }
   }
 
@@ -87,6 +104,7 @@ export class TaskTable implements OnInit, OnChanges {
       next: (users) => {
         this.users = users;
         this.mapAllTasksAssignedUsers();
+        this.updatePagedTasks();
       },
       error: (err) => console.error('Failed to load users', err)
     });
@@ -119,6 +137,8 @@ export class TaskTable implements OnInit, OnChanges {
   }
 
   onPageChange(page: number): void {
+    this.currentPage = page;
+    this.updatePagedTasks();
     this.pageChange.emit(page);
   }
 
@@ -129,4 +149,5 @@ export class TaskTable implements OnInit, OnChanges {
   onSortBy(field: 'title' | 'createdAt'): void {
     this.sortByChange.emit(field);
   }
+
 }

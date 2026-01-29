@@ -26,14 +26,17 @@
                 [searchControl]="searchControl" [(dateRange)]="dateRange" [(selectedStatus)]="selectedStatus"
                 [(selectedPageSize)]="selectedPageSize" (pageSizeChangeTrigger)="setItemsPerPage($event)"
                 (addTask)="toggleDialog()" [assignedUserOptions]="users()"
-                [(selectedAssignedUser)]="selectedAssignedUser">
+                [(selectedAssignedUser)]="selectedAssignedUser" (UISwitchedTrigger)="isUISwitched.set($event)">
             </app-task-filters>
-
+            @if(isUISwitched() == false) {
             <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
                 [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
                 (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
                 (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()">
             </app-task-table>
+            } @else {
+            <app-drag-drop-example></app-drag-drop-example>
+            }
         </div>
 
         <app-task-dialog [open]="isDialogClosed == false" (close)="toggleDialog()">

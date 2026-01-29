@@ -65,11 +65,8 @@
 
             <!-- ============================== BODY ============================== -->
             <tbody class="divide-y divide-gray-200">
-                @for (
-                item of tasks | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage };
-                let index = $index;
-                track item.id
-                ) {
+                @for (item of pagedTasks; let index = $index; track item.id)
+                {
 
                 <tr app-task-table-row [task]="item" [assignedUsers]="taskAssignedUsersMap.get(item.id) || []"
                     [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1" (edit)="onEdit($event)"
@@ -89,8 +86,8 @@
     </div>
 
     <!-- ============================== FOOTER ============================== -->
-    <app-task-table-footer [total]="tasks.length" [itemsPerPage]="itemsPerPage" (clearFilters)="onClearFilters()"
-        (pageChange)="onPageChange($event)">
+    <app-task-table-footer [total]="tasks.length" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
+        [totalPages]="totalPages" (clearFilters)="onClearFilters()" (pageChange)="onPageChange($event)">
     </app-task-table-footer>
 
 </div>

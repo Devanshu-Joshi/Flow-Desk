@@ -275,3 +275,22 @@ body {
             rgba(255, 255, 255, 0.719),
             rgba(255, 255, 255, 0.726));
 }
+
+/* Drag Drop */
+
+tr[cdkdrag] {
+    display: table-row;
+}
+
+.cdk-drag-preview {
+    display: table;
+}
+
+.cdk-drag-placeholder {
+    opacity: 0.3;
+}
+
+.cdk-drag-handle {
+    display: inline-flex !important;
+    visibility: visible !important;
+}

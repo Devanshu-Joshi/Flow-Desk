@@ -94,4 +94,33 @@
             Add Task
         </button>
     </div>
+
+    <!-- View Mode Switch -->
+    <label class="relative inline-flex items-center cursor-pointer select-none">
+
+        <!-- Checkbox -->
+        <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
+            (change)="isUISwitched.set($event.target.checked)" />
+
+        <!-- Track -->
+        <div class="w-20 h-11 bg-gray-200 rounded-xl peer-checked:bg-indigo-100
+      transition-colors duration-300 shadow-inner flex items-center px-1">
+
+            <div class="w-full flex justify-between px-2 text-gray-400">
+                <i class="bx bx-table text-lg"></i>
+                <i class="bx bx-columns-3 text-lg"></i>
+            </div>
+        </div>
+
+        <!-- Thumb (must be sibling of input) -->
+        <div class="absolute left-1 top-1 h-9 w-9 rounded-lg
+      bg-linear-to-r from-purple-600 to-indigo-600
+      shadow-md transition-all duration-300
+      peer-checked:translate-x-9 flex items-center justify-center text-white">
+
+            <i class="bx text-lg" [ngClass]="isUISwitched() ? 'bx-columns-3' : 'bx-table'"></i>
+        </div>
+
+    </label>
+
 </div>

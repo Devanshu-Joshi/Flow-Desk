@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect } from '@angular/core';
+import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';
@@ -17,6 +17,12 @@ import { UserModel } from '@core/models/UserModel';
 })
 export class TaskFilters {
 
+  constructor() {
+    effect(() => {
+      this.UISwitchedTrigger.emit(this.isUISwitched());
+    })
+  }
+
   // Inputs from Parent (Static data)
   statusOptions = input.required<any[]>();
   pageSizeOptions = input.required<readonly (number | string)[]>();
@@ -31,12 +37,15 @@ export class TaskFilters {
   selectedStatus = model<string | null>(null);
   selectedPageSize = model<number | 'All'>(5);
   selectedAssignedUser = model<string | null>(null);
+  isUISwitched = signal<boolean>(false);
 
   // Outputs (Events)
   @Output() addTask = new EventEmitter<void>();
 
   // We emit this specifically because the parent needs to reset page 'p' to 1 when size changes
   @Output() pageSizeChangeTrigger = new EventEmitter<number | 'All'>();
+
+  @Output() UISwitchedTrigger = new EventEmitter<boolean>();
 
   onPageSizeChange(value: number | 'All') {
     this.selectedPageSize.set(value); // Update the model
