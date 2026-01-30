@@ -97,7 +97,7 @@ export class TaskTable implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
 
     if (changes['tasks']) {
-      if (this.users.length) {
+      if (this.users().length) {
         this.mapAllTasksAssignedUsers();
       }
       this.updatePagedTasks();
