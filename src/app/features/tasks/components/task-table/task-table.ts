@@ -9,7 +9,8 @@ import {
   signal,
   computed,
   DestroyRef,
-  inject
+  inject,
+  input
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -36,7 +37,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   templateUrl: './task-table.html',
   styleUrl: './task-table.css'
 })
-export class TaskTable implements OnInit, OnChanges {
+export class TaskTable implements OnChanges {
 
   /* -------------------------------------------------------------------------- */
   /*                                   Inputs                                   */
@@ -64,9 +65,7 @@ export class TaskTable implements OnInit, OnChanges {
   /*                                    State                                   */
   /* -------------------------------------------------------------------------- */
 
-  users = signal<UserModel[]>([]);
-  users$!: Observable<UserModel[]>;
-  private destroyRef = inject(DestroyRef);
+  users = input.required<UserModel[]>();
 
   /** 🔥 Reactive Map: taskId -> assigned users */
   taskAssignedUsersMapSig = computed(() => {
@@ -102,13 +101,6 @@ export class TaskTable implements OnInit, OnChanges {
   /*                                  Lifecycle                                 */
   /* -------------------------------------------------------------------------- */
 
-  ngOnInit(): void {
-    this.users$ = this.userService.getUsersByParent(true);
-
-    this.users$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(users => this.users.set(users));
-  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['tasks']) {

@@ -20,7 +20,7 @@ export class UserService {
   private loaded = false;
 
   getUsersByParent(force = false, includeSelf = false): Observable<UserModel[]> {
-    if (!this.loaded || force) {
+    if (!this.loaded || force || includeSelf) {
       this.loaded = true;
       // this.userAuth.refreshCurrentUser();
 
