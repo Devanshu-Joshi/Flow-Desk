@@ -1,4 +1,4 @@
-import { computed, Injectable, signal } from '@angular/core';
+import { computed, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap, finalize, switchMap, shareReplay, catchError } from 'rxjs/operators';
@@ -112,8 +112,7 @@ export class UserAuth {
   }
 
   private handleForcedLogout() {
-    this.meRequest$ = undefined;
-    this.setCurrentUser(null);
+    this.clearAuth();
     this.router.navigate(['/login']);
     this.toastr.warning('Session expired. Please login again.', 'Unauthorized');
   }

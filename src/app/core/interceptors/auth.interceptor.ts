@@ -32,7 +32,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
                     tokenService.unAuthorizedAccess(true);
                 }
                 else {
-                    tokenService.unAuthorizedAccess();
+                    console.error(err);
                 }
             } else if (err.status === 403) {
                 const message = err.error?.message;
