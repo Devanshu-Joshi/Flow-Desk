@@ -7,6 +7,7 @@ import {
   OnChanges,
   SimpleChanges,
   signal,
+  computed,
   DestroyRef,
   inject
 } from '@angular/core';
@@ -67,8 +68,22 @@ export class TaskTable implements OnInit, OnChanges {
   users$!: Observable<UserModel[]>;
   private destroyRef = inject(DestroyRef);
 
-  /** Map: taskId -> assigned users */
-  taskAssignedUsersMap = new Map<string, UserModel[]>();
+  /** 🔥 Reactive Map: taskId -> assigned users */
+  taskAssignedUsersMapSig = computed(() => {
+    const users = this.users();
+    const userMap = new Map(users.map(u => [u.id, u]));
+    const map = new Map<string, UserModel[]>();
+
+    this.tasks.forEach(task => {
+      const assigned = task.assignedTo
+        .map(id => userMap.get(id))
+        .filter((u): u is UserModel => !!u);
+
+      map.set(task.id, assigned);
+    });
+
+    return map;
+  });
 
   totalPages = 1;
   pagedTasks: TaskView[] = [];
@@ -88,42 +103,21 @@ export class TaskTable implements OnInit, OnChanges {
   /* -------------------------------------------------------------------------- */
 
   ngOnInit(): void {
-    this.users$ = this.userService.getUsersByParent();
+    this.users$ = this.userService.getUsersByParent(true);
+
     this.users$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(users => this.users.set(users));
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['tasks']) {
-      if (this.users().length) {
-        this.mapAllTasksAssignedUsers();
-      }
-      this.updatePagedTasks();
+      this.updatePagedTasks(); // mapping auto-updates via signal
     }
 
     if (changes['currentPage'] || changes['itemsPerPage']) {
       this.updatePagedTasks();
     }
-  }
-
-  /* -------------------------------------------------------------------------- */
-  /*                                   Methods                                  */
-  /* -------------------------------------------------------------------------- */
-
-  private mapAllTasksAssignedUsers(): void {
-    this.taskAssignedUsersMap.clear();
-
-    const userMap = new Map(this.users().map(user => [user.id, user]));
-
-    this.tasks.forEach(task => {
-      const assignedUsers = task.assignedTo
-        .map(id => userMap.get(id))
-        .filter((u): u is UserModel => !!u);
-
-      this.taskAssignedUsersMap.set(task.id, assignedUsers);
-    });
   }
 
   /* -------------------------------------------------------------------------- */
@@ -153,24 +147,16 @@ export class TaskTable implements OnInit, OnChanges {
   }
 
   drop(event: CdkDragDrop<TaskView[]>) {
-
     if (event.previousIndex === event.currentIndex) return;
 
-    // Convert page index → global index
     const globalPrevIndex =
       (this.currentPage - 1) * this.itemsPerPage + event.previousIndex;
 
     const globalCurrIndex =
       (this.currentPage - 1) * this.itemsPerPage + event.currentIndex;
 
-    // Reorder MASTER array
     moveItemInArray(this.tasks, globalPrevIndex, globalCurrIndex);
-
-    // Rebuild current page
     this.updatePagedTasks();
-
-    // 🔥 Tell parent to persist new order
     this.reorderTasks.emit(this.tasks);
   }
-
 }
