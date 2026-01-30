@@ -6,8 +6,8 @@ import { Subject } from 'rxjs';
 })
 export class TokenService {
 
-  private tokenClearedSubject = new Subject<void>();
-  tokenCleared$ = this.tokenClearedSubject.asObservable();
+  private unAuthorizedAccessSubject = new Subject<void>();
+  unAuthorizedAccess$ = this.unAuthorizedAccessSubject.asObservable();
 
   getToken(): string | null {
     return localStorage.getItem('token');
@@ -17,9 +17,13 @@ export class TokenService {
     localStorage.setItem('token', token);
   }
 
-  clearToken(forced = false): void {
+  clearToken(): void {
     localStorage.removeItem('token');
+  }
+
+  unAuthorizedAccess(forced = false): void {
     if (forced)
-      this.tokenClearedSubject.next();
+      this.clearToken()
+    this.unAuthorizedAccessSubject.next();
   }
 }

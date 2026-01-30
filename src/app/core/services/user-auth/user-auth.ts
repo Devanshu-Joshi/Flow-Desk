@@ -40,8 +40,12 @@ export class UserAuth {
   constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private tokenService: TokenService) {
     this.initAuth();
 
-    this.tokenService.tokenCleared$.subscribe(() => {
-      this.handleForcedLogout();
+    this.tokenService.unAuthorizedAccess$.subscribe(() => {
+      const token = this.tokenService.getToken();
+      if (token == null)
+        this.handleForcedLogout();
+      else
+        this.reloadWithoutCache();
     });
   }
 
@@ -112,6 +116,20 @@ export class UserAuth {
     this.setCurrentUser(null);
     this.router.navigate(['/login']);
     this.toastr.warning('Session expired. Please login again.', 'Unauthorized');
+  }
+
+  reloadWithoutCache(): void {
+    localStorage.setItem('postReloadToast', JSON.stringify({
+      type: 'warn',
+      title: 'Unauthorized Access',
+      message: 'Sorry, You do not have permissions for that operation'
+    }));
+
+    const { origin, pathname, search } = window.location;
+    const separator = search ? '&' : '?';
+    const cacheBuster = `cb=${Date.now()}`;
+
+    window.location.href = `${origin}${pathname}${search}${separator}${cacheBuster}`;
   }
 
   private clearAuth() {

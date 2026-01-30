@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, model, input, ViewChild, ElementRef, effect, signal, computed } from '@angular/core';
+import { Component, EventEmitter, Input, Output, model, input, effect, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgSelectModule } from '@ng-select/ng-select';

@@ -20,14 +20,32 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
     return next(req).pipe(
         catchError(err => {
+
             if (err.status === 401) {
-                tokenService.clearToken(true);
-                router.navigate(['/login']);
-                // OR redirect:
-                // router.navigate(['/login']);
+
+                const message = err.error?.message;
+
+                console.error(message);
+
+                // Only logout if token is actually invalid
+                if (err.status === 401 && err.error?.code === 'AUTH_TOKEN_INVALID') {
+                    tokenService.unAuthorizedAccess(true);
+                }
+                else {
+                    tokenService.unAuthorizedAccess();
+                }
+            } else if (err.status === 403) {
+                const message = err.error?.message;
+                console.error(message);
+                if (err.status === 403 && err.error?.code === 'ACCESS_DENIED') {
+                    tokenService.unAuthorizedAccess();
+                } else {
+                    console.error(err);
+                }
             }
 
             return throwError(() => err);
         })
     );
+
 };
