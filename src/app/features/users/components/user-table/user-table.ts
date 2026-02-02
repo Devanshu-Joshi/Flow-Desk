@@ -35,6 +35,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Observable } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserAuth } from '@core/services/user-auth/user-auth';
+import { getPermissionLabel } from '@core/models/PERMISSION_LABELS';
 
 @Component({
   selector: 'app-user-table',
@@ -53,6 +54,8 @@ import { UserAuth } from '@core/services/user-auth/user-auth';
 export class UserTable {
 
   constructor(private userService: UserService, private toastr: ToastrService, private authService: UserAuth) { }
+
+  getPermissionLabel = getPermissionLabel;
 
   @Output() addUser = new EventEmitter<void>();
   @Output() viewUser = new EventEmitter<UserModel>();

@@ -154,7 +154,7 @@
                                 @if (user.permissions.length) {
                                 @for (perm of user.permissions; track perm) {
                                 <span class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700">
-                                    {{ perm }}
+                                    {{ getPermissionLabel(perm) }}
                                 </span>
                                 }
                                 } @else {
