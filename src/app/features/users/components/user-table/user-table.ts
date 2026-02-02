@@ -58,7 +58,7 @@ export class UserTable {
   constructor(private userService: UserService, private toastr: ToastrService, private authService: UserAuth) { }
 
   getPermissionLabel = getPermissionLabel;
-  isLoading = signal<boolean>(true);
+  isLoading = signal<boolean>(false);
 
   @Output() addUser = new EventEmitter<void>();
   @Output() viewUser = new EventEmitter<UserModel>();
@@ -85,7 +85,7 @@ export class UserTable {
   fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
   @Input() users$!: Observable<UserModel[] | null>;
-  users = signal<UserModel[]>([]);
+  users = signal<UserModel[] | null>(null);
 
   /* -------------------------------------------------------------------------- */
   /*                               Form Controls                                */
@@ -180,6 +180,7 @@ export class UserTable {
   /* -------------------------------------------------------------------------- */
 
   ngOnInit(): void {
+    this.isLoading.set(true);
     this.selectedPermissions.set(this.permissions.map(p => p.key));
 
     this.searchControl.valueChanges.subscribe(value => {
@@ -204,6 +205,7 @@ export class UserTable {
           : users;
 
         this.users.set(filteredUsers);
+        // console.log(this.users(), this.isLoading());
         this.isLoading.set(false);
 
         // console.log('Loaded users:', filteredUsers);

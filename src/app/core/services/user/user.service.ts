@@ -81,7 +81,7 @@ export class UserService {
   }
 
   clearUserOnLogout() {
-    this.usersSubject.next([]);
+    this.usersSubject.next(null);
     this.loaded = false;
   }
 
