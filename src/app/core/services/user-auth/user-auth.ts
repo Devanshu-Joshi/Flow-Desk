@@ -9,6 +9,7 @@ import { TokenService } from '@core/services/token-service/token-service';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { environment } from '@environments/environment';
+import { UserService } from '../user/user.service';
 
 interface LoginResponse {
   token: string;
@@ -37,7 +38,7 @@ export class UserAuth {
 
   private meRequest$?: Observable<UserModel>;
 
-  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private tokenService: TokenService) {
+  constructor(private http: HttpClient, private router: Router, private toastr: ToastrService, private tokenService: TokenService, private userService: UserService) {
     this.initAuth();
 
     this.tokenService.unAuthorizedAccess$.subscribe(() => {
@@ -135,6 +136,7 @@ export class UserAuth {
     this.meRequest$ = undefined;
     this.setCurrentUser(null);
     this.tokenService.clearToken();
+    this.userService.clearUserOnLogout();
   }
 
   isAuthenticatedSync(): boolean {

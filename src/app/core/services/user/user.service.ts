@@ -12,7 +12,7 @@ import { UserAuth } from '@core/services/user-auth/user-auth';
 export class UserService {
   private readonly apiUrl = environment.API_URL + "/users";
 
-  constructor(private http: HttpClient, private userAuth: UserAuth) { }
+  constructor(private http: HttpClient) { }
 
   private usersSubject = new BehaviorSubject<UserModel[]>([]);
   users$ = this.usersSubject.asObservable();
@@ -78,6 +78,11 @@ export class UserService {
         this.usersSubject.next(current.filter(u => u.id !== id));
       })
     );
+  }
+
+  clearUserOnLogout() {
+    this.usersSubject.next([]);
+    this.loaded = false;
   }
 
 }
