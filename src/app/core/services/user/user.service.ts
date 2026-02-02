@@ -14,12 +14,12 @@ export class UserService {
 
   constructor(private http: HttpClient) { }
 
-  private usersSubject = new BehaviorSubject<UserModel[]>([]);
+  private usersSubject = new BehaviorSubject<UserModel[] | null>(null);
   users$ = this.usersSubject.asObservable();
 
   private loaded = false;
 
-  getUsersByParent(force = false): Observable<UserModel[]> {
+  getUsersByParent(force = false): Observable<UserModel[] | null> {
     if (!this.loaded || force) {
       this.loaded = true;
       // this.userAuth.refreshCurrentUser();
@@ -41,7 +41,7 @@ export class UserService {
     return this.http.post<UserModel>(this.apiUrl, user).pipe(
       take(1),
       tap(createdUser => {
-        const current = this.usersSubject.value;
+        const current = this.usersSubject.value ?? [];
         this.usersSubject.next([...current, createdUser]);
       })
     );
@@ -55,7 +55,7 @@ export class UserService {
     return this.http.put<UserModel>(`${this.apiUrl}/${user.id}`, user).pipe(
       take(1),
       tap(updatedUser => {
-        const current = this.usersSubject.value;
+        const current = this.usersSubject.value ?? [];
 
         const updatedList = current.map(u =>
           u.id === updatedUser.id ? updatedUser : u
@@ -74,7 +74,7 @@ export class UserService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`).pipe(
       take(1),
       tap(() => {
-        const current = this.usersSubject.value;
+        const current = this.usersSubject.value ?? [];
         this.usersSubject.next(current.filter(u => u.id !== id));
       })
     );

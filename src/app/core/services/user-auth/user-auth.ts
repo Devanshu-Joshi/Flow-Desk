@@ -158,6 +158,7 @@ export class UserAuth {
   private isTokenExpired(token: string): boolean {
     const payload = this.decodeToken(token);
     if (!payload?.exp) return true;
+    console.log("is Token Expired ? " + (payload.exp * 1000 < Date.now()));
     return payload.exp * 1000 < Date.now();
   }
 

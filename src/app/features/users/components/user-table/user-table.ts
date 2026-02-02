@@ -32,10 +32,11 @@ import { UserModel } from '@core/models/UserModel';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { UserService } from '@core/services/user/user.service';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { finalize, Observable, tap } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { UserAuth } from '@core/services/user-auth/user-auth';
 import { getPermissionLabel } from '@core/models/PERMISSION_LABELS';
+import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 
 @Component({
   selector: 'app-user-table',
@@ -46,7 +47,8 @@ import { getPermissionLabel } from '@core/models/PERMISSION_LABELS';
     NgSelectModule,
     NgxDaterangepickerMd,
     NgxPaginationModule,
-    EmptyState
+    EmptyState,
+    LoadingOverlay
   ],
   templateUrl: './user-table.html',
   styleUrl: './user-table.css',
@@ -56,6 +58,7 @@ export class UserTable {
   constructor(private userService: UserService, private toastr: ToastrService, private authService: UserAuth) { }
 
   getPermissionLabel = getPermissionLabel;
+  isLoading = signal<boolean>(true);
 
   @Output() addUser = new EventEmitter<void>();
   @Output() viewUser = new EventEmitter<UserModel>();
@@ -81,7 +84,7 @@ export class UserTable {
 
   fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
-  @Input() users$!: Observable<UserModel[]>;
+  @Input() users$!: Observable<UserModel[] | null>;
   users = signal<UserModel[]>([]);
 
   /* -------------------------------------------------------------------------- */
@@ -178,6 +181,7 @@ export class UserTable {
 
   ngOnInit(): void {
     this.selectedPermissions.set(this.permissions.map(p => p.key));
+
     this.searchControl.valueChanges.subscribe(value => {
       this.searchTerm.set(value ?? '');
     });
@@ -185,6 +189,14 @@ export class UserTable {
     this.users$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(users => {
+
+        // 🟡 STILL LOADING
+        if (users === null) {
+          this.isLoading.set(true);
+          return;
+        }
+
+        // 🟢 DATA ARRIVED
         const currentUser = this.authService.currentUserSignal();
 
         const filteredUsers = currentUser
@@ -192,6 +204,9 @@ export class UserTable {
           : users;
 
         this.users.set(filteredUsers);
+        this.isLoading.set(false);
+
+        // console.log('Loaded users:', filteredUsers);
       });
   }
 

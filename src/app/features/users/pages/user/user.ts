@@ -4,19 +4,17 @@ import { UserService } from '@core/services/user/user.service';
 import { UserTable } from '@features/users/components/user-table/user-table';
 import { UserModel } from '@core/models/UserModel';
 import { Sidebar } from '@features/users/components/sidebar/sidebar';
-import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
 import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user',
-  imports: [UserTable, Sidebar, LoadingOverlay],
+  imports: [UserTable, Sidebar],
   templateUrl: './user.html',
   styleUrl: './user.css',
 })
 export class User implements OnInit {
 
-  isLoading = signal<boolean>(false);
-  users$!: Observable<UserModel[]>;
+  users$!: Observable<UserModel[] | null>;
 
   constructor(private userService: UserService) { }
 

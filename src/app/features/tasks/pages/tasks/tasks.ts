@@ -69,7 +69,7 @@ export class Tasks implements OnInit {
   // ======================================================
   tasks!: Signal<TaskView[]>;
   users = signal<UserModel[]>([]);
-  users$!: Observable<UserModel[]>;
+  users$!: Observable<UserModel[] | null>;
   isLoading = computed(() => this.taskService.loading());
   isUISwitched = signal<boolean>(false);
 
@@ -146,13 +146,14 @@ export class Tasks implements OnInit {
   // ======================================================
   ngOnInit() {
     this.searchControl.valueChanges
-      .pipe(debounceTime(300))
+      .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
       .subscribe(value => this.searchTerm.set(value || ''));
 
     this.users$ = this.userService.getUsersByParent();
+
     this.users$
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(users => this.users.set(users));
+      .subscribe(users => this.users.set(users ?? [])); // 👈 FIX
   }
 
   ngOnDestroy() {

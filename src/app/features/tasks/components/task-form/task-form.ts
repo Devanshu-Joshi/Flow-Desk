@@ -20,7 +20,7 @@ export class TaskForm {
   @Input() dialogTitleColor: 'text-primary' | 'text-warn' | 'text-danger' = 'text-primary';
   @Input() dialogSubmitText: string = 'Save';
   @Input() isDeleting: boolean = false;
-  @Input() users$!: Observable<UserModel[]>;
+  @Input() users$!: Observable<UserModel[] | null>;
 
   @Output() submitForm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
