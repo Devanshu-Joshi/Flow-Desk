@@ -62,6 +62,15 @@ export class Tasks implements OnInit {
     private userService: UserService
   ) {
     this.tasks = this.taskService.tasksView;
+
+    effect(() => {
+      this.searchTerm();
+      this.selectedStatus();
+      this.dateRange();
+      this.selectedAssignedUser();
+
+      this.p = 1; // 💥 ALWAYS reset page when filters change
+    });
   }
 
   // ======================================================
@@ -77,7 +86,11 @@ export class Tasks implements OnInit {
   // 🎛 UI STATE
   // ======================================================
   p: number = 1;
-  itemsPerPage = 5;
+  itemsPerPage = computed(() => {
+    const size = this.selectedPageSize();
+    const total = this.filteredTasks().length;
+    return size === 'All' ? total : size;
+  });
   pageSizeOptions = [5, 10, 20, 'All'] as const;
   isTasksDropdownOpen = false;
   clearExpandedTrigger = signal(0);
@@ -175,7 +188,7 @@ export class Tasks implements OnInit {
   }
 
   setItemsPerPage(value: number | 'All') {
-    this.itemsPerPage = value === 'All' ? this.totalItems() : value;
+    this.selectedPageSize.set(value); // 👈 THIS is the control now
     this.p = 1;
     this.isTasksDropdownOpen = false;
   }
@@ -185,8 +198,7 @@ export class Tasks implements OnInit {
     this.dateRange.set(null);
     this.selectedStatus.set(null);
     this.selectedAssignedUser.set(null);
-    this.selectedPageSize.set(5);
-    this.itemsPerPage = 5;
+    this.selectedPageSize.set(5); // 👈 this auto updates itemsPerPage()
     this.p = 1;
     this.clearExpandedTrigger.update(v => (v % 2) + 1);
   }

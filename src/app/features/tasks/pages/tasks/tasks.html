@@ -29,7 +29,7 @@
                 [(selectedAssignedUser)]="selectedAssignedUser" (UISwitchedTrigger)="isUISwitched.set($event)">
             </app-task-filters>
             @if(isUISwitched() == false) {
-            <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage" [currentPage]="p"
+            <app-task-table [tasks]="filteredTasks()" [itemsPerPage]="itemsPerPage()" [currentPage]="p"
                 [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
                 (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
                 (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()">
