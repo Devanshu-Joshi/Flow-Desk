@@ -69,11 +69,18 @@
                 @for (item of pagedTasks; let index = $index; track item.id)
                 {
 
+                <ng-template #dragCell let-item>
+                    <div cdkDragHandle
+                        class="cursor-grab active:cursor-grabbing text-gray-400 hover:text-gray-700 pr-2 flex justify-center items-center">
+                        <i class="bx bx-menu"></i>
+                    </div>
+                </ng-template>
+
                 <tr cdkDrag [cdkDragData]="item" app-task-table-row [task]="item"
                     [assignedUsers]="taskAssignedUsersMapSig().get(item.id) || []"
                     [displayIndex]="(currentPage - 1) * itemsPerPage + index + 1" (edit)="onEdit($event)"
                     (delete)="onDelete($event)" [clearExpandedTrigger]="clearExpandedTrigger"
-                    class="cursor-grab active:cursor-grabbing">
+                    [dragCellTemplate]="dragCell">
                 </tr>
 
                 }

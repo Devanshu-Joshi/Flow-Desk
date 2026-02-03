@@ -8,7 +8,8 @@ import {
   AfterViewInit,
   signal,
   computed,
-  effect
+  effect,
+  TemplateRef
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TaskView } from '@core/models/Task';
@@ -33,6 +34,8 @@ export class TaskTableRow implements AfterViewInit {
   /* -------------------------------------------------------------------------- */
 
   @Input({ required: true }) task!: TaskView;
+
+  @Input() dragCellTemplate!: TemplateRef<any>;
 
   @Input({ required: true })
   set assignedUsers(value: UserModel[]) {
