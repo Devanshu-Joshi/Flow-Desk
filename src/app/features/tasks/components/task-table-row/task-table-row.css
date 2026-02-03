@@ -9,7 +9,6 @@
     /* overflow: scroll; */
 }
 
-
 /* Inner scrolling layer */
 .assignees-scroll {
     display: flex;
@@ -43,14 +42,17 @@
 
 /* 🔥 Expanded mode → show full names */
 .assignees-container.expanded .assignee-chip {
+    flex: 0 0 auto;
     min-width: unset;
     max-width: none;
     flex: 0 0 auto;
+    overflow: visible;
 }
 
 .assignees-container.expanded .name {
     overflow: visible;
     text-overflow: clip;
+    white-space: nowrap;
     /* still keep inline */
 }
 
@@ -73,15 +75,18 @@
     border-radius: 9999px;
     font-size: 12px;
 
-    /* 👇 IMPORTANT */
-    flex: 0 1 auto;
-    /* allow shrinking */
-    min-width: 65px;
-    /* matches TS MIN_CHIP_WIDTH */
-    max-width: 90px;
-    /* matches TS IDEAL_CHIP_WIDTH */
-    overflow: hidden;
-    /* ensures content stays inside */
+    flex: 0 0 auto;
+    /* grow naturally */
+    min-width: unset;
+    max-width: none;
+    overflow: visible;
+}
+
+.name {
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
+    min-width: 0;
 }
 
 /* 📱 smaller chips on mobile */
@@ -93,20 +98,23 @@
     }
 }
 
+.assignees-container.has-more .assignee-chip {
+    flex: 0 1 auto;
+    min-width: 65px;
+    max-width: 90px;
+    overflow: hidden;
+}
+
+.assignees-container.has-more .name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .avatar {
     width: 18px;
     height: 18px;
     border-radius: 50%;
     flex-shrink: 0;
-}
-
-/* 🔥 THE IMPORTANT PART */
-.name {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    min-width: 0;
-    /* REQUIRED inside flex */
 }
 
 /* When only 1–2 users → let chip grow naturally */
