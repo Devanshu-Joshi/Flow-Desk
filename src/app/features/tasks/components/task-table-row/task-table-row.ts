@@ -56,6 +56,12 @@ export class TaskTableRow implements AfterViewInit {
     });
   }
 
+  statusLabels: Record<string, string> = {
+    COMPLETED: 'Completed',
+    IN_PROGRESS: 'In Progress',
+    INCOMPLETE: 'Incomplete'
+  };
+
   @Input() displayIndex?: number;
 
   /* -------------------------------------------------------------------------- */
