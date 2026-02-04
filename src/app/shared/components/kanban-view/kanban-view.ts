@@ -7,7 +7,7 @@ import {
   moveItemInArray,
   transferArrayItem
 } from '@angular/cdk/drag-drop';
-import { Task, TaskStatus } from '@core/models/Task';
+import { Task, TaskStatus, TaskView } from '@core/models/Task';
 
 @Component({
   selector: 'kanban-view',
@@ -17,15 +17,15 @@ import { Task, TaskStatus } from '@core/models/Task';
 })
 export class KanbanView {
   // Input: The master list of tasks as a Signal
-  tasks = input.required<Task[]>();
+  tasks = input.required<TaskView[]>();
 
   // Output: Emit event when a task is moved so parent can update DB/State
-  onTaskUpdate = output<Task[]>();
+  onTaskUpdate = output<{ id: string; status: TaskStatus }>();
 
   // Local mutable arrays for CDK to manipulate
-  incompleteList: Task[] = [];
-  inProgressList: Task[] = [];
-  completedList: Task[] = [];
+  incompleteList: TaskView[] = [];
+  inProgressList: TaskView[] = [];
+  completedList: TaskView[] = [];
 
   constructor() {
     // Watch for changes in the parent 'tasks' signal and sort them into columns
@@ -39,7 +39,7 @@ export class KanbanView {
     });
   }
 
-  drop(event: CdkDragDrop<Task[]>) {
+  drop(event: CdkDragDrop<TaskView[]>) {
     if (event.previousContainer === event.container) {
       // Reordering within the same column
       moveItemInArray(
@@ -68,12 +68,11 @@ export class KanbanView {
       if (containerId === 'completedList') task.status = 'COMPLETED';
     }
 
-    // Optional: Emit the combined list back to parent if needed
-    const allTasks = [
-      ...this.incompleteList,
-      ...this.inProgressList,
-      ...this.completedList
-    ];
-    this.onTaskUpdate.emit(allTasks);
+    const task = event.container.data[event.currentIndex];
+
+    this.onTaskUpdate.emit({
+      id: task.id!,
+      status: task.status
+    });
   }
 }

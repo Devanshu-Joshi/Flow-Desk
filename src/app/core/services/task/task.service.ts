@@ -1,6 +1,6 @@
 import { Injectable, signal, computed, effect } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Task, TaskView } from '@core/models/Task';
+import { Task, TaskStatus, TaskView } from '@core/models/Task';
 import { UserAuth } from '@core/services/user-auth/user-auth';
 import { environment } from '@environments/environment';
 
@@ -45,6 +45,29 @@ export class TaskService {
       }
 
       this.fetchTasks();
+    });
+  }
+
+  updateTaskStatus(taskId: string, status: TaskStatus) {
+
+    // 🧠 1. Keep snapshot for rollback
+    const prevTasks = this.tasks();
+
+    // ⚡ 2. Optimistic UI update
+    this.tasks.update(tasks =>
+      tasks.map(t =>
+        t.id === taskId ? { ...t, status } : t
+      )
+    );
+
+    // 🌍 3. Backend PATCH call
+    this.http.patch(`${this.API_URL}/${taskId}/status`, { status }).subscribe({
+      error: (err) => {
+        console.error('Status update failed, rolling back', err);
+
+        // 🔄 4. Rollback UI if server fails
+        this.tasks.set(prevTasks);
+      }
     });
   }
 

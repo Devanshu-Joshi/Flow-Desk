@@ -212,6 +212,10 @@ export class Tasks implements OnInit {
     }
   }
 
+  updateTasksFromDrag(update: { id: string; status: TaskStatus }) {
+    this.taskService.updateTaskStatus(update.id, update.status);
+  }
+
   // ======================================================
   // 🔎 FILTER + SORT LOGIC
   // ======================================================
