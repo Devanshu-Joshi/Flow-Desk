@@ -12,7 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrl: './app.css'
 })
 export class App implements OnInit {
-  protected readonly title = signal('task-flow');
+  protected readonly title = signal('flow-desk');
   selected: any = { startDate: null, endDate: null };
 
   constructor(private toastr: ToastrService) { }

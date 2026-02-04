@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "task-flow": {
+    "flow-desk": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -54,10 +54,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "task-flow:build:production"
+              "buildTarget": "flow-desk:build:production"
             },
             "development": {
-              "buildTarget": "task-flow:build:development"
+              "buildTarget": "flow-desk:build:development"
             }
           },
           "defaultConfiguration": "development"
