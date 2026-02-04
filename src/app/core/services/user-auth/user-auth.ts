@@ -165,6 +165,7 @@ export class UserAuth {
       console.log(
         `Token expired | expMs: ${payload.exp * 1000} | nowMs: ${Date.now()}`
       );
+      this.logout();
     }
 
     return isExpired;
