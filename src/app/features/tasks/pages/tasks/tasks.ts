@@ -23,7 +23,7 @@ import { TaskTable } from '@features/tasks/components/task-table/task-table';
 import { TaskDialog } from '@features/tasks/components/task-dialog/task-dialog';
 import { TaskForm } from '@features/tasks/components/task-form/task-form';
 import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overlay';
-import { DragDropExample } from '@shared/components/drag-drop-example/drag-drop-example';
+import { KanbanView } from '@shared/components/kanban-view/kanban-view';
 
 export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
 
@@ -43,7 +43,7 @@ export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
     TaskDialog,
     TaskForm,
     LoadingOverlay,
-    DragDropExample
+    KanbanView
   ],
   templateUrl: './tasks.html',
   styleUrl: './tasks.css',

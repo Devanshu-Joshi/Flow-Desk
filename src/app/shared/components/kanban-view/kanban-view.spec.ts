@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DragDropExample } from './drag-drop-example';
+import { DragDropExample } from './kanban-view';
 
 describe('DragDropExample', () => {
   let component: DragDropExample;
@@ -10,7 +10,7 @@ describe('DragDropExample', () => {
     await TestBed.configureTestingModule({
       imports: [DragDropExample]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(DragDropExample);
     component = fixture.componentInstance;
