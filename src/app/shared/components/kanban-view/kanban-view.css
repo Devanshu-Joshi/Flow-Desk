@@ -91,4 +91,25 @@
 */
 .cdk-drag {
     transition: none;
+    cursor: move !important;
+}
+
+/* Normal state */
+.cdk-drag {
+    cursor: move !important;
+}
+
+/* When actively dragging */
+.cdk-drag-dragging {
+    cursor: move !important;
+}
+
+/* Floating preview element */
+.cdk-drag-preview {
+    cursor: move !important;
+}
+
+/* Drop zones during drag */
+.cdk-drop-list-dragging {
+    cursor: move !important;
 }

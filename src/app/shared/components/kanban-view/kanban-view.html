@@ -1,65 +1,110 @@
-<div class="flex flex-col h-full bg-gray-50 p-6">
+<div class="flex flex-col h-screen bg-gray-50 p-6 overflow-hidden">
 
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Task Board</h2>
 
-    <!-- Board Wrapper: cdkDropListGroup connects the lists -->
-    <div class="flex flex-col md:flex-row gap-6 h-full" cdkDropListGroup>
+    <!-- BOARD -->
+    <div class="flex flex-row gap-6 flex-1 overflow-x-auto" cdkDropListGroup>
 
-        <!-- COLUMN 1: PENDING -->
-        <div class="flex flex-col flex-1 min-w-75 bg-gray-100 rounded-xl shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white rounded-t-xl">
+        <!-- COLUMN -->
+        <div
+            class="flex flex-col flex-1 min-w-[280px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-red-700">Incomplete</h3>
-                <span class="bg-red-200 text-red-700 text-xs px-2 py-1 rounded-full">{{ incompleteList.length
-                    }}</span>
+                <span class="bg-red-200 text-red-700 text-xs px-2 py-1 rounded-full">
+                    {{ incompleteList.length }}
+                </span>
             </div>
 
             <div id="incompleteList" cdkDropList [cdkDropListData]="incompleteList"
-                class="flex-1 p-4 min-h-37.5 space-y-3" (cdkDropListDropped)="drop($event)">
+                class="flex-1 p-4 space-y-3 overflow-y-auto" (cdkDropListDropped)="drop($event)">
 
                 @for (item of incompleteList; track item.id) {
-                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500 cursor-move hover:shadow-md transition-shadow"
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500 cursor-move! hover:shadow-md transition-shadow"
                     cdkDrag>
-                    <p class="text-gray-800 font-medium">{{ item.title }}</p>
+                    <p class="text-gray-800 font-medium break-words">
+                        {{ item.title }}
+                    </p>
+                </div>
+                }
+
+                @if (incompleteList.length === 0) {
+                <div class="flex-1 flex items-center justify-center text-center text-gray-400 text-sm italic">
+                    No incomplete tasks 🎉
                 </div>
                 }
             </div>
         </div>
 
-        <!-- COLUMN 2: IN PROGRESS -->
-        <div class="flex flex-col flex-1 min-w-75 bg-gray-100 rounded-xl shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white rounded-t-xl">
+        <!-- IN PROGRESS -->
+        <div
+            class="flex flex-col flex-1 min-w-[280px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-yellow-600">In Progress</h3>
-                <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded-full">{{ inProgressList.length
-                    }}</span>
+                <span class="bg-yellow-100 text-yellow-600 text-xs px-2 py-1 rounded-full">
+                    {{ inProgressList.length }}
+                </span>
             </div>
 
             <div id="inProgressList" cdkDropList [cdkDropListData]="inProgressList"
-                class="flex-1 p-4 min-h-37.5 space-y-3" (cdkDropListDropped)="drop($event)">
+                class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-[240px]" (cdkDropListDropped)="drop($event)">
 
                 @for (item of inProgressList; track item.id) {
-                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 cursor-move hover:shadow-md transition-shadow"
-                    cdkDrag>
-                    <p class="text-gray-800 font-medium">{{ item.title }}</p>
+                <div cdkDrag
+                    class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 cursor-move! hover:shadow-md transition-shadow">
+                    {{ item.title }}
                 </div>
                 }
+
+                @if (inProgressList.length === 0) {
+                <div class="absolute inset-0 flex flex-col items-center justify-center text-center
+           pointer-events-none rounded-xl border-2 border-dashed
+           border-blue-200 bg-blue-50/40 px-4">
+                    <p class="font-semibold text-gray-700 mb-1">
+                        No In Progress Tasks
+                    </p>
+
+                    <p class="text-xs text-gray-500 mb-3">
+                        Tasks will appear here when they <br />
+                        move into this stage.
+                    </p>
+
+                    <span class="text-sm text-blue-600 font-medium">
+                        Drag a task here
+                    </span>
+                </div>
+                }
+
             </div>
         </div>
 
-        <!-- COLUMN 3: COMPLETED -->
-        <div class="flex flex-col flex-1 min-w-75 bg-gray-100 rounded-xl shadow-sm border border-gray-200">
-            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white rounded-t-xl">
+        <!-- COMPLETED -->
+        <div
+            class="flex flex-col flex-1 min-w-[280px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+
+            <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-green-600">Completed</h3>
-                <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">{{ completedList.length
-                    }}</span>
+                <span class="bg-green-100 text-green-600 text-xs px-2 py-1 rounded-full">
+                    {{ completedList.length }}
+                </span>
             </div>
 
             <div id="completedList" cdkDropList [cdkDropListData]="completedList"
-                class="flex-1 p-4 min-h-37.5 space-y-3" (cdkDropListDropped)="drop($event)">
+                class="flex-1 p-4 space-y-3 overflow-y-auto" (cdkDropListDropped)="drop($event)">
 
                 @for (item of completedList; track item.id) {
-                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 cursor-move hover:shadow-md transition-shadow"
+                <div class="bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 cursor-move! hover:shadow-md transition-shadow"
                     cdkDrag>
-                    <p class="text-gray-800 font-medium decoration-gray-400">{{ item.title }}</p>
+                    <p class="text-gray-800 font-medium break-words text-gray-400">
+                        {{ item.title }}
+                    </p>
+                </div>
+                }
+
+                @if (completedList.length === 0) {
+                <div class="flex-1 flex items-center justify-center text-center text-gray-400 text-sm italic">
+                    No completed tasks yet ✅
                 </div>
                 }
             </div>
