@@ -16,6 +16,9 @@ import { Task, TaskStatus, TaskView } from '@core/models/Task';
   styleUrl: './kanban-view.css',
 })
 export class KanbanView {
+  addTask() {
+    throw new Error('Method not implemented.');
+  }
   deleteTask() {
     throw new Error('Method not implemented.');
   }

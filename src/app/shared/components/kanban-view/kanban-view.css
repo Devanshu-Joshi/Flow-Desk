@@ -113,3 +113,8 @@
 .cdk-drop-list-dragging {
     cursor: move !important;
 }
+
+/* Hide empty state while dragging item into list */
+.cdk-drop-list-dragging .empty-state {
+    display: none;
+}
