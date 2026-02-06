@@ -15,11 +15,11 @@
                 </span>
             </div>
 
-            <div id="incompleteList" cdkDropList [cdkDropListData]="incompleteList"
+            <div id="incompleteList" cdkDropList cdkScrollable [cdkDropListData]="incompleteList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-60" (cdkDropListDropped)="drop($event)">
 
                 @for (item of incompleteList; track item.id) {
-                <div cdkDrag
+                <div cdkDrag (cdkDragMoved)="onDragMove($event)"
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500 hover:shadow-md transition-shadow group">
                     <p class="text-gray-800 font-medium wrap-break-word pr-14">
                         {{ item.title }}
@@ -63,7 +63,7 @@
                     <p class="text-xs text-gray-500 mb-3">Tasks you haven't started will appear here.</p>
 
                     <button (click)="toggleDialog()"
-                        class="pointer-events-auto mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md shadow-sm">
+                        class="pointer-events-auto mt-2 text-sm bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-md shadow-sm cursor-pointer">
                         + Add Task
                     </button>
                 </div>
@@ -81,11 +81,11 @@
                 </span>
             </div>
 
-            <div id="inProgressList" cdkDropList [cdkDropListData]="inProgressList"
+            <div id="inProgressList" cdkDropList cdkScrollable [cdkDropListData]="inProgressList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-60" (cdkDropListDropped)="drop($event)">
 
                 @for (item of inProgressList; track item.id) {
-                <div cdkDrag
+                <div cdkDrag (cdkDragMoved)="onDragMove($event)"
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500 hover:shadow-md transition-shadow group">
                     <p class="text-gray-800 font-medium wrap-break-word pr-14">{{ item.title }}</p>
 
@@ -127,7 +127,7 @@
                     <p class="text-xs text-gray-500 mb-3">Tasks will appear here when they move into this stage.</p>
 
                     <button (click)="toggleDialog()"
-                        class="pointer-events-auto mt-2 text-sm bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1.5 rounded-md shadow-sm">
+                        class="pointer-events-auto mt-2 text-sm bg-yellow-600 hover:bg-yellow-700 text-white px-4 py-1.5 rounded-md shadow-sm cursor-pointer">
                         + Add Task
                     </button>
                 </div>
@@ -145,11 +145,11 @@
                 </span>
             </div>
 
-            <div id="completedList" cdkDropList [cdkDropListData]="completedList"
+            <div id="completedList" cdkDropList cdkScrollable [cdkDropListData]="completedList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-60" (cdkDropListDropped)="drop($event)">
 
                 @for (item of completedList; track item.id) {
-                <div cdkDrag
+                <div cdkDrag (cdkDragMoved)="onDragMove($event)"
                     class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500 hover:shadow-md transition-shadow group">
                     <p class="text-gray-800 font-medium wrap-break-word pr-14">{{ item.title }}</p>
 
@@ -191,7 +191,7 @@
                     <p class="text-xs text-gray-500 mb-3">Finished tasks will live here.</p>
 
                     <button (click)="toggleDialog()"
-                        class="pointer-events-auto mt-2 text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-md shadow-sm">
+                        class="pointer-events-auto mt-2 text-sm bg-green-600 hover:bg-green-700 text-white px-4 py-1.5 rounded-md shadow-sm cursor-pointer">
                         + Add Task
                     </button>
                 </div>

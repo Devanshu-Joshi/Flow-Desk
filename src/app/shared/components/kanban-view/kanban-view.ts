@@ -1,5 +1,5 @@
-import { CdkDrag } from '@angular/cdk/drag-drop';
-import { Component, input, effect, output, inject, signal } from '@angular/core';
+import { CdkDrag, CdkDragMove } from '@angular/cdk/drag-drop';
+import { Component, input, effect, output, inject, signal, ViewChildren, QueryList } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   CdkDragDrop,
@@ -14,6 +14,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserModel } from '@core/models/UserModel';
 import { TaskService } from '@core/services/task/task.service';
 import { ToastrService } from 'ngx-toastr';
+import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'kanban-view',
@@ -41,6 +42,7 @@ export class KanbanView {
   dialogDescription = signal('Add task details below');
   dialogTitleColor = signal<'text-primary' | 'text-warn' | 'text-danger'>('text-primary');
   dialogSubmitText = signal('Save');
+  @ViewChildren(CdkScrollable) scrollContainers!: QueryList<CdkScrollable>;
 
   // Local mutable arrays for CDK to manipulate
   incompleteList: TaskView[] = [];
@@ -167,4 +169,26 @@ export class KanbanView {
     this.dialogSubmitText.set('Delete');
     this.toggleDialog();
   }
+
+  onDragMove(event: CdkDragMove<any>) {
+    const threshold = 80; // distance from edge
+    const scrollSpeed = 4;
+
+    this.scrollContainers.forEach(container => {
+      const element = container.getElementRef().nativeElement;
+      const rect = element.getBoundingClientRect();
+      const pointerY = event.pointerPosition.y;
+
+      // Scroll Down
+      if (pointerY > rect.bottom - threshold) {
+        element.scrollTop += scrollSpeed;
+      }
+
+      // Scroll Up
+      else if (pointerY < rect.top + threshold) {
+        element.scrollTop -= scrollSpeed;
+      }
+    });
+  }
+
 }
