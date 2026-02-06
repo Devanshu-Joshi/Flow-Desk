@@ -21,51 +21,52 @@
             </ng-select>
         </div>
 
-        <!-- Date Picker (2 cols) -->
-        <div class="w-full sm:col-span-1 lg:w-[18rem] min-w-45">
-            <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
-                [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
-                [linkedCalendars]="true" placeholder="Date range"
-                class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
-                (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate 
+        <div class="sm:col-span-2 flex gap-3">
+            <div class="w-full lg:w-60 min-w-45">
+                <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
+                    [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
+                    [linkedCalendars]="true" placeholder="Date range"
+                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
+                    (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate 
                 ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
                 : ''" />
-        </div>
+            </div>
 
-        <!-- Status Select (1 col) -->
-        <div class="relative min-w-20 sm:col-span-1 lg:w-50">
-            <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
-                bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
-                [closeOnSelect]="true">
-                <ng-template ng-placeholder-tmp #statusPlaceholder>
-                    <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
-                </ng-template>
+            <!-- Status Select (1 col) -->
+            <div class="relative flex-[1_1_10rem] min-w-20">
+                <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
+                    bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
+                    [closeOnSelect]="true">
+                    <ng-template ng-placeholder-tmp #statusPlaceholder>
+                        <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
+                    </ng-template>
 
-                <ng-template ng-label-tmp let-item="item">
-                    @if (item?.value !== null) {
-                    <span class="whitespace-nowrap" [ngClass]="{
+                    <ng-template ng-label-tmp let-item="item">
+                        @if (item?.value !== null) {
+                        <span class="whitespace-nowrap" [ngClass]="{
                         'text-green-600': item.value === 'COMPLETED',
                         'text-yellow-600': item.value === 'IN_PROGRESS',
                         'text-red-600': item.value === 'INCOMPLETE'
                     }">
-                        {{ item.label }}
-                    </span>
-                    } @else {
-                    <ng-template [ngTemplateOutlet]="statusPlaceholder"></ng-template>
-                    }
-                </ng-template>
+                            {{ item.label }}
+                        </span>
+                        } @else {
+                        <ng-template [ngTemplateOutlet]="statusPlaceholder"></ng-template>
+                        }
+                    </ng-template>
 
-                <ng-template ng-option-tmp let-item="item">
-                    <span class="whitespace-nowrap" [ngClass]="{
+                    <ng-template ng-option-tmp let-item="item">
+                        <span class="whitespace-nowrap" [ngClass]="{
                         'text-gray-700': item.value === null,
                         'text-green-600': item.value === 'COMPLETED',
                         'text-yellow-600': item.value === 'IN_PROGRESS',
                         'text-red-600': item.value === 'INCOMPLETE'
                     }">
-                        {{ item.label }}
-                    </span>
-                </ng-template>
-            </ng-select>
+                            {{ item.label }}
+                        </span>
+                    </ng-template>
+                </ng-select>
+            </div>
         </div>
 
         <!-- Add Task + Switch (1 col) -->
