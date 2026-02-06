@@ -37,7 +37,7 @@
             <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
                 bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
                 [closeOnSelect]="true">
-                <ng-template ng-placeholder-tmp #placeholder>
+                <ng-template ng-placeholder-tmp #statusPlaceholder>
                     <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
                 </ng-template>
 
@@ -51,7 +51,7 @@
                         {{ item.label }}
                     </span>
                     } @else {
-                    <ng-template [ngTemplateOutlet]="placeholder"></ng-template>
+                    <ng-template [ngTemplateOutlet]="statusPlaceholder"></ng-template>
                     }
                 </ng-template>
 
