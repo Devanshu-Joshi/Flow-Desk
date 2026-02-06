@@ -84,7 +84,7 @@
     :host ::ng-deep .md-drppicker,
     .daterangepicker {
         position: absolute !important;
-        top: 225px !important;
+        top: 170px !important;
     }
 }
 
