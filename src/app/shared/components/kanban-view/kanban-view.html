@@ -1,15 +1,14 @@
-<div class="flex flex-col h-screen bg-gray-50 p-6 overflow-hidden">
+<div class="flex flex-col bg-gray-50 p-6 overflow-hidden">
 
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Task Board</h2>
 
     <!-- BOARD (parent) -->
     <div class="grid gap-6 overflow-x-auto items-stretch
-         grid-cols-[repeat(3,minmax(320px,1fr))]" cdkDropListGroup style="min-height: 320px; max-height: 85vh;">
+         grid-cols-[repeat(3,minmax(320px,1fr))]" cdkDropListGroup style="min-height: 320px; max-height: 75vh;">
 
         <!-- INCOMPLETE -->
         <div #col
-            class="flex flex-col flex-1 min-w-[320px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden"
-            style="min-width:320px;">
+            class="flex flex-col flex-1 min-w-[320px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-red-700">Incomplete</h3>
                 <span class="bg-red-200 text-red-700 text-xs px-2 py-1 rounded-full">
