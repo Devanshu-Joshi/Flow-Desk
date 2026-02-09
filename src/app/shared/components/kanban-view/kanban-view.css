@@ -118,35 +118,3 @@
 .cdk-drop-list-dragging .empty-state {
     display: none;
 }
-
-.task-list-inner {
-    display: grid;
-    grid-template-rows: 1fr;
-    transition: grid-template-rows 260ms cubic-bezier(.2, .8, .2, 1);
-}
-
-/* When list becomes empty */
-.task-list-inner.is-empty {
-    grid-template-rows: 0fr;
-}
-
-/* Smooth content reveal */
-.task-list-inner>* {
-    overflow: hidden;
-}
-
-.task-card {
-    animation: fadeSlide 180ms ease;
-}
-
-@keyframes fadeSlide {
-    from {
-        opacity: 0;
-        transform: translateY(6px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
