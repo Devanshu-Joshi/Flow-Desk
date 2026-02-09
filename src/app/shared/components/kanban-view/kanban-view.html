@@ -1,14 +1,14 @@
-<div class="flex flex-col bg-gray-50 p-6 overflow-hidden">
+<div class="flex flex-col bg-gray-50 p-6 overflow-hidden min-h-0" style="max-height: 75vh;">
 
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Task Board</h2>
 
     <!-- BOARD (parent) -->
     <div class="grid gap-6 overflow-x-auto items-stretch
-         grid-cols-[repeat(3,minmax(320px,1fr))]" cdkDropListGroup style="min-height: 320px; max-height: 75vh;">
+         grid-cols-[repeat(3,minmax(320px,1fr))] overflow-hidden min-h-0" cdkDropListGroup style="min-height: 320px;">
 
         <!-- INCOMPLETE -->
         <div #col
-            class="flex flex-col flex-1 min-w-[320px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+            class="flex flex-col flex-1 min-w-[320px] h-full min-h-0 bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-red-700">Incomplete</h3>
                 <span class="bg-red-200 text-red-700 text-xs px-2 py-1 rounded-full">
@@ -16,7 +16,7 @@
                 </span>
             </div>
 
-            <div #list id="incompleteList" cdkDropList cdkScrollable [cdkDropListData]="incompleteList"
+            <div #list id="incompleteList" cdkDropList [cdkDropListData]="incompleteList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-0" (cdkDropListDropped)="drop($event)">
 
                 <div *ngFor="let item of incompleteList; let i = index">
@@ -71,7 +71,7 @@
 
         <!-- IN PROGRESS -->
         <div #col
-            class="flex flex-col flex-1 min-w-[320px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+            class="flex flex-col flex-1 min-w-[320px] min-h-0 bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden"
             style="min-width:320px;">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-yellow-600">In Progress</h3>
@@ -80,7 +80,7 @@
                 </span>
             </div>
 
-            <div #list id="inProgressList" cdkDropList cdkScrollable [cdkDropListData]="inProgressList"
+            <div #list id="inProgressList" cdkDropList [cdkDropListData]="inProgressList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-0" (cdkDropListDropped)="drop($event)">
 
                 <div *ngFor="let item of inProgressList; let i = index">
@@ -133,7 +133,7 @@
 
         <!-- COMPLETED -->
         <div #col
-            class="flex flex-col flex-1 min-w-[320px] h-full bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden"
+            class="flex flex-col flex-1 min-w-[320px] h-full min-h-0 bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden"
             style="min-width:320px;">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
                 <h3 class="font-bold text-green-600">Completed</h3>
@@ -142,7 +142,7 @@
                 </span>
             </div>
 
-            <div #list id="completedList" cdkDropList cdkScrollable [cdkDropListData]="completedList"
+            <div #list id="completedList" cdkDropList [cdkDropListData]="completedList"
                 class="relative flex-1 p-4 overflow-y-auto space-y-3 min-h-0" (cdkDropListDropped)="drop($event)">
 
                 <div *ngFor="let item of completedList; let i = index">

@@ -39,7 +39,7 @@ export class TaskTableRow {
 
   @Input({ required: true })
   set assignedUsers(value: UserModel[]) {
-    this.assignedUsersSig.set(value || []);
+    this.assignedUsersSig.set([...value]); // clone
   }
 
   private clearTriggerSig = signal<number>(0);
@@ -117,5 +117,9 @@ export class TaskTableRow {
 
   getUsersTooltip(users: UserModel[]): string {
     return users?.map(u => u.name).join(', ') || '';
+  }
+
+  printUsers() {
+    console.log(this.assignedUsersSig())
   }
 }
