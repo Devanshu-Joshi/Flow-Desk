@@ -118,3 +118,12 @@
 .cdk-drop-list-dragging .empty-state {
     display: none;
 }
+
+.cdk-drag-preview {
+    pointer-events: none !important;
+}
+
+#boardScroller {
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+}

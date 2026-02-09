@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragMove } from '@angular/cdk/drag-drop';
-import { Component, input, effect, output, inject, signal, ViewChildren, QueryList } from '@angular/core';
+import { Component, input, effect, output, inject, signal, ViewChildren, QueryList, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   CdkDragDrop,
@@ -14,7 +14,6 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UserModel } from '@core/models/UserModel';
 import { TaskService } from '@core/services/task/task.service';
 import { ToastrService } from 'ngx-toastr';
-import { CdkScrollable } from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'kanban-view',
@@ -42,9 +41,6 @@ export class KanbanView {
   dialogDescription = signal('Add task details below');
   dialogTitleColor = signal<'text-primary' | 'text-warn' | 'text-danger'>('text-primary');
   dialogSubmitText = signal('Save');
-
-  // used for auto-scroll while dragging
-  @ViewChildren(CdkScrollable) scrollContainers!: QueryList<CdkScrollable>;
 
   // Local mutable arrays for CDK to manipulate
   incompleteList: TaskView[] = [];
@@ -171,28 +167,33 @@ export class KanbanView {
     this.toggleDialog();
   }
 
-  private lastFrameTime = performance.now();
+  @ViewChild('boardScroller', { static: true })
+  boardScroller!: ElementRef<HTMLElement>;
+
+  private lastTime = performance.now();
 
   onDragMove(event: CdkDragMove<any>) {
-    const threshold = 80;
-    const pxPerSecond = 600;
+    const el = this.boardScroller.nativeElement;
+    const rect = el.getBoundingClientRect();
     const now = performance.now();
-    const deltaTime = (now - this.lastFrameTime) / 1000;
-    this.lastFrameTime = now;
+    const dt = (now - this.lastTime) / 1000;
+    this.lastTime = now;
 
-    this.scrollContainers.forEach(container => {
-      const element = container.getElementRef().nativeElement;
-      const rect = element.getBoundingClientRect();
-      const pointerY = event.pointerPosition.y;
+    const threshold = 80;
+    const maxSpeed = 900; // px/sec
 
-      let direction = 0;
+    const x = event.pointerPosition.x;
 
-      if (pointerY > rect.bottom - threshold) direction = 1;
-      else if (pointerY < rect.top + threshold) direction = -1;
+    let velocity = 0;
 
-      if (direction !== 0) {
-        element.scrollTop += direction * pxPerSecond * deltaTime;
-      }
-    });
+    if (x > rect.right - threshold) {
+      velocity = (x - (rect.right - threshold)) / threshold;
+    } else if (x < rect.left + threshold) {
+      velocity = -((rect.left + threshold - x) / threshold);
+    }
+
+    if (velocity !== 0) {
+      el.scrollLeft += velocity * maxSpeed * dt;
+    }
   }
 }
