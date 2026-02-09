@@ -171,23 +171,27 @@ export class KanbanView {
     this.toggleDialog();
   }
 
+  private lastFrameTime = performance.now();
+
   onDragMove(event: CdkDragMove<any>) {
-    const threshold = 80; // distance from edge
-    const scrollSpeed = 4;
+    const threshold = 80;
+    const pxPerSecond = 600;
+    const now = performance.now();
+    const deltaTime = (now - this.lastFrameTime) / 1000;
+    this.lastFrameTime = now;
 
     this.scrollContainers.forEach(container => {
       const element = container.getElementRef().nativeElement;
       const rect = element.getBoundingClientRect();
       const pointerY = event.pointerPosition.y;
 
-      // Scroll Down
-      if (pointerY > rect.bottom - threshold) {
-        element.scrollTop += scrollSpeed;
-      }
+      let direction = 0;
 
-      // Scroll Up
-      else if (pointerY < rect.top + threshold) {
-        element.scrollTop -= scrollSpeed;
+      if (pointerY > rect.bottom - threshold) direction = 1;
+      else if (pointerY < rect.top + threshold) direction = -1;
+
+      if (direction !== 0) {
+        element.scrollTop += direction * pxPerSecond * deltaTime;
       }
     });
   }
