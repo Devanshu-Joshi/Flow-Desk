@@ -1,5 +1,5 @@
-import { CdkDrag, CdkDragMove } from '@angular/cdk/drag-drop';
-import { Component, input, effect, output, inject, signal, ViewChildren, QueryList, ViewChild, ElementRef } from '@angular/core';
+import { CdkDrag } from '@angular/cdk/drag-drop';
+import { Component, input, effect, output, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   CdkDragDrop,
@@ -26,12 +26,9 @@ export class KanbanView {
   fb = inject(FormBuilder);
 
   users = input.required<UserModel[]>();
-
-  // Input: The master list of tasks as a Signal
   tasks = input.required<TaskView[]>();
   isDialogClosed: boolean = true;
 
-  // Output: Emit event when a task is moved so parent can update DB/State
   onTaskUpdate = output<{ id: string; status: TaskStatus }>();
   editingTaskId: string | null = null;
   deletingTaskId: string | null = null;
@@ -42,7 +39,6 @@ export class KanbanView {
   dialogTitleColor = signal<'text-primary' | 'text-warn' | 'text-danger'>('text-primary');
   dialogSubmitText = signal('Save');
 
-  // Local mutable arrays for CDK to manipulate
   incompleteList: TaskView[] = [];
   inProgressList: TaskView[] = [];
   completedList: TaskView[] = [];
@@ -55,8 +51,13 @@ export class KanbanView {
     assignedTo: [[] as string[]]
   });
 
+  /**
+   * Initializes the KanbanView component.
+   * Sets up an effect to filter the tasks by their status and populate the incomplete, in progress, and completed task lists.
+   * @param taskService - The task service to use for getting tasks.
+   * @param toastr - The toastr service to use for displaying messages.
+   */
   constructor(private taskService: TaskService, private toastr: ToastrService) {
-    // Watch for changes in the parent 'tasks' signal and sort them into columns
     effect(() => {
       const currentTasks = this.tasks();
 
@@ -66,12 +67,22 @@ export class KanbanView {
     });
   }
 
+  /**
+   * Toggles the task dialog on/off.
+   * When the dialog is closed, resets the task form to its initial state.
+   */
   toggleDialog() {
     this.isDialogClosed = !this.isDialogClosed;
     document.body.classList.toggle('body-lock', !this.isDialogClosed);
     if (this.isDialogClosed) this.resetForm();
   }
 
+  /**
+   * Resets the task form to its initial state.
+   * This function is called when the task dialog is closed.
+   * It resets the form values, enables the form, and resets the editing/deleting task IDs.
+   * It also resets the dialog title, description, title color, and submit text.
+   */
   resetForm() {
     this.taskForm.reset({ title: '', dueDate: '', status: 'INCOMPLETE' });
     this.taskForm.enable();
@@ -85,16 +96,21 @@ export class KanbanView {
     this.dialogSubmitText.set('Save');
   }
 
+  /**
+   * Called when a task is dropped into one of the lists.
+   * If the task is dropped into the same list, it will be moved to the new position.
+   * If the task is dropped into a different list, it will be moved to the new list and its status will be updated accordingly.
+   * The task update event will be emitted with the updated task information.
+   * @param event - The drag drop event.
+   */
   drop(event: CdkDragDrop<TaskView[]>) {
     if (event.previousContainer === event.container) {
-      // Reordering within the same column
       moveItemInArray(
         event.container.data,
         event.previousIndex,
         event.currentIndex
       );
     } else {
-      // Moving between columns
       transferArrayItem(
         event.previousContainer.data,
         event.container.data,
@@ -102,11 +118,7 @@ export class KanbanView {
         event.currentIndex,
       );
 
-      // 1. Get the task that was moved
       const task = event.container.data[event.currentIndex];
-
-      // 2. Update its status based on the container ID (or logic)
-      // We assume the container ID matches the status or we map it manually
       const containerId = event.container.id;
 
       if (containerId === 'incompleteList') task.status = 'INCOMPLETE';
@@ -122,6 +134,14 @@ export class KanbanView {
     });
   }
 
+  /**
+   * Submits the task form data to the task service.
+   * If the form is invalid, does nothing.
+   * If the task is being edited, updates the task.
+   * If the task is being deleted, deletes the task.
+   * If the task is being added, adds the task.
+   * Resets the form and toggles the dialog after submitting.
+   */
   async submit() {
     if (this.taskForm.invalid) return;
     const value = this.taskForm.value;
@@ -139,11 +159,18 @@ export class KanbanView {
     this.toggleDialog();
   }
 
+  /**
+   * Cancels the task dialog, resetting the form and hiding the dialog.
+   */
   cancelDialog() {
     this.resetForm();
     this.toggleDialog();
   }
 
+  /**
+   * Opens a dialog to edit a task.
+   * @param task - The task to edit.
+   */
   edit(task: TaskView) {
     this.dialogTitle.set('Edit');
     this.isEditing.set(true);
@@ -155,6 +182,10 @@ export class KanbanView {
     this.toggleDialog();
   }
 
+  /**
+   * Opens a confirmation dialog to delete a task.
+   * @param task - The task to delete.
+   */
   delete(task: TaskView) {
     this.dialogTitle.set('Delete');
     this.isDeleting.set(true);

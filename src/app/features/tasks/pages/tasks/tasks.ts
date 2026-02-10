@@ -56,6 +56,12 @@ export class Tasks implements OnInit {
   fb = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
 
+  /**
+   * Constructor for Tasks component
+   * @param taskService - Task service to use for getting tasks
+   * @param toastr - Toastr service to use for displaying messages
+   * @param userService - User service to use for getting users
+   */
   constructor(
     public taskService: TaskService,
     private toastr: ToastrService,
@@ -157,6 +163,13 @@ export class Tasks implements OnInit {
   // ======================================================
   // 🚀 LIFECYCLE
   // ======================================================
+
+  /**
+   * OnInit lifecycle hook.
+   * Sets up the search control value changes to update the search term.
+   * Also sets up the users observable to fetch users by parent and update the users state.
+   * Uses the takeUntilDestroyed operator to ensure that the observable subscriptions are cleaned up when the component is destroyed.
+   */
   ngOnInit() {
     this.searchControl.valueChanges
       .pipe(debounceTime(300), takeUntilDestroyed(this.destroyRef))
@@ -169,6 +182,10 @@ export class Tasks implements OnInit {
       .subscribe(users => this.users.set(users ?? [])); // 👈 FIX
   }
 
+  /**
+   * Removes the 'body-lock' class from the document body when the component is destroyed.
+   * This is necessary to prevent the body from being locked when the component is destroyed.
+   */
   ngOnDestroy() {
     document.body.classList.remove('body-lock');
   }
@@ -176,33 +193,61 @@ export class Tasks implements OnInit {
   // ======================================================
   // 🎛 UI METHODS
   // ======================================================
+
+  /**
+   * Toggles the task dialog on/off.
+   * When the dialog is closed, resets the task form to its initial state.
+   * Also toggles the 'body-lock' class on the document body to prevent scrolling when the dialog is open.
+   */
   toggleDialog() {
     this.isDialogClosed = !this.isDialogClosed;
     document.body.classList.toggle('body-lock', !this.isDialogClosed);
     if (this.isDialogClosed) this.resetForm();
   }
 
+  /**
+   * Opens or closes the tasks dropdown menu.
+   * Stops the event propagation to prevent the event from bubbling up to its parent elements.
+   */
   openTasksDropdown(event: Event) {
     event.stopPropagation();
     this.isTasksDropdownOpen = !this.isTasksDropdownOpen;
   }
 
+  /**
+   * Sets the number of tasks per page.
+   * If 'All' is passed, shows all tasks on a single page.
+   * Resets the page index to 1 and closes the tasks dropdown menu.
+   * @param value The number of tasks per page or 'All' to show all tasks on a single page.
+   */
   setItemsPerPage(value: number | 'All') {
-    this.selectedPageSize.set(value); // 👈 THIS is the control now
+    this.selectedPageSize.set(value);
     this.p = 1;
     this.isTasksDropdownOpen = false;
   }
 
+  /**
+   * Resets all task filters to their initial state.
+   * Clears the search box, resets the date range, and clears the selected status and assigned user.
+   * Resets the tasks per page to 5 and the page index to 1.
+   * Finally, toggles the 'clearExpandedTrigger' to trigger a UI update.
+   */
   clearFilters(): void {
     this.searchControl.setValue('');
     this.dateRange.set(null);
     this.selectedStatus.set(null);
     this.selectedAssignedUser.set(null);
-    this.selectedPageSize.set(5); // 👈 this auto updates itemsPerPage()
+    this.selectedPageSize.set(5);
     this.p = 1;
     this.clearExpandedTrigger.update(v => (v % 2) + 1);
   }
 
+  /**
+   * Sorts the tasks list based on the provided field.
+   * If the field is the same as the current sort field, toggles the sort direction.
+   * If the field is different from the current sort field, sets the sort direction to 'asc'.
+   * @param field The field to sort the tasks list by. Can be 'title' or 'createdAt'.
+   */
   sortBy(field: 'title' | 'createdAt') {
     if (this.sortField() === field) {
       this.sortDirection.set(this.sortDirection() === 'asc' ? 'desc' : 'asc');
@@ -212,6 +257,12 @@ export class Tasks implements OnInit {
     }
   }
 
+  /**
+   * Updates a task's status from a drag event.
+   *
+   * @param update An object containing the task ID and the new status.
+   * @example { id: 'task-1', status: 'completed' }
+   */
   updateTasksFromDrag(update: { id: string; status: TaskStatus }) {
     this.taskService.updateTaskStatus(update.id, update.status);
   }
@@ -261,6 +312,16 @@ export class Tasks implements OnInit {
   // ======================================================
   // ✏️ CRUD ACTIONS
   // ======================================================
+
+  /**
+   * Submits the task form data to the task service.
+   * If the form is invalid, does nothing.
+   * If the task is being edited, updates the task.
+   * If the task is being deleted, deletes the task.
+   * If the task is being added, adds the task.
+   * Resets the form and toggles the dialog after submitting.
+   * Shows a success toast with a message "Task saved successfully".
+   */
   async submit() {
     if (this.taskForm.invalid) return;
     const value = this.taskForm.value;
@@ -278,6 +339,11 @@ export class Tasks implements OnInit {
     this.toggleDialog();
   }
 
+  /**
+   * Opens a dialog to edit a task.
+   * @param task - The task to edit.
+   */
+
   edit(task: TaskView) {
     this.dialogTitle.set('Edit');
     this.isEditing.set(true);
@@ -289,6 +355,12 @@ export class Tasks implements OnInit {
     this.toggleDialog();
   }
 
+  /**
+   * Opens a confirmation dialog to delete a task.
+   * If the task is confirmed for deletion, disables the task form and sets the dialog title to 'Delete', the dialog description to 'Do you really want to delete this task?', the dialog title color to 'text-danger', and the dialog submit text to 'Delete'.
+   * The dialog will be toggled on after calling this function.
+   * @param task - The task to delete.
+   */
   delete(task: TaskView) {
     this.dialogTitle.set('Delete');
     this.isDeleting.set(true);
@@ -301,6 +373,11 @@ export class Tasks implements OnInit {
     this.toggleDialog();
   }
 
+  /**
+   * Resets the task form to its initial state.
+   * Resets the form values, enables the form, resets the editing/deleting task IDs,
+   * resets the dialog title, description, title color, and submit text.
+   */
   resetForm() {
     this.taskForm.reset({ title: '', dueDate: '', status: 'INCOMPLETE' });
     this.taskForm.enable();
@@ -314,6 +391,11 @@ export class Tasks implements OnInit {
     this.dialogSubmitText.set('Save');
   }
 
+  /**
+   * Cancels the task dialog, resetting the task form to its initial state.
+   * Toggles the dialog off and resets the form values, enables the form, resets the editing/deleting task IDs,
+   * resets the dialog title, description, title color, and submit text.
+   */
   cancelDialog() {
     this.resetForm();
     this.toggleDialog();

@@ -16,12 +16,9 @@
                 </span>
             </div>
 
-            <!-- ✅ removed space-y-3 -->
             <div id="incompleteList" cdkDropList [cdkDropListData]="incompleteList"
                 class="relative flex-1 p-4 overflow-y-auto min-h-0" (cdkDropListDropped)="drop($event)">
 
-                <!-- ✅ cdkDrag moved HERE (direct child of cdkDropList) -->
-                <!-- ✅ py-1.5 instead of space-y-3 (padding is included in bounding rect) -->
                 <div *ngFor="let item of incompleteList" cdkDrag cdkScrollable class="py-1.5">
 
                     <div class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500
@@ -126,7 +123,7 @@
             </div>
         </div>
 
-        <!-- ─── COMPLETED ─── -->
+
         <div
             class="flex flex-col min-w-[320px] bg-gray-100 rounded-xl shadow-sm border border-gray-200 overflow-hidden">
             <div class="p-4 border-b border-gray-200 flex justify-between items-center bg-white">
