@@ -17,20 +17,16 @@
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
+    /* 🔥 Hide scrollbar everywhere */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge legacy */
 }
 
-/* Modern overlay scrollbar look */
 .assignees-scroll::-webkit-scrollbar {
-    height: 6px;
-}
-
-.assignees-scroll::-webkit-scrollbar-thumb {
-    background: #cbd5e1;
-    border-radius: 10px;
-}
-
-.assignees-scroll::-webkit-scrollbar-track {
-    background: transparent;
+    display: none;
+    /* Chrome/Safari/Edge */
 }
 
 /* 🔥 Expanded mode → show full names */
@@ -52,7 +48,6 @@
 .assignees-container.expanded .assignees-scroll {
     overflow-x: auto;
     overflow-y: hidden;
-    padding-bottom: 6px;
 }
 
 /* 📱 Smaller screens */
@@ -62,11 +57,6 @@
         max-width: 150px;
         gap: 4px;
     }
-}
-
-.assignees-container:not(.has-more) .assignees-scroll {
-    padding-bottom: 6px;
-    /* space for overlay scrollbar */
 }
 
 .assignee-chip {
@@ -146,10 +136,6 @@
 
     flex-shrink: 0;
     /* never shrink */
-}
-
-.assignees-scroll {
-    scrollbar-gutter: stable;
 }
 
 /* Container field look */

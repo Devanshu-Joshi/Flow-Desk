@@ -40,6 +40,19 @@
     {{ task.dueDate | date: 'dd/MM/yyyy' }}
 </td>
 
+<!-- Priority -->
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
+    <span
+        class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
+        [ngClass]="{
+          'bg-green-50 text-green-600': task.priority === 'LOW',
+          'bg-yellow-50 text-yellow-600': task.priority === 'NORMAL',
+          'bg-red-50 text-red-600': task.priority === 'HIGH'
+        }">
+        {{ task.priority }}
+    </span>
+</td>
+
 <!-- ✅ Assigned Users (Signal Version) -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
     <div class="assignees-container bordered" [class.has-more]="hiddenCountSig() > 0" [class.expanded]="expandedSig()"
