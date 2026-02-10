@@ -166,34 +166,4 @@ export class KanbanView {
     this.dialogSubmitText.set('Delete');
     this.toggleDialog();
   }
-
-  @ViewChild('boardScroller', { static: true })
-  boardScroller!: ElementRef<HTMLElement>;
-
-  private lastTime = performance.now();
-
-  onDragMove(event: CdkDragMove<any>) {
-    const el = this.boardScroller.nativeElement;
-    const rect = el.getBoundingClientRect();
-    const now = performance.now();
-    const dt = (now - this.lastTime) / 1000;
-    this.lastTime = now;
-
-    const threshold = 80;
-    const maxSpeed = 900; // px/sec
-
-    const x = event.pointerPosition.x;
-
-    let velocity = 0;
-
-    if (x > rect.right - threshold) {
-      velocity = (x - (rect.right - threshold)) / threshold;
-    } else if (x < rect.left + threshold) {
-      velocity = -((rect.left + threshold - x) / threshold);
-    }
-
-    if (velocity !== 0) {
-      el.scrollLeft += velocity * maxSpeed * dt;
-    }
-  }
 }

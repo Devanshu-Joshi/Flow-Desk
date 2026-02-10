@@ -3,8 +3,8 @@
     <h2 class="text-2xl font-bold text-gray-800 mb-6">Task Board</h2>
 
     <!-- BOARD -->
-    <div #boardScroller class="grid grid-flow-col auto-cols-[minmax(320px,1fr)] gap-6 overflow-x-auto items-stretch"
-        cdkDropListGroup>
+    <div class="grid grid-flow-col auto-cols-[minmax(320px,1fr)] gap-6 overflow-x-auto items-stretch" cdkDropListGroup
+        cdkScrollable>
 
         <!-- ─── INCOMPLETE ─── -->
         <div
@@ -22,7 +22,7 @@
 
                 <!-- ✅ cdkDrag moved HERE (direct child of cdkDropList) -->
                 <!-- ✅ py-1.5 instead of space-y-3 (padding is included in bounding rect) -->
-                <div *ngFor="let item of incompleteList" cdkDrag (cdkDragMoved)="onDragMove($event)" class="py-1.5">
+                <div *ngFor="let item of incompleteList" cdkDrag cdkScrollable class="py-1.5">
 
                     <div class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-red-500
                                 hover:shadow-md transition-shadow group task-card">
@@ -81,7 +81,7 @@
             <div id="inProgressList" cdkDropList [cdkDropListData]="inProgressList"
                 class="relative flex-1 p-4 overflow-y-auto min-h-0" (cdkDropListDropped)="drop($event)">
 
-                <div *ngFor="let item of inProgressList" cdkDrag (cdkDragMoved)="onDragMove($event)" class="py-1.5">
+                <div *ngFor="let item of inProgressList" cdkDrag cdkScrollable class="py-1.5">
 
                     <div class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-yellow-500
                                 hover:shadow-md transition-shadow group task-card">
@@ -139,7 +139,7 @@
             <div id="completedList" cdkDropList [cdkDropListData]="completedList"
                 class="relative flex-1 p-4 overflow-y-auto min-h-0" (cdkDropListDropped)="drop($event)">
 
-                <div *ngFor="let item of completedList" cdkDrag (cdkDragMoved)="onDragMove($event)" class="py-1.5">
+                <div *ngFor="let item of completedList" cdkDrag cdkScrollable class="py-1.5">
 
                     <div class="relative bg-white p-4 rounded-lg shadow-sm border-l-4 border-green-500
                                 hover:shadow-md transition-shadow group task-card">
