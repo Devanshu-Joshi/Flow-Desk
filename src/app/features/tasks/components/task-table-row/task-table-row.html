@@ -55,7 +55,7 @@
         [class.few-users]="visibleUsersSig().length <= 2">
 
         @if(this.visibleUsersSig().length != 0){
-        <div class="assignees-scroll flex justify-evenly">
+        <div class="assignees-scroll flex justify-center">
             @for (user of visibleUsersSig(); track user.id) {
             <span class="assignee-chip">
                 <img [src]="user.avatar" class="avatar" />

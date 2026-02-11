@@ -23,7 +23,6 @@ export class TaskForm {
   @Output() submitForm = new EventEmitter<void>();
   @Output() cancel = new EventEmitter<void>();
 
-  submitted = false;
   shakeField: string | null = null;
 
   statusOptions = [
@@ -41,33 +40,25 @@ export class TaskForm {
   private fieldOrder = ['title', 'dueDate', 'assignedTo', 'status', 'priority'];
 
   attemptSubmit(): void {
-    this.submitted = true;
-
-    // Mark all controls as touched to trigger validation display
-    Object.keys(this.form.controls).forEach(key => {
-      this.form.controls[key].markAsTouched();
-    });
+    this.form.markAllAsTouched();   // 🔥 Angular does everything
 
     if (this.form.invalid) {
-      // Find the first invalid field and shake only that one
       const firstInvalid = this.fieldOrder.find(
         key => this.form.controls[key]?.invalid
       );
+
       if (firstInvalid) {
         this.shakeField = firstInvalid;
-        setTimeout(() => {
-          this.shakeField = null;
-        }, 500);
+        setTimeout(() => this.shakeField = null, 500);
       }
       return;
     }
 
-    // Form is valid — emit to parent
     this.submitForm.emit();
   }
 
   isFieldInvalid(field: string): boolean {
     const control = this.form.controls[field];
-    return !!(control && control.invalid && (control.touched || this.submitted));
+    return !!(control && control.invalid && control.touched);
   }
 }
