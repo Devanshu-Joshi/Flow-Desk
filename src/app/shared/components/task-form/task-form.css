@@ -1,4 +1,42 @@
-/*** Dialog Opening Buttons ***/
+/*** Shake Animation ***/
+
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    15% {
+        transform: translateX(-6px);
+    }
+
+    30% {
+        transform: translateX(6px);
+    }
+
+    45% {
+        transform: translateX(-4px);
+    }
+
+    60% {
+        transform: translateX(4px);
+    }
+
+    75% {
+        transform: translateX(-2px);
+    }
+
+    90% {
+        transform: translateX(2px);
+    }
+}
+
+.shake {
+    animation: shake 0.4s ease-in-out;
+}
+
+/*** Dialog Action Buttons ***/
 
 .submit-btn {
     width: 100%;
@@ -8,33 +46,17 @@
     color: #ffffff;
     cursor: pointer;
     border: none;
-
     background: linear-gradient(to right, #4f46e5, #9333ea);
-
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
         opacity 0.2s ease;
 }
 
-/* Hover effects */
-.submit-btn:hover:not(:disabled) {
+.submit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
-}
-
-/* Disabled state */
-.submit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Prevent hover lift when disabled */
-.submit-btn:disabled:hover {
-    transform: translateY(0);
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
 }
 
 .edit-btn {
@@ -45,33 +67,17 @@
     color: #ffffff;
     cursor: pointer;
     border: none;
-
     background: #f0b100;
-
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
         opacity 0.2s ease;
 }
 
-/* Hover effects */
-.edit-btn:hover:not(:disabled) {
+.edit-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
-}
-
-/* Disabled state */
-.edit-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Prevent hover lift when disabled */
-.edit-btn:disabled:hover {
-    transform: translateY(0);
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
 }
 
 .delete-btn {
@@ -82,36 +88,20 @@
     color: #ffffff;
     cursor: pointer;
     border: none;
-
     background: #e7000b;
-
     box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-
     transition:
         transform 0.2s ease,
         box-shadow 0.2s ease,
         opacity 0.2s ease;
 }
 
-/* Hover effects */
-.delete-btn:hover:not(:disabled) {
+.delete-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 15px 25px rgba(99, 102, 241, 0.4);
 }
 
-/* Disabled state */
-.delete-btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* Prevent hover lift when disabled */
-.delete-btn:disabled:hover {
-    transform: translateY(0);
-    box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
-}
-
-/*** Ng Select ***/
+/*** Ng Select — Base Styles ***/
 
 :host ::ng-deep ng-select {
     font-size: 0.875rem;
@@ -121,7 +111,6 @@
 :host ::ng-deep .ng-select-container {
     display: flex;
     flex-wrap: nowrap !important;
-    /* 🚫 stop wrapping at root */
     align-items: center;
     overflow: hidden;
     border: none;
@@ -137,9 +126,7 @@
     display: flex;
     flex-wrap: nowrap !important;
     align-items: center;
-    /* 🚫 no wrapping */
     overflow-x: auto;
-    /* 👉 horizontal scroll */
     overflow-y: hidden;
     scrollbar-width: thin;
     gap: 6px;
@@ -154,12 +141,10 @@
     font-size: 0.875rem;
 }
 
-/* selected user chips */
-:host ::ng-deep .ng-value {
+/* multi-select chips */
+:host ::ng-deep .ng-select-multiple .ng-value {
     background: #eef2ff;
-    /* indigo-50 */
     color: #4338ca;
-    /* indigo-700 */
     border-radius: 9999px;
     padding: 2px 10px;
     font-size: 0.75rem;
@@ -170,11 +155,21 @@
     white-space: nowrap;
 }
 
+/* single-select value — clean text, no chip */
+:host ::ng-deep .ng-select-single .ng-value {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: 0.875rem !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+    gap: 0 !important;
+}
+
 /* remove icon */
 :host ::ng-deep .ng-value-icon {
     border: none;
     color: #6366f1;
-    /* indigo-500 */
 }
 
 :host ::ng-deep .ng-value-icon:hover {
@@ -200,12 +195,10 @@
     font-size: 0.875rem;
 }
 
-/* hover */
 :host ::ng-deep .ng-option:hover {
     background: #eef2ff;
 }
 
-/* selected option */
 :host ::ng-deep .ng-option-selected {
     background: #e0e7ff;
     color: #3730a3;
@@ -217,7 +210,7 @@
     font-size: 0.875rem;
 }
 
-/* hide dropdown arrow (optional – modern look) */
+/* hide dropdown arrow */
 :host ::ng-deep .ng-arrow-wrapper {
     display: none;
 }
@@ -235,7 +228,6 @@
 
 :host ::ng-deep .ng-value-container::-webkit-scrollbar-thumb {
     background: #c7d2fe;
-    /* indigo-200 */
     border-radius: 9999px;
 }
 
@@ -243,11 +235,8 @@
     outline: none;
 }
 
-/*** Global Styles for ng select ***/
+/*** Ng Select — .filter-select Variant ***/
 
-/* ================= FILTER SELECT STYLE ================= */
-
-/* Main box */
 .filter-select ::ng-deep .ng-select-container {
     background: #ffffff;
     border: 2px solid #d1d5db;
@@ -278,12 +267,6 @@
     border-color: #9ca3af;
 }
 
-/* Selected value text */
-.filter-select ::ng-deep .ng-value {
-    font-weight: 600;
-    color: #374151;
-}
-
 /* Arrow alignment fix */
 .filter-select ::ng-deep .ng-arrow-wrapper {
     padding-right: 6px;
@@ -305,12 +288,10 @@
     transition: background-color 0.15s ease;
 }
 
-/* Hover state */
 .filter-select ::ng-deep .ng-option:hover {
     background: #eef2ff;
 }
 
-/* Selected option */
 .filter-select ::ng-deep .ng-option-selected {
     font-weight: 600;
     background: #eef2ff;

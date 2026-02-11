@@ -379,8 +379,21 @@ export class Tasks implements OnInit {
    * resets the dialog title, description, title color, and submit text.
    */
   resetForm() {
-    this.taskForm.reset({ title: '', dueDate: '', status: 'INCOMPLETE' });
-    this.taskForm.enable();
+    // 1. Reset values
+    this.taskForm.reset({
+      title: '',
+      dueDate: '',
+      status: 'INCOMPLETE',
+      priority: 'NORMAL',
+      assignedTo: []
+    });
+
+    // 2. Explicitly clear validation flags
+    this.taskForm.markAsUntouched();
+    this.taskForm.markAsPristine();
+    this.taskForm.updateValueAndValidity();
+
+    // 3. Reset UI state
     this.editingTaskId = null;
     this.deletingTaskId = null;
     this.isEditing.set(false);

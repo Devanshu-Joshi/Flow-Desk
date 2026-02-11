@@ -16,77 +16,93 @@
 
     <!-- SCROLLABLE FORM CONTENT -->
     <div class="flex-1 overflow-y-auto px-5 sm:px-8 main-container">
-        <form [formGroup]="form" (ngSubmit)="submitForm.emit()">
+        <form [formGroup]="form" (ngSubmit)="attemptSubmit()">
 
             <!-- TITLE -->
-            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-3
-                        focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20 transition">
-                <i class="bx bx-edit text-gray-400"></i>
-                <input type="text" formControlName="title" placeholder="Task Name"
-                    class="w-full outline-none text-sm placeholder-gray-400" />
+            <div class="border rounded-xl px-3 py-3 my-4 transition" [ngClass]="{
+                    'border-red-500 ring-2 ring-red-500/20': isFieldInvalid('title'),
+                    'border-gray-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20': !isFieldInvalid('title')
+                }" [class.shake]="shakeField === 'title'">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="bx bx-edit text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Task Name</span>
+                </div>
+                <input type="text" formControlName="title" placeholder="Enter task name" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none text-sm
+                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition" />
             </div>
-
-            @if(form.controls['title'].touched && form.controls['title'].invalid) {
-            <p class="text-red-500 text-xs mt-1">
-                Task name is required (min 3 chars)
-            </p>
+            @if (isFieldInvalid('title')) {
+            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Task name is required (min 3 chars)</p>
             }
 
             <!-- DUE DATE -->
-            <div class="border border-gray-300 rounded-xl px-3 py-3 my-4
-            focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
-
-                <!-- Label Row -->
+            <div class="border rounded-xl px-3 py-3 my-4 transition" [ngClass]="{
+                    'border-red-500 ring-2 ring-red-500/20': isFieldInvalid('dueDate'),
+                    'border-gray-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20': !isFieldInvalid('dueDate')
+                }" [class.shake]="shakeField === 'dueDate'">
                 <div class="flex items-center gap-2 mb-2">
                     <i class="bx bx-calendar text-gray-400"></i>
                     <span class="text-sm text-gray-600">Due Date</span>
                 </div>
-
-                <!-- Input -->
-                <input type="date" formControlName="dueDate" class="w-full border border-gray-300 rounded-lg px-3 py-2
-               bg-white outline-none text-sm
-               focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition" />
-
+                <input type="date" formControlName="dueDate" placeholder="Select due date" class="w-full border border-gray-300 rounded-lg px-3 py-2 bg-white outline-none text-sm
+                    focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition" />
             </div>
+            @if (isFieldInvalid('dueDate')) {
+            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Due date is required</p>
+            }
 
             <!-- ASSIGNED TO -->
-            <div class="border border-gray-300 rounded-xl px-3 py-2 my-4
-                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition sub-container">
-                <div class="flex items-center gap-2 mb-1">
+            <div class="border rounded-xl px-3 py-3 my-4 transition sub-container" [ngClass]="{
+                    'border-red-500 ring-2 ring-red-500/20': isFieldInvalid('assignedTo'),
+                    'border-gray-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20': !isFieldInvalid('assignedTo')
+                }" [class.shake]="shakeField === 'assignedTo'">
+                <div class="flex items-center gap-2 mb-2">
                     <i class="bx bx-user-plus text-gray-400"></i>
                     <span class="text-sm text-gray-600">Assign Users</span>
                 </div>
-
                 <ng-select formControlName="assignedTo" [items]="users()" bindLabel="name" bindValue="id"
-                    [multiple]="true" [closeOnSelect]="false" placeholder="Select users" class="text-sm custom"
-                    class="filter-select" [dropdownPosition]="'bottom'">
+                    [multiple]="true" [closeOnSelect]="false" placeholder="Select users to assign" class="filter-select"
+                    [dropdownPosition]="'bottom'">
                 </ng-select>
             </div>
+            @if (isFieldInvalid('assignedTo')) {
+            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Please assign at least one user</p>
+            }
 
             <!-- STATUS -->
-            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
-                <i class="bx bx-flag text-gray-400"></i>
-                <select formControlName="status" class="w-full outline-none text-sm bg-transparent">
-                    <option value="" disabled>Select status</option>
-                    <option value="INCOMPLETE">Incomplete</option>
-                    <option value="IN_PROGRESS">In Progress</option>
-                    <option value="COMPLETED">Completed</option>
-                </select>
+            <div class="border rounded-xl px-3 py-3 my-4 transition" [ngClass]="{
+                    'border-red-500 ring-2 ring-red-500/20': isFieldInvalid('status'),
+                    'border-gray-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20': !isFieldInvalid('status')
+                }" [class.shake]="shakeField === 'status'">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="bx bx-flag text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Status</span>
+                </div>
+                <ng-select formControlName="status" [items]="statusOptions" bindLabel="label" bindValue="value"
+                    [searchable]="false" placeholder="Select task status" class="filter-select"
+                    [dropdownPosition]="'bottom'">
+                </ng-select>
             </div>
+            @if (isFieldInvalid('status')) {
+            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Status is required</p>
+            }
 
             <!-- PRIORITY -->
-            <div class="flex items-center gap-2 border border-gray-300 rounded-xl px-3 py-2 my-4
-                        focus-within:border-indigo-500 focus-within:ring-indigo-500/20 transition">
-                <i class="bx bx-siren text-gray-400"></i>
-                <select formControlName="priority" class="w-full outline-none text-sm bg-transparent">
-                    <option value="" disabled>Select priority</option>
-                    <option value="HIGH">High</option>
-                    <option value="NORMAL">Normal</option>
-                    <option value="LOW">Low</option>
-                </select>
+            <div class="border rounded-xl px-3 py-3 my-4 transition" [ngClass]="{
+                    'border-red-500 ring-2 ring-red-500/20': isFieldInvalid('priority'),
+                    'border-gray-300 focus-within:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500/20': !isFieldInvalid('priority')
+                }" [class.shake]="shakeField === 'priority'">
+                <div class="flex items-center gap-2 mb-2">
+                    <i class="bx bx-siren text-gray-400"></i>
+                    <span class="text-sm text-gray-600">Priority</span>
+                </div>
+                <ng-select formControlName="priority" [items]="priorityOptions" bindLabel="label" bindValue="value"
+                    [searchable]="false" placeholder="Select task priority" class="filter-select"
+                    [dropdownPosition]="'bottom'">
+                </ng-select>
             </div>
-
+            @if (isFieldInvalid('priority')) {
+            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Priority is required</p>
+            }
 
         </form>
     </div>
@@ -99,11 +115,11 @@
                 Cancel
             </button>
 
-            <button type="button" (click)="submitForm.emit()" [ngClass]="{
+            <button type="button" (click)="attemptSubmit()" [ngClass]="{
                   'submit-btn text-white': dialogTitleColor === 'text-primary',
                   'edit-btn text-white': dialogTitleColor === 'text-warn',
                   'delete-btn text-white': dialogTitleColor === 'text-danger'
-                }" class="w-full py-3 rounded-xl font-medium" [disabled]="form.invalid">
+                }" class="w-full py-3 rounded-xl font-medium">
                 {{ dialogSubmitText }} Task
             </button>
         </div>
