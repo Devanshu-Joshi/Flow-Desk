@@ -40,7 +40,7 @@ export class TaskForm {
   private fieldOrder = ['title', 'dueDate', 'assignedTo', 'status', 'priority'];
 
   attemptSubmit(): void {
-    this.form.markAllAsTouched();   // 🔥 Angular does everything
+    this.form.markAllAsTouched();
 
     if (this.form.invalid) {
       const firstInvalid = this.fieldOrder.find(
