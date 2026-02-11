@@ -1,11 +1,5 @@
-<!-- <td class="w-8 text-center">
-    <span cdkDragHandle class="cursor-grab text-gray-400 hover:text-gray-700">
-        <i class="bx bx-menu"></i>
-    </span>
-</td> -->
-
 <!-- Display ID -->
-<td class="px-1 sm:px-1 py-2 sm:py-3 font-medium align-middle">
+<td class="px-1 sm:px-1 py-2 sm:py-3 font-medium align-middle whitespace-nowrap">
     <div class="flex items-center h-full">
         <ng-container *ngTemplateOutlet="dragCellTemplate; context: {$implicit: task}">
         </ng-container>
@@ -15,15 +9,15 @@
     </div>
 </td>
 
-<!-- Title -->
+<!-- Title — use min-w + truncate so it never fully collapses -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800">
-    <span class="block truncate max-w-45 sm:max-w-none mx-auto">
-        {{ task.title }}
+    <span class="block truncate min-w-45 sm:min-w-60 mx-auto" [title]="task.title">
+        {{ task.title | truncate:25:true }}
     </span>
 </td>
 
 <!-- Status -->
-<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
     <span
         class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
         [ngClass]="{
@@ -41,7 +35,7 @@
 </td>
 
 <!-- Priority -->
-<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center whitespace-nowrap">
     <span
         class="inline-flex items-center px-2 py-1 sm:px-2.5 rounded-full text-[11px] sm:text-xs font-semibold whitespace-nowrap"
         [ngClass]="{
@@ -53,37 +47,36 @@
     </span>
 </td>
 
-<!-- ✅ Assigned Users (Signal Version) -->
-<td class="hidden md:block px-1.5 sm:px-4 py-2 sm:py-3 text-center">
-    <div class="assignees-container bordered" [class.has-more]="hiddenCountSig() > 0" [class.expanded]="expandedSig()"
-        [attr.title]="getUsersTooltip(assignedUsersSig())" [class.few-users]="visibleUsersSig().length <= 2">
+<!-- ✅ Assigned Users — min-w so it never fully collapses -->
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
+    <!-- ^^^ md:block → md:table-cell -->
+    <div class="assignees-container bordered min-w-45 sm:min-w-55" [class.has-more]="hiddenCountSig() > 0"
+        [class.expanded]="expandedSig()" [attr.title]="getUsersTooltip(assignedUsersSig())"
+        [class.few-users]="visibleUsersSig().length <= 2">
 
         @if(this.visibleUsersSig().length != 0){
         <div class="assignees-scroll flex justify-evenly">
             @for (user of visibleUsersSig(); track user.id) {
             <span class="assignee-chip">
                 <img [src]="user.avatar" class="avatar" />
-                <span class="name">{{ user.name }}</span>
+                <span class="name whitespace-nowrap">{{ user.name }}</span>
             </span>
             }
 
             @if (!expandedSig() && hiddenCountSig() > 0) {
-            <span class="assignee-chip more-chip cursor-pointer" (click)="toggleExpanded()">
+            <span class="assignee-chip more-chip cursor-pointer whitespace-nowrap" (click)="toggleExpanded()">
                 +{{ hiddenCountSig() }} more
             </span>
             }
 
         </div>
         } @else {
-        <div class="w-full flex items-center justify-center gap-2 text-gray-400 text-sm font-medium">
-
-            <!-- Icon -->
-            <svg class="w-4 h-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+        <div class="w-full flex items-center justify-center gap-2 text-gray-400 text-sm font-medium whitespace-nowrap">
+            <svg class="w-4 h-4 opacity-70 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="1.8">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c2-4 14-4 16 0" />
             </svg>
-
-            <!-- Text -->
             <span class="whitespace-nowrap">No users assigned</span>
         </div>
         }
@@ -91,13 +84,13 @@
 </td>
 
 <!-- Actions -->
-<td class="px-1.5 sm:px-4 py-2 sm:py-3">
+<td class="px-1.5 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
     <div class="flex justify-center">
         <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
 
             <button [disabled]="!canEditSig()" [class.opacity-40]="!canEditSig()"
                 [class.cursor-not-allowed]="!canEditSig()"
-                class="flex items-center justify-center gap-1 md:px-2.5 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer"
+                class="flex items-center justify-center gap-1 px-2.5 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer whitespace-nowrap"
                 (click)="canEditSig() && edit.emit(task)">
                 <i class="bx bx-edit text-base"></i>
                 <span class="whitespace-nowrap">Edit</span>
@@ -105,7 +98,7 @@
 
             <button [disabled]="!canDeleteSig()" [class.opacity-40]="!canDeleteSig()"
                 [class.cursor-not-allowed]="!canDeleteSig()"
-                class="flex items-center justify-center gap-1 md:px-2.5 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition cursor-pointer"
+                class="flex items-center justify-center gap-1 px-2.5 py-1 sm:py-1.5 rounded-md text-red-700 hover:bg-red-200 transition cursor-pointer whitespace-nowrap"
                 (click)="canDeleteSig() && delete.emit(task)">
                 <i class="bx bx-trash text-base"></i>
                 <span class="whitespace-nowrap">Delete</span>

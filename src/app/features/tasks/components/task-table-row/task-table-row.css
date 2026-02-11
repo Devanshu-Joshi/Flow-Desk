@@ -1,15 +1,28 @@
+/* ═══════════════════════════════════════════════════
+   ASSIGNEES CONTAINER
+   Outer flex wrapper for the "Assigned To" cell
+   ═══════════════════════════════════════════════════ */
 .assignees-container {
     display: flex;
     align-items: center;
     gap: 6px;
-
     width: 100%;
-    max-width: 220px;
-    /* desktop cap */
-    /* overflow: scroll; */
 }
 
-/* Inner scrolling layer */
+/* Card / input-field border appearance */
+.bordered {
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 4px 6px;
+    background: #fff;
+    min-height: 32px;
+}
+
+/* ═══════════════════════════════════════════════════
+   SCROLL TRACK
+   Horizontally-scrollable row of chips
+   Scrollbar hidden across all browsers
+   ═══════════════════════════════════════════════════ */
 .assignees-scroll {
     display: flex;
     align-items: center;
@@ -17,81 +30,63 @@
     width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
-    /* 🔥 Hide scrollbar everywhere */
     scrollbar-width: none;
     /* Firefox */
     -ms-overflow-style: none;
-    /* IE/Edge legacy */
+    /* IE / Edge legacy */
 }
 
 .assignees-scroll::-webkit-scrollbar {
     display: none;
-    /* Chrome/Safari/Edge */
+    /* Chrome / Safari / Edge */
 }
 
-/* 🔥 Expanded mode → show full names */
-.assignees-container.expanded .assignee-chip {
-    flex: 0 0 auto;
-    min-width: unset;
-    max-width: none;
-    flex: 0 0 auto;
-    overflow: visible;
-}
-
-.assignees-container.expanded .name {
-    overflow: visible;
-    text-overflow: clip;
-    white-space: nowrap;
-    /* still keep inline */
-}
-
-.assignees-container.expanded .assignees-scroll {
-    overflow-x: auto;
-    overflow-y: hidden;
-}
-
-/* 📱 Smaller screens */
-@media (max-width: 640px) {
-    .assignees-container {
-        width: 150px;
-        max-width: 150px;
-        gap: 4px;
-    }
-}
-
+/* ═══════════════════════════════════════════════════
+   CHIP — base pill style
+   ═══════════════════════════════════════════════════ */
 .assignee-chip {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-
     padding: 2px 6px;
     background: #f3f4f6;
     border-radius: 9999px;
     font-size: 12px;
-
     flex: 0 0 auto;
-    /* grow naturally */
-    min-width: unset;
-    max-width: none;
-    overflow: visible;
+    white-space: nowrap;
 }
 
 .name {
     white-space: nowrap;
-    overflow: visible;
-    text-overflow: clip;
     min-width: 0;
 }
 
-/* 📱 smaller chips on mobile */
-@media (max-width: 640px) {
-    .assignee-chip {
-        max-width: 70px;
-        font-size: 11px;
-        padding: 2px 5px;
-    }
+.avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    flex-shrink: 0;
 }
 
+/* ═══════════════════════════════════════════════════
+   "+N MORE" CHIP
+   Fixed 60px width so layout stays stable on toggle
+   Only overrides that differ from .assignee-chip
+   ═══════════════════════════════════════════════════ */
+.more-chip {
+    background: #e5e7eb;
+    font-weight: 600;
+    justify-content: center;
+    width: 60px;
+    min-width: 60px;
+    max-width: 60px;
+    flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════════
+   STATE: has-more  (collapsed — some users hidden)
+   Constrain chips, truncate names, lock scrolling
+   ═══════════════════════════════════════════════════ */
 .assignees-container.has-more .assignee-chip {
     flex: 0 1 auto;
     min-width: 65px;
@@ -106,43 +101,35 @@
 
 .assignees-container.has-more .assignees-scroll {
     overflow: hidden;
-    /* 🔥 lock scrolling */
 }
 
-.avatar {
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.more-chip {
-    background: #e5e7eb;
-    font-weight: 600;
-
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
+/* 🔧 FIX: Override .has-more constraints for the "+N more" chip
+   Without this, .has-more .assignee-chip (higher specificity)
+   would force 65-90px instead of the intended fixed 60px        */
+.assignees-container.has-more .more-chip {
+    flex: 0 0 auto;
     width: 60px;
-    /* 🔥 fixed width (match TS) */
     min-width: 60px;
     max-width: 60px;
-
-    padding: 2px 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    flex-shrink: 0;
-    /* never shrink */
 }
 
-/* Container field look */
-.bordered {
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 4px 6px;
-    background: #ffffff;
-    min-height: 32px;
+/* ═══════════════════════════════════════════════════
+   STATE: expanded  (all users visible, scrollable)
+   Remove constraints, show full names, allow scroll
+   ═══════════════════════════════════════════════════ */
+.assignees-container.expanded .assignee-chip {
+    flex: 0 0 auto;
+    min-width: unset;
+    max-width: none;
+    overflow: visible;
+}
+
+.assignees-container.expanded .name {
+    overflow: visible;
+    text-overflow: clip;
+}
+
+.assignees-container.expanded .assignees-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
 }

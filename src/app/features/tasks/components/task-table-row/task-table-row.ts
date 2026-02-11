@@ -16,11 +16,12 @@ import { TaskView } from '@core/models/Task';
 import { UserModel } from '@core/models/UserModel';
 import { UserAuth } from '@core/services/user-auth/user-auth';
 import { PermissionKey } from '@core/models/PermissionKey';
+import { TruncatePipe } from '@shared/pipes/truncate-pipe';
 
 @Component({
   selector: 'tr[app-task-table-row]',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TruncatePipe],
   templateUrl: './task-table-row.html',
   styleUrl: './task-table-row.css',
   host: {

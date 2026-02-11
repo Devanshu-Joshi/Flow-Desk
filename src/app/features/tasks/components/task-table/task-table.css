@@ -38,7 +38,3 @@ tr[cdkdrag] {
 .cdk-drag-placeholder {
     opacity: 0.35;
 }
-
-table {
-    table-layout: fixed;
-}
