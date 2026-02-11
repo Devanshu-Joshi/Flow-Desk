@@ -148,6 +148,7 @@ export class Sidebar implements AfterViewInit {
 
   openSidebar() {
     this.isOpen = true;
+    document.body.classList.add('body-lock');
   }
 
   openAdd() {
@@ -170,7 +171,7 @@ export class Sidebar implements AfterViewInit {
     password?.updateValueAndValidity();
 
     this.updatePermissionControls();
-    this.isOpen = true;
+    this.openSidebar();
   }
 
   openEdit(user: UserModel) {
@@ -187,7 +188,7 @@ export class Sidebar implements AfterViewInit {
     this.updatePermissionControls();
 
     this.selectedUser = user;
-    this.isOpen = true;
+    this.openSidebar();
   }
 
   openView(user: UserModel) {
@@ -202,7 +203,7 @@ export class Sidebar implements AfterViewInit {
 
     this.userForm.markAsPristine();
 
-    this.isOpen = true;
+    this.openSidebar();
   }
 
   openDelete(user: UserModel) {
@@ -220,7 +221,7 @@ export class Sidebar implements AfterViewInit {
     this.updatePermissionControls();
 
     this.selectedUser = user;
-    this.isOpen = true;
+    this.openSidebar();
   }
 
   private updateFieldAccessByMode(): void {
@@ -271,6 +272,7 @@ export class Sidebar implements AfterViewInit {
     this.userForm.reset();
     this.permissionsArray.controls.forEach(c => c.setValue(false));
     this.selectedUser = undefined;
+    document.body.classList.remove('body-lock');
   }
 
   private getSelectedPermissions(): PermissionKey[] {

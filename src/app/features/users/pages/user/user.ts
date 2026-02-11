@@ -22,7 +22,6 @@ export class User implements OnInit {
     this.users$ = this.userService.getUsersByParent();
   }
 
-
   @ViewChild('sidebar') sidebar!: Sidebar;
 
   onAddUser() {

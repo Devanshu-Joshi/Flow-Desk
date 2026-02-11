@@ -133,13 +133,6 @@ export class UserTable {
   /*                                   Data                                     */
   /* -------------------------------------------------------------------------- */
 
-  roleOptions = [
-    { label: 'All', value: null },
-    { label: 'Admin', value: 'ROLE_ADMIN' },
-    { label: 'User', value: 'ROLE_USER' },
-    { label: 'Guest', value: 'ROLE_GUEST' }
-  ];
-
   permissions: PermissionItem[] = [
     {
       key: PermissionKey.TASK_VIEW,

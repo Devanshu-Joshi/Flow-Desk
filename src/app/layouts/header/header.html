@@ -15,10 +15,15 @@
 
             @if(authService.isLoggedIn()){
 
-            <div routerLink="/users" routerLinkActive="text-purple-700"
+            <a routerLink="/dashboard" routerLinkActive="text-purple-700"
+                class="hover:text-purple-700 transition-colors cursor-pointer font-bold">
+                Dashboard
+            </a>
+
+            <a routerLink="/users" routerLinkActive="text-purple-700"
                 class="hover:text-purple-700 transition-colors cursor-pointer font-bold">
                 Users
-            </div>
+            </a>
 
             <a routerLink="/tasks" routerLinkActive="text-purple-700"
                 class="hover:text-purple-700 transition-colors cursor-pointer font-bold">
@@ -78,7 +83,7 @@
             <div class="flex items-center justify-between px-6 py-5 border-b border-purple-100">
                 <div>
                     <p class="text-lg font-extrabold text-purple-700">
-                        Temp User
+                        {{this.authService.currentUserSignal()?.name}}
                     </p>
                     <p class="text-sm text-gray-500">
                         {{this.authService.currentUserSignal()?.email}}
@@ -103,6 +108,12 @@
              bg-purple-50 text-purple-700
              hover:bg-purple-100 transition">
                     Users
+                </a>
+
+                <a routerLink="/tasks" (click)="isMobileMenuOpen = false" class="w-full px-4 py-3 rounded-xl
+             bg-purple-50 text-purple-700
+             hover:bg-purple-100 transition">
+                    Tasks
                 </a>
 
                 <button (click)="logout(); isMobileMenuOpen = false" class="w-full px-4 py-3 rounded-xl
