@@ -11,6 +11,7 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
+import { StatsCard } from '@shared/components/stats-card/stats-card';
 
 Chart.register(
   DoughnutController,
@@ -20,13 +21,13 @@ Chart.register(
   BarController,
   BarElement,
   CategoryScale,
-  LinearScale
+  LinearScale,
 );
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, StatsCard],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })

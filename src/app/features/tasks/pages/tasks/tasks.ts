@@ -17,7 +17,7 @@ import { UserService } from '@core/services/user/user.service';
 import { Task, TaskView } from '@core/models/Task';
 import { UserModel } from '@core/models/UserModel';
 
-import { StatsCard } from '@features/tasks/components/stats-card/stats-card';
+import { StatsCard } from '@shared/components/stats-card/stats-card';
 import { TaskFilters } from '@features/tasks/components/task-filters/task-filters';
 import { TaskTable } from '@features/tasks/components/task-table/task-table';
 import { TaskDialog } from '@shared/components/task-dialog/task-dialog';
