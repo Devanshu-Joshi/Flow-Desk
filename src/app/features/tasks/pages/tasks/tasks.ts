@@ -392,6 +392,7 @@ export class Tasks implements OnInit {
     this.taskForm.markAsUntouched();
     this.taskForm.markAsPristine();
     this.taskForm.updateValueAndValidity();
+    this.taskForm.enable();
 
     // 3. Reset UI state
     this.editingTaskId = null;
