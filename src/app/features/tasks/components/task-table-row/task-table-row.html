@@ -9,7 +9,7 @@
     </div>
 </td>
 
-<!-- Title — use min-w + truncate so it never fully collapses -->
+<!-- Title -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center font-medium text-gray-800">
     <span class="block truncate min-w-45 sm:min-w-60 mx-auto" [title]="task.title">
         {{ task.title | truncate:25:true }}
@@ -47,41 +47,47 @@
     </span>
 </td>
 
-<!-- ✅ Assigned Users — min-w so it never fully collapses -->
+<!-- ✅ Assigned Users -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
-    <!-- ^^^ md:block → md:table-cell -->
-    <div class="assignees-container bordered
-         w-45 min-w-45 max-w-45
-         sm:w-55 sm:min-w-55 sm:max-w-55
-         overflow-x-auto overflow-y-hidden
-         flex-none" [class.has-more]="hiddenCountSig() > 0" [class.expanded]="expandedSig()"
-        [attr.title]="getUsersTooltip(assignedUsersSig())" [class.few-users]="visibleUsersSig().length <= 2">
+    <div #assigneesContainer class="assignees-container" [class.expanded]="expandedSig()"
+        [attr.title]="!expandedSig() ? getUsersTooltip(assignedUsersSig()) : null">
 
-        @if(this.visibleUsersSig().length != 0){
-        <div class="assignees-scroll flex gap-2 w-max">
-            @for (user of visibleUsersSig(); track user.id) {
-            <span class="assignee-chip">
-                <img [src]="user.avatar" class="avatar" />
-                <span class="name whitespace-nowrap">{{ user.name }}</span>
-            </span>
-            }
-
-            @if (!expandedSig() && hiddenCountSig() > 0) {
-            <span class="assignee-chip more-chip cursor-pointer whitespace-nowrap" (click)="toggleExpanded()">
-                +{{ hiddenCountSig() }} more
-            </span>
-            }
-
-        </div>
-        } @else {
-        <div class="w-full flex items-center justify-center gap-2 text-gray-400 text-sm font-medium whitespace-nowrap">
+        @if (assignedUsersSig().length === 0) {
+        <!-- Empty state -->
+        <div class="empty-state">
             <svg class="w-4 h-4 opacity-70 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                 stroke-width="1.8">
                 <circle cx="12" cy="8" r="4" />
                 <path d="M4 20c2-4 14-4 16 0" />
             </svg>
-            <span class="whitespace-nowrap">No users assigned</span>
+            <span>No users assigned</span>
         </div>
+        } @else {
+        <!-- Main content area - scrollable wrapper -->
+        <div class="content-area">
+            <div #contentWrapper class="content-wrapper">
+                <div #chipsRow class="chips-row">
+                    @for (user of visibleUsersSig(); track user.id) {
+                    <span class="assignee-chip">
+                        <img [src]="user.avatar" class="avatar" alt="" />
+                        <span class="name">{{ user.name }}</span>
+                    </span>
+                    }
+                </div>
+            </div>
+
+            <!-- Fade overlay - only in expanded mode with overflow -->
+            @if (expandedSig() && hasOverflowSig()) {
+            <div class="fade-overlay"></div>
+            }
+        </div>
+
+        <!-- +N More button - ALWAYS outside scroll area, sticky right -->
+        @if (hiddenCountSig() > 0) {
+        <button class="more-chip" (click)="toggleExpanded($event)" type="button">
+            +{{ hiddenCountSig() }} more
+        </button>
+        }
         }
     </div>
 </td>
@@ -90,7 +96,6 @@
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 whitespace-nowrap">
     <div class="flex justify-center">
         <div class="flex items-center justify-center gap-2 w-full sm:w-auto">
-
             <button [disabled]="!canEditSig()" [class.opacity-40]="!canEditSig()"
                 [class.cursor-not-allowed]="!canEditSig()"
                 class="flex items-center justify-center gap-1 px-2.5 py-1 sm:py-1.5 rounded-md text-yellow-700 hover:bg-yellow-200 transition cursor-pointer whitespace-nowrap"
@@ -106,7 +111,6 @@
                 <i class="bx bx-trash text-base"></i>
                 <span class="whitespace-nowrap">Delete</span>
             </button>
-
         </div>
     </div>
 </td>
