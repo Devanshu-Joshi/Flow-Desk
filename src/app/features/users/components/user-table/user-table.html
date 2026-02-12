@@ -102,16 +102,15 @@
 
             <!-- 2. Table: Removed 'w-full', added 'min-w-full' to ensure it stretches if content is small, 
              but expands indefinitely if content is wide. Removed 'table-fixed'. -->
-            <table class="min-w-full text-xs sm:text-sm text-left border-collapse">
+            <table class="min-w-275 table-fixed text-xs sm:text-sm text-left border-collapse">
 
                 <thead class="bg-gray-50 text-gray-600 uppercase text-[10px] sm:text-xs sticky top-0 z-10 shadow-sm">
                     <tr>
-                        <th class="px-6 py-4 whitespace-nowrap text-center">S.No</th>
-                        <th class="px-6 py-4 whitespace-nowrap text-left">User</th>
-                        <th class="px-6 py-4 whitespace-nowrap text-center">Created Date</th>
-                        <!-- Permissions column -->
-                        <th class="px-6 py-4 whitespace-nowrap text-left">Permissions</th>
-                        <th class="px-6 py-4 whitespace-nowrap text-center">Action</th>
+                        <th class="w-20 px-6 py-4 text-center">S.No</th>
+                        <th class="w-75 px-6 py-4 text-left">User</th>
+                        <th class="w-40 px-6 py-4 text-center whitespace-nowrap">Created Date</th>
+                        <th class="w-95 px-6 py-4 text-left">Permissions</th>
+                        <th class="w-45 px-6 py-4 text-center">Action</th>
                     </tr>
                 </thead>
 
@@ -122,8 +121,7 @@
                     track user.id
                     ) {
                     <!-- Added whitespace-nowrap to the row to ensure nothing wraps -->
-                    <tr class="hover:bg-gray-50 transition-colors duration-150 whitespace-nowrap"
-                        (click)="viewUser.emit(user)">
+                    <tr class="hover:bg-gray-50 transition-colors duration-150" (click)="viewUser.emit(user)">
 
                         <!-- S.No -->
                         <td class="px-6 py-4 text-center font-medium text-gray-500">
@@ -131,16 +129,18 @@
                         </td>
 
                         <!-- User Info: Removed 'truncate' so full name/email shows -->
-                        <td class="px-6 py-4">
+                        <td class="w-75 px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <img [src]="user.avatar || 'assets/avatar-placeholder.png'"
                                     class="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
                                     alt="avatar" />
-                                <div>
-                                    <p class="font-semibold text-gray-800 text-sm">
-                                        {{ user.name }}
+
+                                <div class="w-55">
+                                    <p class="font-semibold text-gray-800 text-sm truncate" [title]="user.name">
+                                        {{ user.name | slice:0:25 }}{{ user.name.length > 25 ? '...' : '' }}
                                     </p>
-                                    <p class="text-xs text-gray-500">
+
+                                    <p class="text-xs text-gray-500 truncate" [title]="user.email">
                                         {{ user.email }}
                                     </p>
                                 </div>
@@ -153,30 +153,32 @@
                         </td>
 
                         <!-- Permissions: The star of the show -->
-                        <td class="px-6 py-4">
-                            <!-- flex-nowrap ensures one line -->
-                            <div class="flex flex-nowrap items-center gap-2">
-                                @if (user.permissions.length) {
-                                @for (perm of user.permissions; track perm) {
-                                <!-- Dynamic Classes + Ring for definition + Border -->
-                                <span
-                                    class="px-2.5 py-1 text-[11px] font-medium rounded-md border shadow-sm ring-1 ring-inset"
-                                    [ngClass]="getPermissionClass(perm)">
-                                    {{ getPermissionLabel(perm) }}
-                                </span>
-                                }
-                                } @else {
-                                <span
-                                    class="px-2.5 py-1 text-[11px] font-medium rounded-md bg-gray-50 text-gray-400 border border-gray-200">
-                                    No permissions
-                                </span>
-                                }
+                        <td class="w-95 px-6 py-4">
+                            <div class="w-full overflow-hidden">
+                                <div class="flex flex-nowrap gap-2 overflow-hidden">
+
+                                    @if (user.permissions.length) {
+                                    @for (perm of user.permissions; track perm) {
+                                    <span
+                                        class="px-2.5 py-1 text-[11px] font-medium rounded-md border shadow-sm ring-1 ring-inset whitespace-nowrap shrink-0"
+                                        [ngClass]="getPermissionClass(perm)">
+                                        {{ getPermissionLabel(perm) }}
+                                    </span>
+                                    }
+                                    } @else {
+                                    <span
+                                        class="px-2.5 py-1 text-[11px] font-medium rounded-md bg-gray-50 text-gray-400 border border-gray-200">
+                                        No permissions
+                                    </span>
+                                    }
+
+                                </div>
                             </div>
                         </td>
 
                         <!-- Actions -->
-                        <td class="px-6 py-4 text-center" (click)="$event.stopPropagation()">
-                            <div class="flex justify-center gap-3">
+                        <td class="w-45 px-6 py-4 text-center" (click)="$event.stopPropagation()">
+                            <div class="flex justify-center gap-3 whitespace-nowrap">
                                 <button
                                     class="text-yellow-700 hover:text-yellow-600 hover:bg-yellow-50 px-2 py-1 rounded transition-colors duration-200 flex items-center gap-1.5 cursor-pointer"
                                     (click)="editUser.emit(user); $event.stopPropagation()">
