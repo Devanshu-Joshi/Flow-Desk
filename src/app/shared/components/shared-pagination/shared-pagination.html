@@ -2,7 +2,7 @@
     <div class="flex flex-col sm:flex-row gap-3 items-center">
         <!-- ===================== PAGE SIZE DROPDOWN ===================== -->
         <div class="relative paginationContainer">
-            <ng-select class="items-per-page-select w-full" [items]="pageSizeOptions" [clearable]="false"
+            <ng-select class="items-per-page-select filter-select w-full" [items]="pageSizeOptions" [clearable]="false"
                 [searchable]="false" [ngModel]="selectedPageSize" (ngModelChange)="onPageSizeChange($event)"
                 [closeOnSelect]="true" [dropdownPosition]="'top'" [appendTo]="'.paginationContainer'">
 
