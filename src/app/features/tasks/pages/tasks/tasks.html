@@ -31,7 +31,7 @@
                 [sortField]="sortField()" [sortDirection]="sortDirection()" (editTask)="edit($event)"
                 (deleteTask)="delete($event)" (pageChange)="p = $event" (clearFilters)="clearFilters()"
                 (sortByChange)="sortBy($event)" [clearExpandedTrigger]="clearExpandedTrigger()" [users]="users()"
-                [pageSizeOptions]="pageSizeOptions" [(selectedPageSize)]="selectedPageSize"
+                [pageSizeOptions]="pageSizeOptions" [selectedPageSize]="selectedPageSize()"
                 (pageSizeChangeTrigger)="setItemsPerPage($event)">
             </app-task-table>
             } @else {

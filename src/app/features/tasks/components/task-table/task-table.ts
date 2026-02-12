@@ -51,7 +51,7 @@ export class TaskTable implements OnChanges {
   @Input() sortDirection: 'asc' | 'desc' = 'desc';
   @Input() clearExpandedTrigger!: number;
   pageSizeOptions = input.required<readonly (number | string)[]>();
-  selectedPageSize = model<number | 'All'>(5);
+  @Input() selectedPageSize!: number | 'All';
 
   /* -------------------------------------------------------------------------- */
   /*                                   Outputs                                  */
