@@ -50,12 +50,15 @@
 <!-- ✅ Assigned Users — min-w so it never fully collapses -->
 <td class="px-1.5 sm:px-4 py-2 sm:py-3 text-center">
     <!-- ^^^ md:block → md:table-cell -->
-    <div class="assignees-container bordered min-w-45 sm:min-w-55" [class.has-more]="hiddenCountSig() > 0"
-        [class.expanded]="expandedSig()" [attr.title]="getUsersTooltip(assignedUsersSig())"
-        [class.few-users]="visibleUsersSig().length <= 2">
+    <div class="assignees-container bordered
+         w-45 min-w-45 max-w-45
+         sm:w-55 sm:min-w-55 sm:max-w-55
+         overflow-x-auto overflow-y-hidden
+         flex-none" [class.has-more]="hiddenCountSig() > 0" [class.expanded]="expandedSig()"
+        [attr.title]="getUsersTooltip(assignedUsersSig())" [class.few-users]="visibleUsersSig().length <= 2">
 
         @if(this.visibleUsersSig().length != 0){
-        <div class="assignees-scroll flex justify-center">
+        <div class="assignees-scroll flex gap-2 w-max">
             @for (user of visibleUsersSig(); track user.id) {
             <span class="assignee-chip">
                 <img [src]="user.avatar" class="avatar" />

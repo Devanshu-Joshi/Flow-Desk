@@ -98,7 +98,7 @@
                 </div>
                 <ng-select formControlName="priority" [items]="priorityOptions" bindLabel="label" bindValue="value"
                     [searchable]="false" placeholder="Select task priority" class="filter-select"
-                    [dropdownPosition]="'bottom'" appendTo=".priorityContainer">
+                    [dropdownPosition]="'top'" appendTo=".priorityContainer">
                 </ng-select>
             </div>
             @if (isFieldInvalid('priority')) {
