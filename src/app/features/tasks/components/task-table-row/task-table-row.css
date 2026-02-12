@@ -182,3 +182,23 @@
     border-color: #93c5fd;
     box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.1);
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   STATE: expanded
+   ═══════════════════════════════════════════════════════════════════════════ */
+.assignees-container.expanded .chips-row {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* ✅ FIX: Add padding at the end so the last user isn't covered by the fade */
+    /* Width should be slightly larger than your fade-overlay width (approx 30-40px) */
+    padding-right: 10px;
+}
+
+/* Ensure the scrollbar remains hidden (keep your existing scrollbar hiding code) */
+.assignees-container.expanded .chips-row {
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE/Edge */
+}
