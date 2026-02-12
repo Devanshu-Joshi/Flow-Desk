@@ -80,7 +80,7 @@
                 </div>
                 <ng-select formControlName="status" [items]="statusOptions" bindLabel="label" bindValue="value"
                     [searchable]="false" placeholder="Select task status" class="filter-select"
-                    [dropdownPosition]="'bottom'">
+                    [dropdownPosition]="'bottom'" clearable="false">
                 </ng-select>
             </div>
             @if (isFieldInvalid('status')) {
@@ -98,11 +98,11 @@
                 </div>
                 <ng-select formControlName="priority" [items]="priorityOptions" bindLabel="label" bindValue="value"
                     [searchable]="false" placeholder="Select task priority" class="filter-select"
-                    [dropdownPosition]="'top'" appendTo=".priorityContainer">
+                    [dropdownPosition]="'top'" appendTo=".priorityContainer" clearable="false">
                 </ng-select>
             </div>
             @if (isFieldInvalid('priority')) {
-            <p class="text-red-500 text-xs -mt-3 ml-3 mb-1">Priority is required</p>
+            <p class=" text-red-500 text-xs -mt-3 ml-3 mb-1">Priority is required</p>
             }
 
         </form>
