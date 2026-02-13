@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   Chart,
@@ -12,6 +12,7 @@ import {
   LinearScale,
 } from 'chart.js';
 import { StatsCard } from '@shared/components/stats-card/stats-card';
+import { ChangeDetectorRef } from '@angular/core';
 
 Chart.register(
   DoughnutController,
@@ -75,7 +76,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   totalVisibleTasks = 0;
   hasData = false;
 
-  constructor() {
+  constructor(private cd: ChangeDetectorRef) {
     this.allTasks = this.generateDummyTasks();
   }
 
@@ -133,13 +134,15 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     this.totalVisibleTasks = total;
     this.hasData = total > 0;
 
+    this.cd.detectChanges();
+
     if (this.pieChart) {
       this.pieChart.destroy();
       this.pieChart = null;
     }
 
     if (this.hasData) {
-      setTimeout(() => this.createDoughnutChart(), 0);
+      Promise.resolve().then(() => this.createDoughnutChart());
     }
   }
 
@@ -173,13 +176,15 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     });
   }
 
+  @ViewChild('taskPieChart') canvas!: ElementRef<HTMLCanvasElement>;
+
   // ─── Doughnut Chart ────────────────────────────────
 
   private createDoughnutChart(): void {
-    const canvas = document.getElementById('taskPieChart') as HTMLCanvasElement;
-    if (!canvas) return;
 
-    this.pieChart = new Chart(canvas, {
+    if (!this.canvas) return;
+
+    this.pieChart = new Chart(this.canvas.nativeElement, {
       type: 'doughnut',
       data: {
         labels: this.legends.map((l) => l.label),

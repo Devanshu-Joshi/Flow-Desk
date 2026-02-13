@@ -39,8 +39,8 @@
                     <div class="flex flex-col md:flex-row items-center gap-8 flex-1">
 
                         <!-- Doughnut Chart -->
-                        <div class="w-52 h-52 md:w-60 md:h-60 relative flex-shrink-0">
-                            <canvas id="taskPieChart"></canvas>
+                        <div class="w-52 h-52 md:w-60 md:h-60 relative shrink-0">
+                            <canvas #taskPieChart id="taskPieChart"></canvas>
                             <div class="absolute inset-0 flex items-center justify-center text-center
                           pointer-events-none">
                                 <div>
@@ -98,7 +98,7 @@
                             <i class="bx bx-pie-chart-alt-2 text-3xl text-gray-300"></i>
                         </div>
                         <p class="text-gray-500 font-semibold text-base">No tasks found</p>
-                        <p class="text-gray-400 text-sm mt-1 text-center max-w-[240px]">
+                        <p class="text-gray-400 text-sm mt-1 text-center max-w-60">
                             There are no tasks scheduled for the selected time period
                         </p>
                     </div>
