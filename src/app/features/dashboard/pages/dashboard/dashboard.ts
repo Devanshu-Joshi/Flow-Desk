@@ -301,4 +301,17 @@ export class Dashboard implements AfterViewInit, OnDestroy {
       },
     });
   }
+
+  get completedTasksCount(): number {
+    return this.allTasks().filter(task => task.status === 'COMPLETED').length;
+  }
+
+  get incompleteTasksCount(): number {
+    return this.allTasks().filter(task => task.status === 'INCOMPLETE').length;
+  }
+
+  get inProgressTasksCount(): number {
+    return this.allTasks().filter(task => task.status === 'IN_PROGRESS').length;
+  }
+
 }
