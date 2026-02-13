@@ -215,7 +215,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
           legend: { display: false },
           tooltip: {
             enabled: true,
-            backgroundColor: 'rgba(15, 23, 42, 0.92)',
+            backgroundColor: 'rgba(15, 23, 42, 1)',
             titleColor: '#ffffff',
             bodyColor: '#e2e8f0',
             titleFont: { size: 14 },
