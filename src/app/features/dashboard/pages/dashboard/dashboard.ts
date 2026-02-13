@@ -1,317 +1,795 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, Signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
-  Chart,
-  DoughnutController,
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-} from 'chart.js';
-import { StatsCard } from '@shared/components/stats-card/stats-card';
-import { ChangeDetectorRef } from '@angular/core';
-import { TaskService } from '@core/services/task/task.service';
+    Component,
+    AfterViewInit,
+    OnDestroy,
+    ViewChild,
+    ElementRef,
+    Signal,
+    DestroyRef,
+    inject,
+    signal
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Chart, layouts, registerables } from 'chart.js';
 import { TaskView } from '@core/models/Task';
+import { Observable } from 'rxjs';
+import { UserModel } from '@core/models/UserModel';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { UserAuth } from '@core/services/user-auth/user-auth';
 
-Chart.register(
-  DoughnutController,
-  ArcElement,
-  Tooltip,
-  Legend,
-  BarController,
-  BarElement,
-  CategoryScale,
-  LinearScale,
-);
+Chart.register(...registerables);
+
+interface User {
+    id: string;
+    name: string;
+    email: string;
+    avatar: string;
+    permissions: string[];
+    parentId: string;
+    createdAt: string;
+}
 
 interface Task {
-  id: number;
-  title: string;
-  status: 'incomplete' | 'in-progress' | 'completed';
-  dueDate: Date;
+    id: string;
+    title: string;
+    status: string;
+    priority: string;
+    dueDate: string;
+    assignedTo: string[];
+    userId: string;
+    parentId: string;
+    createdAt: string;
 }
-
-interface LegendItem {
-  label: string;
-  color: string;
-  hoverColor: string;
-  count: number;
-  percentage: string;
-  active: boolean;
-}
-
-type PeriodType = 'today' | 'weekly' | 'monthly';
 
 @Component({
-  selector: 'app-dashboard',
-  standalone: true,
-  imports: [CommonModule, StatsCard],
-  templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css',
+    selector: 'app-dashboard',
+    standalone: true,
+    imports: [CommonModule],
+    templateUrl: './dashboard.html',
+    styleUrl: './dashboard.css',
 })
 export class Dashboard implements AfterViewInit, OnDestroy {
-  // ─── Dummy Task Data ───────────────────────────────
-  allTasks!: Signal<TaskView[]>;
 
-  // ─── Period Filter ─────────────────────────────────
-  selectedPeriod: PeriodType = 'weekly';
-  periods: { label: string; value: PeriodType }[] = [
-    { label: 'Today', value: 'today' },
-    { label: 'Weekly', value: 'weekly' },
-    { label: 'Monthly', value: 'monthly' },
-  ];
+    tasks!: Signal<TaskView[]>;
+    users$!: Observable<UserModel[] | null>;
+    private destroyRef = inject(DestroyRef);
+    users = signal<UserModel[] | null>(null);
 
-  // ─── Chart Reference ──────────────────────────────
-  private pieChart: Chart | null = null;
+    ngOnInit(): void {
+        // this.isLoading.set(true);
 
-  // ─── Legend Items ──────────────────────────────────
-  legends: LegendItem[] = [
-    { label: 'Incomplete', color: '#EF4444', hoverColor: '#DC2626', count: 0, percentage: '0', active: true },
-    { label: 'In Progress', color: '#F59E0B', hoverColor: '#D97706', count: 0, percentage: '0', active: true },
-    { label: 'Completed', color: '#10B981', hoverColor: '#059669', count: 0, percentage: '0', active: true },
-  ];
+        this.users$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(users => {
 
-  // ─── State ─────────────────────────────────────────
-  totalVisibleTasks = 0;
-  hasData = false;
+                // 🟡 STILL LOADING
+                if (users === null) {
+                    // this.isLoading.set(true);
+                    return;
+                }
 
-  constructor(private cd: ChangeDetectorRef, public taskService: TaskService) {
-    this.allTasks = this.taskService.tasksView;
-  }
+                this.users.set(users);
+                // console.log(this.users(), this.isLoading());
+                // this.isLoading.set(false);
 
-  ngAfterViewInit(): void {
-    this.updatePieChart();
-    this.createBarChart();
-  }
+                // console.log('Loaded users:', filteredUsers);
+            });
+    }
 
-  ngOnDestroy(): void {
-    this.pieChart?.destroy();
-  }
-
-  // ─── Event Handlers ────────────────────────────────
-
-  onPeriodChange(period: PeriodType): void {
-    if (this.selectedPeriod === period) return;
-    this.selectedPeriod = period;
-    this.updatePieChart();
-  }
-
-  toggleLegend(index: number): void {
-    if (!this.pieChart) return;
-
-    this.legends[index].active = !this.legends[index].active;
-    this.pieChart.toggleDataVisibility(index);
-    this.pieChart.update();
-
-    this.totalVisibleTasks = this.legends
-      .filter((l) => l.active)
-      .reduce((sum, l) => sum + l.count, 0);
-  }
-
-  // ─── Data Processing ───────────────────────────────
-
-  private updatePieChart(): void {
-    const filtered = this.filterTasksByPeriod();
-
-    const counts = {
-      incomplete: filtered.filter((t) => t.status === 'INCOMPLETE').length,
-      inProgress: filtered.filter((t) => t.status === 'IN_PROGRESS').length,
-      completed: filtered.filter((t) => t.status === 'COMPLETED').length,
+    // ──────────── STATE ────────────
+    statusView: 'status' | 'priority' = 'status';
+    selectedUserIds: string[] = ['1', '2', '5'];
+    timelineMode: 'daily' | 'cumulative' = 'cumulative';
+    showCompletionLine = true;
+    workloadFilters: Record<string, boolean> = {
+        COMPLETED: true,
+        IN_PROGRESS: true,
+        INCOMPLETE: true,
     };
 
-    const total = counts.incomplete + counts.inProgress + counts.completed;
+    userColors: Record<string, string> = {
+        '1': '#6366f1',
+        '2': '#06b6d4',
+        '3': '#f59e0b',
+        '4': '#ef4444',
+        '5': '#10b981',
+        '6': '#8b5cf6',
+        '7': '#ec4899',
+        '8': '#14b8a6',
+        '9': '#f97316',
+    };
 
-    this.legends[0].count = counts.incomplete;
-    this.legends[1].count = counts.inProgress;
-    this.legends[2].count = counts.completed;
+    private permissionKeys = [
+        'TASK_VIEW',
+        'TASK_CREATE',
+        'TASK_EDIT',
+        'TASK_DELETE',
+        'MANAGE_USER',
+    ];
+    private permissionLabels = ['View', 'Create', 'Edit', 'Delete', 'Manage'];
 
-    this.legends.forEach((l) => {
-      l.percentage = total > 0 ? ((l.count / total) * 100).toFixed(1) : '0';
-      l.active = true;
-    });
+    // ──────────── CHART INSTANCES ────────────
+    private statusChart: Chart | null = null;
+    private radarChart: Chart | null = null;
+    private timelineChart: Chart | null = null;
+    private workloadChart: Chart | null = null;
+    private dueDateChart: Chart | null = null;
 
-    this.totalVisibleTasks = total;
-    this.hasData = total > 0;
+    // ──────────── VIEW CHILDREN ────────────
+    @ViewChild('statusCanvas') statusCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('radarCanvas') radarCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('timelineCanvas') timelineCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('workloadCanvas') workloadCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('dueDateCanvas') dueDateCanvas!: ElementRef<HTMLCanvasElement>;
 
-    this.cd.detectChanges();
-
-    if (this.pieChart) {
-      this.pieChart.destroy();
-      this.pieChart = null;
+    // ──────────── COMPUTED ────────────
+    get completedCount(): number {
+        return this.tasks().filter((t) => t.status === 'COMPLETED').length;
+    }
+    get inProgressCount(): number {
+        return this.tasks().filter((t) => t.status === 'IN_PROGRESS').length;
+    }
+    get incompleteCount(): number {
+        return this.tasks().filter((t) => t.status === 'INCOMPLETE').length;
+    }
+    get completionRate(): string {
+        return ((this.completedCount / this.tasks.length) * 100).toFixed(1);
     }
 
-    if (this.hasData) {
-      Promise.resolve().then(() => this.createDoughnutChart());
+    // ──────────── LIFECYCLE ────────────
+    ngAfterViewInit(): void {
+        setTimeout(() => {
+            this.initStatusChart();
+            this.initRadarChart();
+            this.initTimelineChart();
+            this.initWorkloadChart();
+            this.initDueDateChart();
+        }, 0);
     }
-  }
 
-  private filterTasksByPeriod(): TaskView[] {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const todayEnd = new Date(today);
-    todayEnd.setHours(23, 59, 59, 999);
+    ngOnDestroy(): void {
+        [
+            this.statusChart,
+            this.radarChart,
+            this.timelineChart,
+            this.workloadChart,
+            this.dueDateChart,
+        ].forEach((c) => c?.destroy());
+    }
 
-    return this.allTasks().filter((task) => {
-      const dueDate = new Date(task.dueDate);
+    // ──────────── HELPERS ────────────
+    getShortName(name: string): string {
+        const p = name.split(' ');
+        return p.length > 2 ? p[0] : name;
+    }
 
-      switch (this.selectedPeriod) {
-        case 'today':
-          return dueDate >= today && dueDate <= todayEnd;
+    isUserSelected(id: string): boolean {
+        return this.selectedUserIds.includes(id);
+    }
 
-        case 'weekly': {
-          const weekEnd = new Date(today);
-          weekEnd.setDate(weekEnd.getDate() + 6);
-          weekEnd.setHours(23, 59, 59, 999);
-          return dueDate >= today && dueDate <= weekEnd;
-        }
+    private getUserPermissions(id: string): number[] {
+        const u = this.users().find((x) => x.id === id);
+        return this.permissionKeys.map((k) =>
+            u?.permissions.includes(k) ? 1 : 0
+        );
+    }
 
-        case 'monthly': {
-          const monthEnd = new Date(today);
-          monthEnd.setDate(monthEnd.getDate() + 29);
-          monthEnd.setHours(23, 59, 59, 999);
-          return dueDate >= today && dueDate <= monthEnd;
-        }
-      }
-    });
-  }
-
-  @ViewChild('taskPieChart') canvas!: ElementRef<HTMLCanvasElement>;
-
-  // ─── Doughnut Chart ────────────────────────────────
-
-  private createDoughnutChart(): void {
-
-    if (!this.canvas) return;
-
-    this.pieChart = new Chart(this.canvas.nativeElement, {
-      type: 'doughnut',
-      data: {
-        labels: this.legends.map((l) => l.label),
-        datasets: [
-          {
-            data: this.legends.map((l) => l.count),
-            backgroundColor: this.legends.map((l) => l.color),
-            hoverBackgroundColor: this.legends.map((l) => l.hoverColor),
-            borderWidth: 3,
-            borderColor: 'rgba(255, 255, 255, 0.9)',
-            hoverBorderWidth: 3,
-            hoverBorderColor: '#ffffff',
-            hoverOffset: 10,
-          },
-        ],
-      },
-      options: {
-        cutout: '70%',
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-          animateRotate: true,
-          animateScale: true,
-          duration: 700,
-          easing: 'easeInOutQuart',
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: true,
-            backgroundColor: 'rgba(15, 23, 42, 1)',
-            titleColor: '#ffffff',
-            bodyColor: '#e2e8f0',
-            titleFont: { size: 14 },
-            bodyFont: { size: 13 },
-            padding: 14,
+    private lightTooltip(): any {
+        return {
+            backgroundColor: '#ffffff',
+            titleColor: '#0f172a',
+            bodyColor: '#334155',
+            borderColor: 'rgba(0,0,0,0.08)',
+            borderWidth: 1,
             cornerRadius: 10,
+            padding: 12,
+            boxPadding: 4,
             displayColors: true,
-            boxWidth: 12,
-            boxHeight: 12,
-            boxPadding: 6,
-            usePointStyle: true,
-            callbacks: {
-              label: (context) => {
-                const value = context.parsed;
-                const total = (context.dataset.data as number[]).reduce(
-                  (a, b) => a + b,
-                  0,
-                );
-                const pct =
-                  total > 0 ? ((value / total) * 100).toFixed(1) : '0';
-                return ` ${value} tasks · ${pct}%`;
-              },
+            titleFont: { size: 13, weight: 'bold' as const },
+            bodyFont: { size: 12 },
+        };
+    }
+
+    // ═══════════════════════════════════════════
+    //  CHART 1 – DOUGHNUT (Status / Priority)
+    // ═══════════════════════════════════════════
+    private initStatusChart(): void {
+        const ctx = this.statusCanvas.nativeElement.getContext('2d')!;
+
+        const centerText = {
+            id: 'doughnutCenter',
+            beforeDraw: (chart: any) => {
+                const { ctx } = chart;
+                const { left, right, top, bottom } = chart.chartArea;
+
+                const centerX = (left + right) / 2;
+                const centerY = (top + bottom) / 2;
+
+                const total = (chart.data.datasets[0].data as number[])
+                    .reduce((a: number, b: number) => a + b, 0);
+
+                ctx.save();
+
+                // Total number
+                ctx.font = 'bold 26px Inter, system-ui, sans-serif';
+                ctx.fillStyle = '#0f172a';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(total.toString(), centerX, centerY - 8);
+
+                // Label
+                ctx.font = '12px Inter, system-ui, sans-serif';
+                ctx.fillStyle = '#64748b';
+                ctx.fillText('Total', centerX, centerY + 14);
+
+                ctx.restore();
             },
-          },
-        },
-      },
-    });
-  }
+        };
 
-  // ─── Bar Chart (UNTOUCHED) ─────────────────────────
+        this.statusChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: this.buildStatusData(),
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '68%',
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#475569',
+                            padding: 18,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            font: { size: 12 },
+                        },
+                    },
+                    tooltip: {
+                        ...this.lightTooltip(),
+                        callbacks: {
+                            label: (ctx: any) => {
+                                const total = (ctx.dataset.data as number[]).reduce(
+                                    (a, b) => a + b,
+                                    0
+                                );
+                                const pct = (((ctx.raw as number) / total) * 100).toFixed(1);
+                                return ` ${ctx.label}: ${ctx.raw} tasks (${pct}%)`;
+                            },
+                        },
+                    },
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true,
+                    duration: 900,
+                    easing: 'easeOutQuart',
+                },
+            },
+            plugins: [centerText],
+        } as any);
+    }
 
-  createBarChart() {
-    new Chart('salaryChart', {
-      type: 'bar',
-      data: {
-        labels: ['Kristin', 'Colleen', 'Cameron', 'Angel', 'Greg', 'Cody'],
-        datasets: [
-          {
-            label: 'Allowance',
-            data: [20000, 15000, 18000, 22000, 20000, 25000],
-            backgroundColor: '#6366F1',
-            borderRadius: 6,
-          },
-          {
-            label: 'Stocks',
-            data: [30000, 25000, 20000, 15000, 18000, 30000],
-            backgroundColor: '#3B82F6',
-            borderRadius: 6,
-          },
-          {
-            label: 'Bonus',
-            data: [20000, 15000, 17000, 12000, 14000, 20000],
-            backgroundColor: '#22D3EE',
-            borderRadius: 6,
-          },
-          {
-            label: 'Tax',
-            data: [10000, 8000, 9000, 7000, 6000, 12000],
-            backgroundColor: '#A5F3FC',
-            borderRadius: 6,
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-        },
-        scales: {
-          x: {
-            stacked: true,
-            grid: { display: false },
-          },
-          y: {
-            stacked: true,
-            grid: { color: '#e5e7eb' },
-          },
-        },
-      },
-    });
-  }
+    private buildStatusData(): any {
+        if (this.statusView === 'status') {
+            return {
+                labels: ['Completed', 'In Progress', 'Incomplete'],
+                datasets: [
+                    {
+                        data: [
+                            this.completedCount,
+                            this.inProgressCount,
+                            this.incompleteCount,
+                        ],
+                        backgroundColor: [
+                            'rgba(16,185,129,0.75)',
+                            'rgba(245,158,11,0.75)',
+                            'rgba(239,68,68,0.75)',
+                        ],
+                        borderColor: [
+                            'rgba(16,185,129,1)',
+                            'rgba(245,158,11,1)',
+                            'rgba(239,68,68,1)',
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 12,
+                        hoverBorderWidth: 3,
+                    },
+                ],
+            };
+        } else {
+            const h = this.tasks().filter((t) => t.priority === 'HIGH').length;
+            const n = this.tasks().filter((t) => t.priority === 'NORMAL').length;
+            const l = this.tasks().filter((t) => t.priority === 'LOW').length;
+            return {
+                labels: ['High', 'Normal', 'Low'],
+                datasets: [
+                    {
+                        data: [h, n, l],
+                        backgroundColor: [
+                            'rgba(239,68,68,0.75)',
+                            'rgba(99,102,241,0.75)',
+                            'rgba(6,182,212,0.75)',
+                        ],
+                        borderColor: [
+                            'rgba(239,68,68,1)',
+                            'rgba(99,102,241,1)',
+                            'rgba(6,182,212,1)',
+                        ],
+                        borderWidth: 2,
+                        hoverOffset: 15,
+                        hoverBorderWidth: 3,
+                    },
+                ],
+            };
+        }
+    }
 
-  get completedTasksCount(): number {
-    return this.allTasks().filter(task => task.status === 'COMPLETED').length;
-  }
+    toggleStatusView(v: 'status' | 'priority'): void {
+        this.statusView = v;
+        if (this.statusChart) {
+            this.statusChart.data = this.buildStatusData();
+            this.statusChart.update();
+        }
+    }
 
-  get incompleteTasksCount(): number {
-    return this.allTasks().filter(task => task.status === 'INCOMPLETE').length;
-  }
+    // ═══════════════════════════════════════════
+    //  CHART 2 – RADAR (Permissions)
+    // ═══════════════════════════════════════════
+    private initRadarChart(): void {
+        const ctx = this.radarCanvas.nativeElement.getContext('2d')!;
+        this.radarChart = new Chart(ctx, {
+            type: 'radar',
+            data: this.buildRadarData(),
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        angleLines: { color: 'rgba(0,0,0,0.08)' },
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        pointLabels: {
+                            color: '#334155',
+                            font: { size: 11, weight: 'bold' as any },
+                        },
+                        ticks: { display: false, stepSize: 1 },
+                        suggestedMin: 0,
+                        suggestedMax: 1,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#475569',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 14,
+                            font: { size: 11 },
+                        },
+                    },
+                    tooltip: {
+                        ...this.lightTooltip(),
+                        callbacks: {
+                            label: (ctx: any) => {
+                                const perm = this.permissionLabels[ctx.dataIndex];
+                                return ` ${ctx.dataset.label}: ${ctx.raw === 1 ? '✓' : '✗'} ${perm}`;
+                            },
+                        },
+                    },
+                },
+                animation: { duration: 700, easing: 'easeOutQuart' },
+            },
+        });
+    }
 
-  get inProgressTasksCount(): number {
-    return this.allTasks().filter(task => task.status === 'IN_PROGRESS').length;
-  }
+    private buildRadarData(): any {
+        return {
+            labels: this.permissionLabels,
+            datasets: this.selectedUserIds.map((uid) => {
+                const c = this.userColors[uid];
+                const u = this.users().find((x) => x.id === uid);
+                return {
+                    label: u ? this.getShortName(u.name) : uid,
+                    data: this.getUserPermissions(uid),
+                    backgroundColor: c + '18',
+                    borderColor: c,
+                    pointBackgroundColor: c,
+                    pointBorderColor: '#ffffff',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 8,
+                    borderWidth: 2.5,
+                    fill: true,
+                };
+            }),
+        };
+    }
 
+    toggleUserSelection(id: string): void {
+        const i = this.selectedUserIds.indexOf(id);
+        if (i > -1) {
+            if (this.selectedUserIds.length > 1) this.selectedUserIds.splice(i, 1);
+        } else {
+            this.selectedUserIds.push(id);
+        }
+        if (this.radarChart) {
+            this.radarChart.data = this.buildRadarData();
+            this.radarChart.update('active');
+        }
+    }
+
+    // ═══════════════════════════════════════════
+    //  CHART 3 – TIMELINE (Daily / Cumulative)
+    // ═══════════════════════════════════════════
+    private initTimelineChart(): void {
+        const ctx = this.timelineCanvas.nativeElement.getContext('2d')!;
+        this.timelineChart = new Chart(ctx, {
+            type: this.timelineMode === 'cumulative' ? 'line' : 'bar',
+            data: this.buildTimelineData(ctx),
+            options: this.timelineOpts(),
+        });
+    }
+
+    private buildTimelineData(ctx?: CanvasRenderingContext2D): any {
+        const map: Record<string, number> = {};
+        this.tasks().forEach((t) => {
+            const d = t.createdAt.split('T')[0];
+            map[d] = (map[d] || 0) + 1;
+        });
+        const dates = Object.keys(map).sort();
+        const daily = dates.map((d) => map[d]);
+        const cumulative: number[] = [];
+        let sum = 0;
+        daily.forEach((c) => {
+            sum += c;
+            cumulative.push(sum);
+        });
+        const labels = dates.map((d) => {
+            const dt = new Date(d + 'T00:00:00');
+            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+
+        if (this.timelineMode === 'cumulative') {
+            let bg: any = 'rgba(99,102,241,0.12)';
+            if (ctx) {
+                const g = ctx.createLinearGradient(0, 0, 0, 280);
+                g.addColorStop(0, 'rgba(99,102,241,0.35)');
+                g.addColorStop(1, 'rgba(99,102,241,0.01)');
+                bg = g;
+            }
+            return {
+                labels,
+                datasets: [
+                    {
+                        label: 'Cumulative Tasks',
+                        data: cumulative,
+                        fill: true,
+                        backgroundColor: bg,
+                        borderColor: '#6366f1',
+                        tension: 0.45,
+                        pointRadius: 6,
+                        pointHoverRadius: 10,
+                        pointBackgroundColor: '#6366f1',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 3,
+                        borderWidth: 3,
+                    },
+                ],
+            };
+        } else {
+            return {
+                labels,
+                datasets: [
+                    {
+                        label: 'Tasks Created',
+                        data: daily,
+                        backgroundColor: [
+                            'rgba(99,102,241,0.55)',
+                            'rgba(139,92,246,0.55)',
+                            'rgba(6,182,212,0.55)',
+                            'rgba(16,185,129,0.55)',
+                            'rgba(245,158,11,0.55)',
+                            'rgba(239,68,68,0.55)',
+                        ],
+                        borderColor: [
+                            'rgba(99,102,241,0.9)',
+                            'rgba(139,92,246,0.9)',
+                            'rgba(6,182,212,0.9)',
+                            'rgba(16,185,129,0.9)',
+                            'rgba(245,158,11,0.9)',
+                            'rgba(239,68,68,0.9)',
+                        ],
+                        borderWidth: 1.5,
+                        borderRadius: 10,
+                        hoverBackgroundColor: 'rgba(99,102,241,0.85)',
+                        barPercentage: 0.65,
+                    },
+                ],
+            };
+        }
+    }
+
+    private timelineOpts(): any {
+        return {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            scales: {
+                x: {
+                    grid: { color: 'rgba(71,85,105,0.12)' },
+                    ticks: { color: '#6b7280', font: { size: 11 } },
+                },
+                y: {
+                    grid: { color: 'rgba(71,85,105,0.12)' },
+                    ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 5 },
+                    beginAtZero: true,
+                },
+            },
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    ...this.lightTooltip(),
+                    displayColors: false,
+                },
+            },
+            animation: { duration: 900, easing: 'easeOutQuart' },
+        };
+    }
+
+    toggleTimelineMode(m: 'daily' | 'cumulative'): void {
+        this.timelineMode = m;
+        this.timelineChart?.destroy();
+        const ctx = this.timelineCanvas.nativeElement.getContext('2d')!;
+        this.timelineChart = new Chart(ctx, {
+            type: m === 'cumulative' ? 'line' : 'bar',
+            data: this.buildTimelineData(ctx),
+            options: this.timelineOpts(),
+        });
+    }
+
+    // ═══════════════════════════════════════════
+    //  CHART 4 – HORIZONTAL STACKED BAR (Workload)
+    // ═══════════════════════════════════════════
+    private initWorkloadChart(): void {
+        const ctx = this.workloadCanvas.nativeElement.getContext('2d')!;
+        this.workloadChart = new Chart(ctx, {
+            type: 'bar',
+            data: this.buildWorkloadData(),
+            options: {
+                indexAxis: 'y' as const,
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    x: {
+                        stacked: true,
+                        grid: { color: 'rgba(0,0,0,0.06)' },
+                        ticks: { color: '#475569', font: { size: 11 }, stepSize: 1 },
+                        beginAtZero: true,
+                    },
+                    y: {
+                        stacked: true,
+                        grid: { display: false },
+                        ticks: { color: '#475569', font: { size: 12, weight: 'bold' as any } },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        display: false,
+                    },
+                    tooltip: {
+                        ...this.lightTooltip(),
+                        callbacks: {
+                            afterBody: (items: any) => {
+                                const idx = items[0]?.dataIndex;
+                                if (idx === undefined) return '';
+                                const uids = ['1', '2', '3', '4', '5', '6', '7'];
+                                const total = this.tasks().filter((t) =>
+                                    t.assignedTo.includes(uids[idx])
+                                ).length;
+                                return `Total assigned: ${total}`;
+                            },
+                        },
+                    },
+                },
+                animation: { duration: 800, easing: 'easeOutQuart' },
+            },
+        });
+    }
+
+    private buildWorkloadData(): any {
+        const uids = ['1', '2', '3', '4', '5', '6', '7'];
+        const names = uids.map((id) => {
+            const u = this.users().find((x) => x.id === id);
+            return u ? this.getShortName(u.name) : id;
+        });
+        const cnt = (uid: string, s: string) =>
+            this.tasks().filter((t) => t.assignedTo.includes(uid) && t.status === s)
+                .length;
+        const ds: any[] = [];
+        if (this.workloadFilters['COMPLETED'])
+            ds.push({
+                label: 'Completed',
+                data: uids.map((u) => cnt(u, 'COMPLETED')),
+                backgroundColor: 'rgba(16,185,129,0.7)',
+                borderColor: 'rgba(16,185,129,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+                borderSkipped: false,
+            });
+        if (this.workloadFilters['IN_PROGRESS'])
+            ds.push({
+                label: 'In Progress',
+                data: uids.map((u) => cnt(u, 'IN_PROGRESS')),
+                backgroundColor: 'rgba(245,158,11,0.7)',
+                borderColor: 'rgba(245,158,11,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+                borderSkipped: false,
+            });
+        if (this.workloadFilters['INCOMPLETE'])
+            ds.push({
+                label: 'Incomplete',
+                data: uids.map((u) => cnt(u, 'INCOMPLETE')),
+                backgroundColor: 'rgba(239,68,68,0.7)',
+                borderColor: 'rgba(239,68,68,1)',
+                borderWidth: 1,
+                borderRadius: 4,
+                borderSkipped: false,
+            });
+        return { labels: names, datasets: ds };
+    }
+
+    toggleWorkloadFilter(s: string): void {
+        const active = Object.values(this.workloadFilters).filter((v) => v).length;
+        if (this.workloadFilters[s] && active <= 1) return;
+        this.workloadFilters[s] = !this.workloadFilters[s];
+        if (this.workloadChart) {
+            this.workloadChart.data = this.buildWorkloadData();
+            this.workloadChart.update('active');
+        }
+    }
+
+    // ═══════════════════════════════════════════
+    //  CHART 5 – MIXED BAR + LINE (Due Date)
+    // ═══════════════════════════════════════════
+    private initDueDateChart(): void {
+        const ctx = this.dueDateCanvas.nativeElement.getContext('2d')!;
+        this.dueDateChart = new Chart(ctx, {
+            type: 'bar',
+            data: this.buildDueDateData(),
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(71,85,105,0.12)' },
+                        ticks: {
+                            color: '#6b7280',
+                            font: { size: 10 },
+                            maxRotation: 45,
+                            minRotation: 30,
+                        },
+                    },
+                    y: {
+                        position: 'left' as const,
+                        grid: { color: 'rgba(71,85,105,0.12)' },
+                        ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 2 },
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Tasks',
+                            color: '#64748b',
+                            font: { size: 11 },
+                        },
+                    },
+                    y1: {
+                        position: 'right' as const,
+                        display: this.showCompletionLine,
+                        grid: { drawOnChartArea: false },
+                        ticks: {
+                            color: '#10b981',
+                            font: { size: 11 },
+                            callback: (v: any) => v + '%',
+                        },
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Completion %',
+                            color: '#10b981',
+                            font: { size: 11 },
+                        },
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom' as const,
+                        labels: {
+                            color: '#475569',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 14,
+                            font: { size: 11 },
+                        },
+                    },
+                    tooltip: {
+                        ...this.lightTooltip(),
+                        callbacks: {
+                            label: (ctx: any) => {
+                                if (ctx.dataset.yAxisID === 'y1')
+                                    return ` Completion: ${(ctx.raw as number).toFixed(1)}%`;
+                                return ` ${ctx.dataset.label}: ${ctx.raw} tasks`;
+                            },
+                        },
+                    },
+                },
+                animation: { duration: 800, easing: 'easeOutQuart' },
+            },
+        } as any);
+    }
+
+    private buildDueDateData(): any {
+        const map: Record<string, TaskView[]> = {};
+        this.tasks().forEach((t) => {
+            if (!map[t.dueDate]) map[t.dueDate] = [];
+            map[t.dueDate].push(t);
+        });
+        const dates = Object.keys(map).sort();
+        const labels = dates.map((d) => {
+            const dt = new Date(d + 'T00:00:00');
+            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        const counts = dates.map((d) => map[d].length);
+        const rates = dates.map((d) => {
+            const arr = map[d];
+            const c = arr.filter((t) => t.status === 'COMPLETED').length;
+            return arr.length > 0 ? +((c / arr.length) * 100).toFixed(1) : 0;
+        });
+
+        const ds: any[] = [
+            {
+                type: 'bar' as const,
+                label: 'Tasks Due',
+                data: counts,
+                backgroundColor: 'rgba(99,102,241,0.5)',
+                borderColor: 'rgba(99,102,241,0.9)',
+                borderWidth: 1.5,
+                borderRadius: 8,
+                order: 2,
+                barPercentage: 0.7,
+            },
+        ];
+
+        if (this.showCompletionLine) {
+            ds.push({
+                type: 'line' as const,
+                label: 'Completion Rate',
+                data: rates,
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16,185,129,0.08)',
+                tension: 0.4,
+                pointRadius: 5,
+                pointHoverRadius: 9,
+                pointBackgroundColor: '#10b981',
+                pointBorderColor: '#ffffff',
+                pointBorderWidth: 3,
+                borderWidth: 2.5,
+                yAxisID: 'y1',
+                fill: false,
+                order: 1,
+            });
+        }
+        return { labels, datasets: ds };
+    }
+
+    toggleCompletionLine(): void {
+        this.showCompletionLine = !this.showCompletionLine;
+        if (this.dueDateChart) {
+            this.dueDateChart.data = this.buildDueDateData();
+            const s = (this.dueDateChart.options as any).scales;
+            if (s?.y1) s.y1.display = this.showCompletionLine;
+            this.dueDateChart.update('active');
+        }
+    }
 }
