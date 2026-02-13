@@ -6,6 +6,7 @@ import { authGuard } from '@core/guards/auth-guard';
 import { User } from '@features/users/pages/user/user';
 import { Home } from '@features/home/pages/home/home';
 import { Dashboard } from '@features/dashboard/pages/dashboard/dashboard';
+import { DemoGraphs } from '@shared/components/demo-graphs/demo-graphs';
 
 export const routes: Routes = [
     {
@@ -42,6 +43,10 @@ export const routes: Routes = [
         component: Dashboard,
         canActivate: [authGuard],
         data: { requiresAuth: true }
+    },
+    {
+        path: 'demo-graphs',
+        component: DemoGraphs,
     },
     { path: '**', redirectTo: '' }
 ];
