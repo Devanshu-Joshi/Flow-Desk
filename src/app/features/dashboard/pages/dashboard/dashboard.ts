@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnDestroy, ElementRef, ViewChild, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   Chart,
@@ -13,6 +13,8 @@ import {
 } from 'chart.js';
 import { StatsCard } from '@shared/components/stats-card/stats-card';
 import { ChangeDetectorRef } from '@angular/core';
+import { TaskService } from '@core/services/task/task.service';
+import { TaskView } from '@core/models/Task';
 
 Chart.register(
   DoughnutController,
@@ -52,7 +54,7 @@ type PeriodType = 'today' | 'weekly' | 'monthly';
 })
 export class Dashboard implements AfterViewInit, OnDestroy {
   // ─── Dummy Task Data ───────────────────────────────
-  private allTasks: Task[] = [];
+  private allTasks!: Signal<TaskView[]>;
 
   // ─── Period Filter ─────────────────────────────────
   selectedPeriod: PeriodType = 'weekly';
@@ -76,8 +78,8 @@ export class Dashboard implements AfterViewInit, OnDestroy {
   totalVisibleTasks = 0;
   hasData = false;
 
-  constructor(private cd: ChangeDetectorRef) {
-    this.allTasks = this.generateDummyTasks();
+  constructor(private cd: ChangeDetectorRef, public taskService: TaskService) {
+    this.allTasks = this.taskService.tasksView;
   }
 
   ngAfterViewInit(): void {
@@ -115,9 +117,9 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     const filtered = this.filterTasksByPeriod();
 
     const counts = {
-      incomplete: filtered.filter((t) => t.status === 'incomplete').length,
-      inProgress: filtered.filter((t) => t.status === 'in-progress').length,
-      completed: filtered.filter((t) => t.status === 'completed').length,
+      incomplete: filtered.filter((t) => t.status === 'INCOMPLETE').length,
+      inProgress: filtered.filter((t) => t.status === 'IN_PROGRESS').length,
+      completed: filtered.filter((t) => t.status === 'COMPLETED').length,
     };
 
     const total = counts.incomplete + counts.inProgress + counts.completed;
@@ -146,13 +148,13 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     }
   }
 
-  private filterTasksByPeriod(): Task[] {
+  private filterTasksByPeriod(): TaskView[] {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
     const todayEnd = new Date(today);
     todayEnd.setHours(23, 59, 59, 999);
 
-    return this.allTasks.filter((task) => {
+    return this.allTasks().filter((task) => {
       const dueDate = new Date(task.dueDate);
 
       switch (this.selectedPeriod) {
@@ -243,54 +245,6 @@ export class Dashboard implements AfterViewInit, OnDestroy {
         },
       },
     });
-  }
-
-  // ─── Dummy Data Generator ──────────────────────────
-
-  private generateDummyTasks(): Task[] {
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const tasks: Task[] = [];
-    let id = 1;
-
-    const d = (offset: number): Date => {
-      const date = new Date(today);
-      date.setDate(date.getDate() + offset);
-      return date;
-    };
-
-    // ── Today (day 0) ──
-    tasks.push({ id: id++, title: 'Fix login bug', status: 'incomplete', dueDate: d(0) });
-    tasks.push({ id: id++, title: 'Update API docs', status: 'incomplete', dueDate: d(0) });
-    tasks.push({ id: id++, title: 'Respond to emails', status: 'incomplete', dueDate: d(0) });
-    tasks.push({ id: id++, title: 'Review PR #42', status: 'in-progress', dueDate: d(0) });
-    tasks.push({ id: id++, title: 'Deploy hotfix', status: 'in-progress', dueDate: d(0) });
-    tasks.push({ id: id++, title: 'Morning standup', status: 'completed', dueDate: d(0) });
-
-    // ── This week (days 1–6) ──
-    tasks.push({ id: id++, title: 'Design dashboard', status: 'incomplete', dueDate: d(1) });
-    tasks.push({ id: id++, title: 'API integration', status: 'incomplete', dueDate: d(2) });
-    tasks.push({ id: id++, title: 'Setup CI/CD', status: 'incomplete', dueDate: d(3) });
-    tasks.push({ id: id++, title: 'DB migration', status: 'in-progress', dueDate: d(1) });
-    tasks.push({ id: id++, title: 'Perf testing', status: 'in-progress', dueDate: d(3) });
-    tasks.push({ id: id++, title: 'Code review', status: 'in-progress', dueDate: d(5) });
-    tasks.push({ id: id++, title: 'Bug triage', status: 'completed', dueDate: d(2) });
-    tasks.push({ id: id++, title: 'Sprint planning', status: 'completed', dueDate: d(4) });
-    tasks.push({ id: id++, title: 'Release v2.1', status: 'completed', dueDate: d(6) });
-
-    // ── This month (days 8–28) ──
-    tasks.push({ id: id++, title: 'Feature flags', status: 'incomplete', dueDate: d(10) });
-    tasks.push({ id: id++, title: 'Security audit', status: 'incomplete', dueDate: d(15) });
-    tasks.push({ id: id++, title: 'A11y review', status: 'incomplete', dueDate: d(20) });
-    tasks.push({ id: id++, title: 'Mobile responsive', status: 'incomplete', dueDate: d(25) });
-    tasks.push({ id: id++, title: 'Monitoring setup', status: 'in-progress', dueDate: d(12) });
-    tasks.push({ id: id++, title: 'Load testing', status: 'in-progress', dueDate: d(18) });
-    tasks.push({ id: id++, title: 'User docs', status: 'completed', dueDate: d(8) });
-    tasks.push({ id: id++, title: 'User research', status: 'completed', dueDate: d(14) });
-    tasks.push({ id: id++, title: 'A/B testing', status: 'completed', dueDate: d(22) });
-    tasks.push({ id: id++, title: 'Analytics setup', status: 'completed', dueDate: d(28) });
-
-    return tasks;
   }
 
   // ─── Bar Chart (UNTOUCHED) ─────────────────────────
