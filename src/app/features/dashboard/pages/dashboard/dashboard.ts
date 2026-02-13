@@ -54,7 +54,7 @@ type PeriodType = 'today' | 'weekly' | 'monthly';
 })
 export class Dashboard implements AfterViewInit, OnDestroy {
   // ─── Dummy Task Data ───────────────────────────────
-  private allTasks!: Signal<TaskView[]>;
+  allTasks!: Signal<TaskView[]>;
 
   // ─── Period Filter ─────────────────────────────────
   selectedPeriod: PeriodType = 'weekly';

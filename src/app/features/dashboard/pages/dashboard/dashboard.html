@@ -3,8 +3,8 @@
 
         <!-- Stats Card Component (UNTOUCHED) -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 w-full">
-            <app-stats-card title="Total Tasks" [value]="49" subtitle="Tasks created so far" icon="bx-list-ul"
-                theme="purple" />
+            <app-stats-card title="Total Tasks" [value]="allTasks().length" subtitle="Tasks created so far"
+                icon="bx-list-ul" theme="purple" />
             <app-stats-card title="Completed Tasks" [value]="49" subtitle="Great job!" icon="bx-check-circle"
                 theme="green" />
             <app-stats-card title="In Progress Tasks" [value]="49" subtitle="Keep going!" icon="bx-loader-dots"
