@@ -290,10 +290,10 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
 
   private darkTooltip(): any {
     return {
-      backgroundColor: 'rgba(15,23,42,0.95)',
-      titleColor: '#f9fafb',
-      bodyColor: '#d1d5db',
-      borderColor: 'rgba(71,85,105,0.5)',
+      backgroundColor: '#ffffff',
+      titleColor: '#0f172a',
+      bodyColor: '#334155',
+      borderColor: 'rgba(0,0,0,0.08)',
       borderWidth: 1,
       cornerRadius: 10,
       padding: 12,
@@ -320,12 +320,12 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
           0
         );
         c.font = 'bold 26px Inter, system-ui, sans-serif';
-        c.fillStyle = '#f3f4f6';
+        c.fillStyle = '#0f172a';
         c.textAlign = 'center';
         c.textBaseline = 'middle';
         c.fillText(total.toString(), w / 2, h / 2 - 10);
         c.font = '12px Inter, system-ui, sans-serif';
-        c.fillStyle = '#6b7280';
+        c.fillStyle = '#64748b';
         c.fillText('Total', w / 2, h / 2 + 12);
         c.restore();
       },
@@ -342,7 +342,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
           legend: {
             position: 'bottom',
             labels: {
-              color: '#9ca3af',
+              color: '#475569',
               padding: 18,
               usePointStyle: true,
               pointStyle: 'circle',
@@ -450,10 +450,10 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         maintainAspectRatio: true,
         scales: {
           r: {
-            angleLines: { color: 'rgba(71,85,105,0.3)' },
-            grid: { color: 'rgba(71,85,105,0.25)' },
+            angleLines: { color: 'rgba(0,0,0,0.08)' },
+            grid: { color: 'rgba(0,0,0,0.06)' },
             pointLabels: {
-              color: '#94a3b8',
+              color: '#334155',
               font: { size: 11, weight: 'bold' as any },
             },
             ticks: { display: false, stepSize: 1 },
@@ -465,7 +465,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
           legend: {
             position: 'bottom',
             labels: {
-              color: '#9ca3af',
+              color: '#475569',
               usePointStyle: true,
               pointStyle: 'circle',
               padding: 14,
@@ -499,7 +499,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
           backgroundColor: c + '18',
           borderColor: c,
           pointBackgroundColor: c,
-          pointBorderColor: '#0f172a',
+          pointBorderColor: '#ffffff',
           pointBorderWidth: 2,
           pointRadius: 4,
           pointHoverRadius: 8,
@@ -575,7 +575,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
             pointRadius: 6,
             pointHoverRadius: 10,
             pointBackgroundColor: '#6366f1',
-            pointBorderColor: '#0f172a',
+            pointBorderColor: '#ffffff',
             pointBorderWidth: 3,
             borderWidth: 3,
           },
@@ -667,14 +667,14 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         scales: {
           x: {
             stacked: true,
-            grid: { color: 'rgba(71,85,105,0.12)' },
-            ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 1 },
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { color: '#475569', font: { size: 11 }, stepSize: 1 },
             beginAtZero: true,
           },
           y: {
             stacked: true,
             grid: { display: false },
-            ticks: { color: '#d1d5db', font: { size: 12, weight: 'bold' as any } },
+            ticks: { color: '#475569', font: { size: 12, weight: 'bold' as any } },
           },
         },
         plugins: {
@@ -811,7 +811,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
           legend: {
             position: 'bottom' as const,
             labels: {
-              color: '#9ca3af',
+              color: '#475569',
               usePointStyle: true,
               pointStyle: 'circle',
               padding: 14,
@@ -877,7 +877,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         pointRadius: 5,
         pointHoverRadius: 9,
         pointBackgroundColor: '#10b981',
-        pointBorderColor: '#0f172a',
+        pointBorderColor: '#ffffff',
         pointBorderWidth: 3,
         borderWidth: 2.5,
         yAxisID: 'y1',

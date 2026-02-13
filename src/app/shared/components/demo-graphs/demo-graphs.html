@@ -1,9 +1,9 @@
-<div class="min-h-screen bg-linear-to-br from-slate-950 via-slate-900 to-slate-950 p-4 md:p-6 lg:p-8">
+<div class="min-h-screen bg-linear-to-br from-white via-slate-50 to-white p-4 md:p-6 lg:p-8">
     <!-- ─── HEADER ─── -->
     <div class="mb-8">
         <div class="flex items-center gap-3 mb-1">
             <div
-                class="w-10 h-10 bg-linear-to-br from-indigo-500 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/20">
+                class="w-10 h-10 bg-linear-to-br from-indigo-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200/40">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
@@ -12,10 +12,10 @@
             <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
                 <span
                     class="bg-linear-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">Flowdesk</span>
-                <span class="text-gray-400 font-light ml-2">Analytics</span>
+                <span class="text-gray-600 font-light ml-2">Analytics</span>
             </h1>
         </div>
-        <p class="text-gray-600 text-sm ml-13">
+        <p class="text-gray-700 text-sm ml-13">
             Real-time insights into your team's productivity
         </p>
     </div>
@@ -24,37 +24,37 @@
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
         <!-- Total Tasks -->
         <div
-            class="relative overflow-hidden bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-indigo-500/30 transition-all duration-300 group">
+            class="relative overflow-hidden bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-indigo-300/40 transition-all duration-300 group">
             <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-indigo-500/5 rounded-full group-hover:bg-indigo-500/10 transition-colors">
+                class="absolute -top-6 -right-6 w-20 h-20 bg-indigo-500/10 rounded-full group-hover:bg-indigo-500/20 transition-colors">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-indigo-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 bg-indigo-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Total Tasks</span>
+                <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">Total Tasks</span>
             </div>
-            <div class="text-3xl font-bold text-white">{{ tasks.length }}</div>
+            <div class="text-3xl font-bold text-slate-900">{{ tasks.length }}</div>
         </div>
 
         <!-- Completed -->
         <div
-            class="relative overflow-hidden bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-emerald-500/30 transition-all duration-300 group">
+            class="relative overflow-hidden bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-emerald-300/40 transition-all duration-300 group">
             <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-500/5 rounded-full group-hover:bg-emerald-500/10 transition-colors">
+                class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-500/10 rounded-full group-hover:bg-emerald-500/20 transition-colors">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 bg-emerald-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Completed</span>
+                <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">Completed</span>
             </div>
-            <div class="text-3xl font-bold text-emerald-400">
+            <div class="text-3xl font-bold text-emerald-600">
                 {{ completedCount }}
             </div>
             <div class="text-[11px] text-gray-600 mt-1">
@@ -64,40 +64,40 @@
 
         <!-- In Progress -->
         <div
-            class="relative overflow-hidden bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-amber-500/30 transition-all duration-300 group">
+            class="relative overflow-hidden bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-amber-300/40 transition-all duration-300 group">
             <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-amber-500/5 rounded-full group-hover:bg-amber-500/10 transition-colors">
+                class="absolute -top-6 -right-6 w-20 h-20 bg-amber-500/10 rounded-full group-hover:bg-amber-500/20 transition-colors">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-amber-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">In Progress</span>
+                <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">In Progress</span>
             </div>
-            <div class="text-3xl font-bold text-amber-400">
+            <div class="text-3xl font-bold text-amber-600">
                 {{ inProgressCount }}
             </div>
         </div>
 
         <!-- Team Members -->
         <div
-            class="relative overflow-hidden bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-cyan-500/30 transition-all duration-300 group">
+            class="relative overflow-hidden bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-4 md:p-5 hover:border-cyan-300/40 transition-all duration-300 group">
             <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-cyan-500/5 rounded-full group-hover:bg-cyan-500/10 transition-colors">
+                class="absolute -top-6 -right-6 w-20 h-20 bg-cyan-500/10 rounded-full group-hover:bg-cyan-500/20 transition-colors">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-cyan-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 bg-cyan-50 rounded-lg flex items-center justify-center">
+                    <svg class="w-4 h-4 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                             d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Team Members</span>
+                <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">Team Members</span>
             </div>
-            <div class="text-3xl font-bold text-cyan-400">{{ users.length }}</div>
+            <div class="text-3xl font-bold text-cyan-600">{{ users.length }}</div>
         </div>
     </div>
 
@@ -105,28 +105,28 @@
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
         <!-- ============ CHART 1 : DOUGHNUT ============ -->
         <div
-            class="bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+            class="bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-5 md:p-6 hover:border-slate-200/70 transition-all duration-300">
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h2 class="text-[15px] font-semibold text-white">
+                    <h2 class="text-[15px] font-semibold text-slate-900">
                         Task Distribution
                     </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
+                    <p class="text-[11px] text-gray-600 mt-0.5">
                         Overview by {{ statusView }}
                     </p>
                 </div>
-                <div class="flex bg-slate-700/40 rounded-xl p-1 gap-0.5">
+                <div class="flex bg-slate-100 rounded-xl p-1 gap-0.5">
                     <button (click)="toggleStatusView('status')" [ngClass]="
               statusView === 'status'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200/25'
+                : 'text-gray-600 hover:text-gray-800'
             " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
                         Status
                     </button>
                     <button (click)="toggleStatusView('priority')" [ngClass]="
               statusView === 'priority'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200/25'
+                : 'text-gray-600 hover:text-gray-800'
             " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
                         Priority
                     </button>
@@ -139,10 +139,10 @@
 
         <!-- ============ CHART 2 : RADAR ============ -->
         <div
-            class="bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+            class="bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-5 md:p-6 hover:border-slate-200/70 transition-all duration-300">
             <div class="mb-4">
-                <h2 class="text-[15px] font-semibold text-white">Permission Radar</h2>
-                <p class="text-[11px] text-gray-500 mt-0.5">
+                <h2 class="text-[15px] font-semibold text-slate-900">Permission Radar</h2>
+                <p class="text-[11px] text-gray-600 mt-0.5">
                     Compare user access levels
                 </p>
             </div>
@@ -153,7 +153,7 @@
               : '',
             borderColor: isUserSelected(user.id)
               ? userColors[user.id]
-              : 'rgba(71,85,105,0.4)',
+              : 'rgba(71,85,105,0.15)',
             color: isUserSelected(user.id) ? userColors[user.id] : '#6b7280'
           }" class="px-2.5 py-1 rounded-full text-[11px] font-semibold border transition-all duration-200 hover:scale-105 active:scale-95">
                     {{ getShortName(user.name) }}
@@ -166,28 +166,28 @@
 
         <!-- ============ CHART 3 : TIMELINE (full width) ============ -->
         <div
-            class="lg:col-span-2 bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+            class="lg:col-span-2 bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-5 md:p-6 hover:border-slate-200/70 transition-all duration-300">
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h2 class="text-[15px] font-semibold text-white">
+                    <h2 class="text-[15px] font-semibold text-slate-900">
                         Task Creation Timeline
                     </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
+                    <p class="text-[11px] text-gray-600 mt-0.5">
                         Track how tasks were created over time
                     </p>
                 </div>
-                <div class="flex bg-slate-700/40 rounded-xl p-1 gap-0.5">
+                <div class="flex bg-slate-100 rounded-xl p-1 gap-0.5">
                     <button (click)="toggleTimelineMode('daily')" [ngClass]="
               timelineMode === 'daily'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200/25'
+                : 'text-gray-600 hover:text-gray-800'
             " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
                         Daily
                     </button>
                     <button (click)="toggleTimelineMode('cumulative')" [ngClass]="
               timelineMode === 'cumulative'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
+                ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-200/25'
+                : 'text-gray-600 hover:text-gray-800'
             " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
                         Cumulative
                     </button>
@@ -200,34 +200,34 @@
 
         <!-- ============ CHART 4 : WORKLOAD ============ -->
         <div
-            class="bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+            class="bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-5 md:p-6 hover:border-slate-200/70 transition-all duration-300">
             <div class="mb-3">
-                <h2 class="text-[15px] font-semibold text-white">User Workload</h2>
-                <p class="text-[11px] text-gray-500 mt-0.5">
+                <h2 class="text-[15px] font-semibold text-slate-900">User Workload</h2>
+                <p class="text-[11px] text-gray-600 mt-0.5">
                     Assigned tasks per team member
                 </p>
             </div>
             <div class="flex flex-wrap gap-1.5 mb-4">
                 <button (click)="toggleWorkloadFilter('COMPLETED')" [ngClass]="
             workloadFilters['COMPLETED']
-              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
+              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-600'
+              : 'bg-slate-100 border-slate-200 text-gray-600'
           " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     Completed
                 </button>
                 <button (click)="toggleWorkloadFilter('IN_PROGRESS')" [ngClass]="
             workloadFilters['IN_PROGRESS']
-              ? 'bg-amber-500/15 border-amber-500/50 text-amber-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
+              ? 'bg-amber-500/15 border-amber-500/50 text-amber-600'
+              : 'bg-slate-100 border-slate-200 text-gray-600'
           " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                     In Progress
                 </button>
                 <button (click)="toggleWorkloadFilter('INCOMPLETE')" [ngClass]="
             workloadFilters['INCOMPLETE']
-              ? 'bg-rose-500/15 border-rose-500/50 text-rose-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
+              ? 'bg-rose-500/15 border-rose-500/50 text-rose-600'
+              : 'bg-slate-100 border-slate-200 text-gray-600'
           " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
                     <span class="w-2 h-2 rounded-full bg-rose-500"></span>
                     Incomplete
@@ -238,13 +238,13 @@
 
         <!-- ============ CHART 5 : DUE DATE ============ -->
         <div
-            class="bg-linear-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+            class="bg-linear-to-br from-white to-slate-50 backdrop-blur border border-slate-200 rounded-2xl p-5 md:p-6 hover:border-slate-200/70 transition-all duration-300">
             <div class="flex items-center justify-between mb-3">
                 <div>
-                    <h2 class="text-[15px] font-semibold text-white">
+                    <h2 class="text-[15px] font-semibold text-slate-900">
                         Due Date Analysis
                     </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
+                    <p class="text-[11px] text-gray-600 mt-0.5">
                         Task distribution &amp; completion by deadline
                     </p>
                 </div>
@@ -252,17 +252,17 @@
             <div class="flex items-center gap-3 mb-4">
                 <button (click)="toggleCompletionLine()" class="flex items-center gap-2 group">
                     <div class="relative w-9 h-5 rounded-full transition-colors duration-300" [ngClass]="
-              showCompletionLine ? 'bg-emerald-500/30' : 'bg-slate-700'
+              showCompletionLine ? 'bg-emerald-500/30' : 'bg-slate-200'
             ">
                         <span class="absolute top-0.5 w-4 h-4 rounded-full transition-all duration-300 shadow-sm"
                             [ngClass]="
                 showCompletionLine
                   ? 'left-4.5 bg-emerald-400'
-                  : 'left-0.5 bg-slate-500'
+                  : 'left-0.5 bg-slate-400'
               "></span>
                     </div>
                     <span class="text-[11px] font-medium transition-colors" [ngClass]="
-              showCompletionLine ? 'text-emerald-400' : 'text-gray-500'
+              showCompletionLine ? 'text-emerald-600' : 'text-gray-600'
             ">Completion Rate</span>
                 </button>
             </div>
@@ -275,7 +275,7 @@
         <p class="text-[11px] text-gray-700">
             Flowdesk Analytics • {{ tasks.length }} tasks • {{ users.length }} members
             •
-            <span class="text-indigo-500/60">Powered by Chart.js</span>
+            <span class="text-indigo-600/60">Powered by Chart.js</span>
         </p>
     </div>
 </div>
