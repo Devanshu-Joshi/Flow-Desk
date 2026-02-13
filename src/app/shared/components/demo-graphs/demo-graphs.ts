@@ -288,7 +288,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
     );
   }
 
-  private darkTooltip(): any {
+  private lightTooltip(): any {
     return {
       backgroundColor: '#ffffff',
       titleColor: '#0f172a',
@@ -350,7 +350,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
             },
           },
           tooltip: {
-            ...this.darkTooltip(),
+            ...this.lightTooltip(),
             callbacks: {
               label: (ctx: any) => {
                 const total = (ctx.dataset.data as number[]).reduce(
@@ -473,7 +473,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
             },
           },
           tooltip: {
-            ...this.darkTooltip(),
+            ...this.lightTooltip(),
             callbacks: {
               label: (ctx: any) => {
                 const perm = this.permissionLabels[ctx.dataIndex];
@@ -633,7 +633,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
       plugins: {
         legend: { display: false },
         tooltip: {
-          ...this.darkTooltip(),
+          ...this.lightTooltip(),
           displayColors: false,
         },
       },
@@ -682,7 +682,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
             display: false,
           },
           tooltip: {
-            ...this.darkTooltip(),
+            ...this.lightTooltip(),
             callbacks: {
               afterBody: (items: any) => {
                 const idx = items[0]?.dataIndex;
@@ -819,7 +819,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
             },
           },
           tooltip: {
-            ...this.darkTooltip(),
+            ...this.lightTooltip(),
             callbacks: {
               label: (ctx: any) => {
                 if (ctx.dataset.yAxisID === 'y1')
