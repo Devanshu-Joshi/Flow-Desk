@@ -70,6 +70,8 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         { id: '7', name: 'Jef Bezos', email: 'bezos@gmail.com', permissions: ['TASK_VIEW', 'TASK_CREATE', 'TASK_DELETE', 'TASK_EDIT'], parentId: '1', createdAt: '2026-01-28T12:21:05' },
         { id: '8', name: 'Alex', email: 'alex@gmail.com', permissions: ['TASK_VIEW', 'TASK_CREATE', 'TASK_EDIT', 'TASK_DELETE', 'MANAGE_USER'], parentId: '-1', createdAt: '2026-02-02T12:16:13' },
         { id: '9', name: 'Modi2', email: 'modi2@gmail.com', permissions: ['TASK_CREATE', 'TASK_DELETE', 'TASK_VIEW', 'TASK_EDIT', 'MANAGE_USER'], parentId: '1', createdAt: '2026-02-12T12:07:38' },
+        { id: '10', name: 'Mukesh Ambani', email: 'ambani@gmail.com', permissions: ['TASK_CREATE', 'TASK_DELETE', 'TASK_VIEW', 'TASK_EDIT', 'MANAGE_USER'], parentId: '1', createdAt: '2026-02-12T12:07:45' },
+        { id: '11', name: 'Rahul Gandhi', email: 'rahulgandhi@gmail.com', permissions: ['TASK_CREATE', 'TASK_DELETE', 'TASK_VIEW', 'TASK_EDIT', 'MANAGE_USER'], parentId: '1', createdAt: '2026-02-12T12:07:55' },
     ];
 
     tasks: AppTask[] = [
