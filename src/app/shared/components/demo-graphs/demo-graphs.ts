@@ -347,7 +347,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
 
     toggleDoughnut(m: 'status' | 'priority'): void {
         this.doughnutMode = m;
-        if (this.doughnutChart) { this.doughnutChart.data = this.buildDoughnutData(); this.doughnutChart.update('active'); }
+        if (this.doughnutChart) { this.doughnutChart.data = this.buildDoughnutData(); this.doughnutChart.update(); }
     }
 
     /* ═══════════════════════════════════════════
@@ -382,7 +382,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
 
     togglePolar(m: 'count' | 'percentage'): void {
         this.polarMode = m;
-        if (this.polarChart) { this.polarChart.data = this.buildPolarData(); this.polarChart.update('active'); }
+        if (this.polarChart) { this.polarChart.data = this.buildPolarData(); this.polarChart.update(); }
     }
 
     /* ═══════════════════════════════════════════
@@ -432,7 +432,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         const active = Object.values(this.matrixFilters).filter(v => v).length;
         if (this.matrixFilters[s] && active <= 1) return;
         this.matrixFilters[s] = !this.matrixFilters[s];
-        if (this.matrixChart) { this.matrixChart.data = this.buildMatrixData(); this.matrixChart.update('active'); }
+        if (this.matrixChart) { this.matrixChart.data = this.buildMatrixData(); this.matrixChart.update(); }
     }
 
     /* ═══════════════════════════════════════════
