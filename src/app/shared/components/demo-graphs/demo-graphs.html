@@ -1,161 +1,144 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-4 md:p-6 lg:p-8">
-    <!-- ─────────── HEADER ─────────── -->
+<div class="min-h-screen p-4 md:p-6 lg:p-8 transition-colors duration-500" [ngClass]="cBg">
+    <!-- ════════════ HEADER ════════════ -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div class="flex items-center gap-3">
             <div
                 class="w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-500/25 shrink-0">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                </svg>
+                <i class="bx bxs-dashboard text-white text-xl"></i>
             </div>
             <div>
                 <h1 class="text-xl md:text-2xl font-bold tracking-tight">
                     <span
-                        class="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">Flowdesk</span>
-                    <span class="text-gray-500 font-light ml-1.5">Analytics</span>
+                        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-500 bg-clip-text text-transparent">Flowdesk</span>
+                    <span class="font-light ml-1.5"
+                        [ngClass]="isDark ? 'text-gray-500' : 'text-gray-400'">Analytics</span>
                 </h1>
-                <p class="text-[11px] text-gray-600">
-                    Production-ready insights · scales to any team size
-                </p>
+                <p class="text-[11px]" [ngClass]="cSub">Production-ready insights · scales to any team size</p>
             </div>
         </div>
 
-        <!-- User context selector -->
-        <div class="flex items-center gap-2.5">
+        <div class="flex items-center gap-3">
+            <!-- Role badge -->
             <div class="flex items-center gap-1.5">
                 <span class="w-2 h-2 rounded-full" [ngClass]="isAdmin ? 'bg-amber-400' : 'bg-emerald-400'"></span>
-                <span class="text-[11px] text-gray-500">{{
-                    isAdmin ? "Admin" : "Member"
-                    }}</span>
+                <span class="text-[11px]" [ngClass]="cSub">{{ isAdmin ? 'Admin' : 'Member' }}</span>
             </div>
+
+            <!-- User selector -->
             <div class="relative">
                 <select
-                    class="bg-slate-800/70 text-gray-300 border border-slate-600/40 rounded-xl pl-3 pr-8 py-2 text-sm focus:outline-none focus:border-indigo-500/50 appearance-none cursor-pointer hover:border-slate-500/60 transition-colors"
+                    class="rounded-xl pl-3 pr-8 py-2 text-sm focus:outline-none appearance-none cursor-pointer transition-colors border"
+                    [ngClass]="isDark
+            ? 'bg-slate-800/70 text-gray-300 border-slate-600/40 hover:border-slate-500/60 focus:border-indigo-500/50'
+            : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-gray-300 focus:border-indigo-400'"
                     (change)="onUserChange($event)">
                     <option *ngFor="let u of users" [value]="u.id" [selected]="u.id === currentUserId">
                         {{ truncate(u.name, 22) }}
                     </option>
                 </select>
-                <svg class="absolute right-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-500 pointer-events-none"
-                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                </svg>
+                <i
+                    class="bx bx-chevron-down absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
             </div>
+
+            <!-- Theme toggle -->
+            <button (click)="toggleTheme()"
+                class="w-9 h-9 rounded-xl flex items-center justify-center border transition-all duration-300 hover:scale-105 active:scale-95"
+                [ngClass]="isDark
+          ? 'bg-slate-800/70 border-slate-600/40 text-amber-400 hover:border-amber-500/40'
+          : 'bg-gray-50 border-gray-200 text-indigo-500 hover:border-indigo-300'">
+                <i [ngClass]="isDark ? 'bx bx-sun' : 'bx bx-moon'" class="text-lg"></i>
+            </button>
         </div>
     </div>
 
-    <!-- ─────────── STAT CARDS ─────────── -->
+    <!-- ════════════ STAT CARDS ════════════ -->
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
         <!-- Total Tasks -->
-        <div
-            class="relative overflow-hidden bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-indigo-500/30 transition-all duration-300 group">
-            <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-indigo-500/5 rounded-full group-hover:bg-indigo-500/10 transition-colors">
+        <div class="relative overflow-hidden rounded-2xl p-4 md:p-5 border transition-all duration-300 group"
+            [ngClass]="cCard">
+            <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full transition-colors"
+                [ngClass]="isDark ? 'bg-indigo-500/5 group-hover:bg-indigo-500/10' : 'bg-indigo-50 group-hover:bg-indigo-100/80'">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-indigo-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                    [ngClass]="isDark ? 'bg-indigo-500/10' : 'bg-indigo-50'">
+                    <i class="bx bx-task text-indigo-500 text-base"></i>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Total Tasks</span>
+                <span class="text-[11px] uppercase tracking-widest font-medium" [ngClass]="cSub">Total Tasks</span>
             </div>
-            <div class="text-3xl font-bold text-white">{{ tasks.length }}</div>
+            <div class="text-3xl font-bold" [ngClass]="cStatVal">{{ tasks.length }}</div>
         </div>
 
         <!-- Completed -->
-        <div
-            class="relative overflow-hidden bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-emerald-500/30 transition-all duration-300 group">
-            <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-emerald-500/5 rounded-full group-hover:bg-emerald-500/10 transition-colors">
+        <div class="relative overflow-hidden rounded-2xl p-4 md:p-5 border transition-all duration-300 group"
+            [ngClass]="cCard">
+            <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full transition-colors"
+                [ngClass]="isDark ? 'bg-emerald-500/5 group-hover:bg-emerald-500/10' : 'bg-emerald-50 group-hover:bg-emerald-100/80'">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-emerald-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                    </svg>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                    [ngClass]="isDark ? 'bg-emerald-500/10' : 'bg-emerald-50'">
+                    <i class="bx bx-check-circle text-emerald-500 text-base"></i>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Completed</span>
+                <span class="text-[11px] uppercase tracking-widest font-medium" [ngClass]="cSub">Completed</span>
             </div>
-            <div class="text-3xl font-bold text-emerald-400">
-                {{ completedCount }}
-            </div>
-            <div class="text-[11px] text-gray-600 mt-1">
-                {{ completionPct }}% rate
-            </div>
+            <div class="text-3xl font-bold text-emerald-500">{{ completedCount }}</div>
+            <div class="text-[11px] mt-1" [ngClass]="cStatSub">{{ completionPct }}% rate</div>
         </div>
 
         <!-- My Assigned -->
-        <div
-            class="relative overflow-hidden bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-purple-500/30 transition-all duration-300 group">
-            <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-purple-500/5 rounded-full group-hover:bg-purple-500/10 transition-colors">
+        <div class="relative overflow-hidden rounded-2xl p-4 md:p-5 border transition-all duration-300 group"
+            [ngClass]="cCard">
+            <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full transition-colors"
+                [ngClass]="isDark ? 'bg-purple-500/5 group-hover:bg-purple-500/10' : 'bg-purple-50 group-hover:bg-purple-100/80'">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-purple-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                    [ngClass]="isDark ? 'bg-purple-500/10' : 'bg-purple-50'">
+                    <i class="bx bx-user-check text-purple-500 text-base"></i>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">My Assigned</span>
+                <span class="text-[11px] uppercase tracking-widest font-medium" [ngClass]="cSub">My Assigned</span>
             </div>
-            <div class="text-3xl font-bold text-purple-400">
-                {{ myAssignedCount }}
-            </div>
+            <div class="text-3xl font-bold text-purple-500">{{ myAssignedCount }}</div>
         </div>
 
         <!-- Team Size -->
-        <div
-            class="relative overflow-hidden bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-4 md:p-5 hover:border-cyan-500/30 transition-all duration-300 group">
-            <div
-                class="absolute -top-6 -right-6 w-20 h-20 bg-cyan-500/5 rounded-full group-hover:bg-cyan-500/10 transition-colors">
+        <div class="relative overflow-hidden rounded-2xl p-4 md:p-5 border transition-all duration-300 group"
+            [ngClass]="cCard">
+            <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full transition-colors"
+                [ngClass]="isDark ? 'bg-cyan-500/5 group-hover:bg-cyan-500/10' : 'bg-cyan-50 group-hover:bg-cyan-100/80'">
             </div>
             <div class="flex items-center gap-2 mb-2">
-                <div class="w-8 h-8 bg-cyan-500/10 rounded-lg flex items-center justify-center">
-                    <svg class="w-4 h-4 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center"
+                    [ngClass]="isDark ? 'bg-cyan-500/10' : 'bg-cyan-50'">
+                    <i class="bx bx-group text-cyan-500 text-base"></i>
                 </div>
-                <span class="text-[11px] text-gray-500 uppercase tracking-widest font-medium">Team Size</span>
+                <span class="text-[11px] uppercase tracking-widest font-medium" [ngClass]="cSub">Team Size</span>
             </div>
-            <div class="text-3xl font-bold text-cyan-400">{{ teamSize }}</div>
-            <div class="text-[11px] text-gray-600 mt-1">direct reports</div>
+            <div class="text-3xl font-bold text-cyan-500">{{ teamSize }}</div>
+            <div class="text-[11px] mt-1" [ngClass]="cStatSub">direct reports</div>
         </div>
     </div>
 
-    <!-- ─────────── CHARTS GRID ─────────── -->
+    <!-- ════════════ CHARTS GRID ════════════ -->
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-        <!-- ════════════ CHART 1 : DOUGHNUT ════════════ -->
-        <div
-            class="bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+
+        <!-- ──── CHART 1: DOUGHNUT ──── -->
+        <div class="rounded-2xl p-5 md:p-6 border transition-all duration-300" [ngClass]="cCard">
             <div class="flex items-center justify-between mb-5">
                 <div>
-                    <h2 class="text-[15px] font-semibold text-white">
-                        Task Health Overview
-                    </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
-                        Distribution by {{ doughnutMode }}
-                    </p>
+                    <h2 class="text-[15px] font-semibold" [ngClass]="cTitle">Task Health Overview</h2>
+                    <p class="text-[11px] mt-0.5" [ngClass]="cSub">Distribution by {{ doughnutMode }}</p>
                 </div>
-                <div class="flex bg-slate-700/40 rounded-xl p-1 gap-0.5">
-                    <button (click)="toggleDoughnut('status')" [ngClass]="
-              doughnutMode === 'status'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        Status
-                    </button>
-                    <button (click)="toggleDoughnut('priority')" [ngClass]="
-              doughnutMode === 'priority'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        Priority
-                    </button>
+                <div class="flex rounded-xl p-1 gap-0.5" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-100'">
+                    <button (click)="toggleDoughnut('status')"
+                        class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200" [ngClass]="doughnutMode === 'status'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">Status</button>
+                    <button (click)="toggleDoughnut('priority')"
+                        class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200" [ngClass]="doughnutMode === 'priority'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">Priority</button>
                 </div>
             </div>
             <div class="relative max-w-[260px] mx-auto">
@@ -163,108 +146,24 @@
             </div>
         </div>
 
-        <!-- ════════════ CHART 2 : BUBBLE (Hierarchy) ════════════ -->
-        <div
-            class="bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <h2 class="text-[15px] font-semibold text-white">
-                        Team Galaxy
-                    </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
-                        Hierarchy · Workload · Permissions (bubble size)
-                    </p>
-                </div>
-            </div>
-            <div class="flex flex-wrap gap-1.5 mb-4">
-                <button (click)="toggleBubbleFilter('all')" [ngClass]="
-            bubbleFilter === 'all'
-              ? 'bg-indigo-500/15 border-indigo-500/50 text-indigo-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
-                    All Users
-                </button>
-                <button (click)="toggleBubbleFilter('team')" [ngClass]="
-            bubbleFilter === 'team'
-              ? 'bg-indigo-500/15 border-indigo-500/50 text-indigo-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
-                    🔵 My Team
-                </button>
-                <button (click)="toggleBubbleFilter('others')" [ngClass]="
-            bubbleFilter === 'others'
-              ? 'bg-slate-500/15 border-slate-400/50 text-slate-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
-                    ⚪ Others
-                </button>
-            </div>
-            <div class="h-[240px] md:h-[280px]">
-                <canvas #bubbleCanvas></canvas>
-            </div>
-        </div>
-
-        <!-- ════════════ CHART 3 : TIMELINE (full width) ════════════ -->
-        <div
-            class="lg:col-span-2 bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
-            <div class="flex items-center justify-between mb-5">
-                <div>
-                    <h2 class="text-[15px] font-semibold text-white">
-                        Task Creation Timeline
-                    </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
-                        Aggregated by week · scales with any volume
-                    </p>
-                </div>
-                <div class="flex bg-slate-700/40 rounded-xl p-1 gap-0.5">
-                    <button (click)="toggleTimeline('stacked')" [ngClass]="
-              timelineMode === 'stacked'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        Stacked
-                    </button>
-                    <button (click)="toggleTimeline('cumulative')" [ngClass]="
-              timelineMode === 'cumulative'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        Cumulative
-                    </button>
-                </div>
-            </div>
-            <div class="h-[220px] md:h-[280px]">
-                <canvas #timelineCanvas></canvas>
-            </div>
-        </div>
-
-        <!-- ════════════ CHART 4 : POLAR AREA (Permissions) ════════════ -->
-        <div
-            class="bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+        <!-- ──── CHART 2: POLAR AREA ──── -->
+        <div class="rounded-2xl p-5 md:p-6 border transition-all duration-300" [ngClass]="cCard">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h2 class="text-[15px] font-semibold text-white">
-                        Permission Spread
-                    </h2>
-                    <p class="text-[11px] text-gray-500 mt-0.5">
-                        How permissions are distributed across users
-                    </p>
+                    <h2 class="text-[15px] font-semibold" [ngClass]="cTitle">Permission Spread</h2>
+                    <p class="text-[11px] mt-0.5" [ngClass]="cSub">How permissions are distributed across users</p>
                 </div>
-                <div class="flex bg-slate-700/40 rounded-xl p-1 gap-0.5">
-                    <button (click)="togglePolar('count')" [ngClass]="
-              polarMode === 'count'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        Count
-                    </button>
-                    <button (click)="togglePolar('percentage')" [ngClass]="
-              polarMode === 'percentage'
-                ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
-                : 'text-gray-500 hover:text-gray-300'
-            " class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200">
-                        %
-                    </button>
+                <div class="flex rounded-xl p-1 gap-0.5" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-100'">
+                    <button (click)="togglePolar('count')"
+                        class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200"
+                        [ngClass]="polarMode === 'count'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">Count</button>
+                    <button (click)="togglePolar('percentage')"
+                        class="px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200"
+                        [ngClass]="polarMode === 'percentage'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">%</button>
                 </div>
             </div>
             <div class="max-w-[260px] mx-auto">
@@ -272,53 +171,220 @@
             </div>
         </div>
 
-        <!-- ════════════ CHART 5 : MATRIX (Priority × Status) ════════════ -->
-        <div
-            class="bg-gradient-to-br from-slate-800/80 to-slate-800/30 backdrop-blur border border-slate-700/40 rounded-2xl p-5 md:p-6 hover:border-slate-600/50 transition-all duration-300">
+        <!-- ──── CHART 3: PRIORITY × STATUS MATRIX ──── -->
+        <div class="rounded-2xl p-5 md:p-6 border transition-all duration-300" [ngClass]="cCard">
             <div class="mb-3">
-                <h2 class="text-[15px] font-semibold text-white">
-                    Priority × Status Matrix
-                </h2>
-                <p class="text-[11px] text-gray-500 mt-0.5">
-                    Spot bottlenecks by cross-referencing priority &amp; status
-                </p>
+                <h2 class="text-[15px] font-semibold" [ngClass]="cTitle">Priority × Status Matrix</h2>
+                <p class="text-[11px] mt-0.5" [ngClass]="cSub">Spot bottlenecks by cross-referencing priority &amp;
+                    status</p>
             </div>
             <div class="flex flex-wrap gap-1.5 mb-4">
-                <button (click)="toggleMatrixFilter('COMPLETED')" [ngClass]="
-            matrixFilters['COMPLETED']
-              ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
+                <button (click)="toggleMatrixFilter('COMPLETED')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200"
+                    [ngClass]="matrixFilters['COMPLETED']
+            ? 'bg-emerald-500/15 border-emerald-500/50 text-emerald-500'
+            : (isDark ? 'bg-slate-700/20 border-slate-600/30 text-gray-600' : 'bg-gray-50 border-gray-200 text-gray-400')">
                     <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                     Completed
                 </button>
-                <button (click)="toggleMatrixFilter('IN_PROGRESS')" [ngClass]="
-            matrixFilters['IN_PROGRESS']
-              ? 'bg-amber-500/15 border-amber-500/50 text-amber-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
+                <button (click)="toggleMatrixFilter('IN_PROGRESS')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200"
+                    [ngClass]="matrixFilters['IN_PROGRESS']
+            ? 'bg-amber-500/15 border-amber-500/50 text-amber-500'
+            : (isDark ? 'bg-slate-700/20 border-slate-600/30 text-gray-600' : 'bg-gray-50 border-gray-200 text-gray-400')">
                     <span class="w-2 h-2 rounded-full bg-amber-500"></span>
                     In Progress
                 </button>
-                <button (click)="toggleMatrixFilter('INCOMPLETE')" [ngClass]="
-            matrixFilters['INCOMPLETE']
-              ? 'bg-rose-500/15 border-rose-500/50 text-rose-400'
-              : 'bg-slate-700/20 border-slate-600/30 text-gray-600'
-          " class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200">
+                <button (click)="toggleMatrixFilter('INCOMPLETE')"
+                    class="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all duration-200"
+                    [ngClass]="matrixFilters['INCOMPLETE']
+            ? 'bg-rose-500/15 border-rose-500/50 text-rose-500'
+            : (isDark ? 'bg-slate-700/20 border-slate-600/30 text-gray-600' : 'bg-gray-50 border-gray-200 text-gray-400')">
                     <span class="w-2 h-2 rounded-full bg-rose-500"></span>
                     Incomplete
                 </button>
             </div>
-            <canvas #matrixCanvas></canvas>
+            <div class="h-[220px] md:h-[280px]">
+                <canvas #matrixCanvas></canvas>
+            </div>
+        </div>
+
+        <!-- ──── CHART 4: TIMELINE (full width) ──── -->
+        <div class="rounded-2xl p-5 md:p-6 border transition-all duration-300" [ngClass]="cCard">
+            <div class="flex items-center justify-between mb-5">
+                <div>
+                    <h2 class="text-[15px] font-semibold" [ngClass]="cTitle">Task Creation Timeline</h2>
+                    <p class="text-[11px] mt-0.5" [ngClass]="cSub">Aggregated by week · scales with any volume</p>
+                </div>
+                <div class="flex rounded-xl p-1 gap-0.5" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-100'">
+                    <button (click)="toggleTimeline('stacked')"
+                        class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200" [ngClass]="timelineMode === 'stacked'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">Stacked</button>
+                    <button (click)="toggleTimeline('cumulative')"
+                        class="px-3 py-1.5 rounded-lg text-[11px] font-semibold transition-all duration-200"
+                        [ngClass]="timelineMode === 'cumulative'
+              ? 'bg-indigo-500 text-white shadow-lg shadow-indigo-500/25'
+              : (isDark ? 'text-gray-500 hover:text-gray-300' : 'text-gray-400 hover:text-gray-600')">Cumulative</button>
+                </div>
+            </div>
+            <div class="h-[220px] md:h-[280px]">
+                <canvas #timelineCanvas></canvas>
+            </div>
         </div>
     </div>
 
-    <!-- ─────────── FOOTER ─────────── -->
+    <!-- ════════════ TEAM ROSTER SECTION ════════════ -->
+    <div class="mt-8">
+        <div class="rounded-2xl p-5 md:p-6 border transition-all duration-300" [ngClass]="cCard">
+            <!-- Section Header -->
+            <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl flex items-center justify-center"
+                        [ngClass]="isDark ? 'bg-indigo-500/10' : 'bg-indigo-50'">
+                        <i class="bx bx-group text-indigo-500 text-lg"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-[15px] font-semibold" [ngClass]="cTitle">Team Roster</h2>
+                        <p class="text-[11px] mt-0.5" [ngClass]="cSub">
+                            {{ teamMembers.length }} members · sorted by assigned tasks
+                        </p>
+                    </div>
+                </div>
+                <!-- Pagination controls -->
+                <div *ngIf="showTeamPagination" class="flex items-center gap-2">
+                    <span class="text-[11px]" [ngClass]="cSub">
+                        {{ teamPage + 1 }} / {{ totalTeamPages }}
+                    </span>
+                    <button (click)="prevTeamPage()" [disabled]="teamPage === 0"
+                        class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200"
+                        [ngClass]="teamPage === 0
+              ? (isDark ? 'border-slate-700/30 text-slate-700 cursor-not-allowed' : 'border-gray-100 text-gray-300 cursor-not-allowed')
+              : (isDark ? 'border-slate-600/40 text-gray-400 hover:text-white hover:border-indigo-500/50' : 'border-gray-200 text-gray-400 hover:text-gray-700 hover:border-indigo-300')">
+                        <i class="bx bx-chevron-left text-lg"></i>
+                    </button>
+                    <button (click)="nextTeamPage()" [disabled]="teamPage >= totalTeamPages - 1"
+                        class="w-8 h-8 rounded-lg flex items-center justify-center border transition-all duration-200"
+                        [ngClass]="teamPage >= totalTeamPages - 1
+              ? (isDark ? 'border-slate-700/30 text-slate-700 cursor-not-allowed' : 'border-gray-100 text-gray-300 cursor-not-allowed')
+              : (isDark ? 'border-slate-600/40 text-gray-400 hover:text-white hover:border-indigo-500/50' : 'border-gray-200 text-gray-400 hover:text-gray-700 hover:border-indigo-300')">
+                        <i class="bx bx-chevron-right text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Table Header -->
+            <div class="hidden md:grid grid-cols-12 gap-3 px-4 py-2.5 rounded-xl mb-2 text-[11px] uppercase tracking-wider font-semibold"
+                [ngClass]="isDark ? 'bg-slate-700/20 text-gray-500' : 'bg-gray-50 text-gray-400'">
+                <div class="col-span-4">Member</div>
+                <div class="col-span-2 text-center">Assigned</div>
+                <div class="col-span-2 text-center">Completed</div>
+                <div class="col-span-2 text-center">In Progress</div>
+                <div class="col-span-2 text-center">Incomplete</div>
+            </div>
+
+            <!-- Team Members Rows -->
+            <div class="space-y-1.5">
+                <div *ngFor="let member of pagedTeamMembers; let i = index"
+                    class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-center px-4 py-3 rounded-xl border transition-all duration-200 group"
+                    [ngClass]="isDark
+            ? 'border-slate-700/20 hover:border-slate-600/40 hover:bg-slate-800/40'
+            : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50/80'">
+                    <!-- Member Info -->
+                    <div class="col-span-1 md:col-span-4 flex items-center gap-3">
+                        <!-- Avatar -->
+                        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-xs font-bold text-white shrink-0 relative"
+                            [style.background-color]="member.color">
+                            {{ member.initials }}
+                            <!-- Crown for admin -->
+                            <span *ngIf="member.isAdmin" class="absolute -top-1.5 -right-1.5 text-amber-400 text-xs">
+                                <i class="bx bxs-crown"></i>
+                            </span>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-1.5">
+                                <span class="text-sm font-semibold truncate" [ngClass]="cTitle">{{ truncate(member.name,
+                                    20) }}</span>
+                                <span *ngIf="member.isCurrent"
+                                    class="text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider bg-indigo-500/15 text-indigo-500">You</span>
+                            </div>
+                            <span class="text-[11px]" [ngClass]="cSub">
+                                {{ member.isAdmin ? 'Admin' : 'Member' }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Layout: Stat pills -->
+                    <div class="col-span-1 md:hidden flex flex-wrap gap-2 ml-12">
+                        <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg font-semibold"
+                            [ngClass]="isDark ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600'">
+                            <i class="bx bx-task text-xs"></i> {{ member.assigned }}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg font-semibold"
+                            [ngClass]="isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-600'">
+                            <i class="bx bx-check text-xs"></i> {{ member.completed }}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg font-semibold"
+                            [ngClass]="isDark ? 'bg-amber-500/10 text-amber-400' : 'bg-amber-50 text-amber-600'">
+                            <i class="bx bx-loader-alt text-xs"></i> {{ member.inProgress }}
+                        </span>
+                        <span class="inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-lg font-semibold"
+                            [ngClass]="isDark ? 'bg-rose-500/10 text-rose-400' : 'bg-rose-50 text-rose-600'">
+                            <i class="bx bx-x text-xs"></i> {{ member.incomplete }}
+                        </span>
+                    </div>
+
+                    <!-- Desktop: Assigned -->
+                    <div class="hidden md:flex col-span-2 justify-center">
+                        <span
+                            class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-lg text-sm font-bold"
+                            [ngClass]="member.assigned > 0
+                ? (isDark ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-50 text-indigo-600')
+                : (isDark ? 'text-slate-600' : 'text-gray-300')">{{ member.assigned }}</span>
+                    </div>
+
+                    <!-- Desktop: Completed -->
+                    <div class="hidden md:flex col-span-2 justify-center">
+                        <span
+                            class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-lg text-sm font-bold"
+                            [ngClass]="member.completed > 0
+                ? (isDark ? 'bg-emerald-500/10 text-emerald-400' : 'bg-emerald-50 text-emerald-600')
+                : (isDark ? 'text-slate-600' : 'text-gray-300')">{{ member.completed }}</span>
+                    </div>
+
+                    <!-- Desktop: In Progress -->
+                    <div class="hidden md:flex col-span-2 justify-center">
+                        <span
+                            class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-lg text-sm font-bold"
+                            [ngClass]="member.inProgress > 0
+                ? (isDark ? 'bg-amber-500/10 text-amber-400' : 'bg-amber-50 text-amber-600')
+                : (isDark ? 'text-slate-600' : 'text-gray-300')">{{ member.inProgress }}</span>
+                    </div>
+
+                    <!-- Desktop: Incomplete -->
+                    <div class="hidden md:flex col-span-2 justify-center">
+                        <span
+                            class="inline-flex items-center justify-center min-w-[28px] px-2 py-0.5 rounded-lg text-sm font-bold"
+                            [ngClass]="member.incomplete > 0
+                ? (isDark ? 'bg-rose-500/10 text-rose-400' : 'bg-rose-50 text-rose-600')
+                : (isDark ? 'text-slate-600' : 'text-gray-300')">{{ member.incomplete }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty state -->
+            <div *ngIf="teamMembers.length === 0" class="text-center py-12">
+                <i class="bx bx-group text-4xl" [ngClass]="isDark ? 'text-slate-700' : 'text-gray-300'"></i>
+                <p class="text-sm mt-2" [ngClass]="cSub">No team members found</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════ FOOTER ════════════ -->
     <div class="mt-8 text-center">
-        <p class="text-[11px] text-gray-700">
-            Flowdesk Analytics · {{ tasks.length }} tasks · {{ users.length }} members
-            ·
-            <span class="text-indigo-500/60">Powered by Chart.js</span>
+        <p class="text-[11px]" [ngClass]="isDark ? 'text-gray-700' : 'text-gray-300'">
+            Flowdesk Analytics · {{ tasks.length }} tasks · {{ users.length }} members ·
+            <span [ngClass]="isDark ? 'text-indigo-500/60' : 'text-indigo-400/60'">Powered by Chart.js</span>
         </p>
     </div>
 </div>
