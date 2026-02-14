@@ -37,7 +37,7 @@
                 </div>
                 <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">Total Tasks</span>
             </div>
-            <div class="text-3xl font-bold text-slate-900">{{ tasks.length }}</div>
+            <div class="text-3xl font-bold text-slate-900">{{ tasks().length }}</div>
         </div>
 
         <!-- Completed -->
@@ -97,7 +97,7 @@
                 </div>
                 <span class="text-[11px] text-gray-600 uppercase tracking-widest font-medium">Team Members</span>
             </div>
-            <div class="text-3xl font-bold text-cyan-600">{{ users.length }}</div>
+            <div class="text-3xl font-bold text-cyan-600">{{ users()?.length }}</div>
         </div>
     </div>
 
@@ -147,7 +147,7 @@
                 </p>
             </div>
             <div class="flex flex-wrap gap-1.5 mb-4">
-                <button *ngFor="let user of users" (click)="toggleUserSelection(user.id)" [ngStyle]="{
+                <button *ngFor="let user of users()" (click)="toggleUserSelection(user.id)" [ngStyle]="{
             backgroundColor: isUserSelected(user.id)
               ? userColors[user.id] + '20'
               : '',
@@ -273,7 +273,7 @@
     <!-- ─── FOOTER ─── -->
     <div class="mt-8 text-center">
         <p class="text-[11px] text-gray-700">
-            Flowdesk Analytics • {{ tasks.length }} tasks • {{ users.length }} members
+            Flowdesk Analytics • {{ tasks().length }} tasks • {{ users()?.length }} members
             •
             <span class="text-indigo-600/60">Powered by Chart.js</span>
         </p>

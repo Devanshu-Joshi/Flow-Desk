@@ -7,7 +7,8 @@ import {
     Signal,
     DestroyRef,
     inject,
-    signal
+    signal,
+    OnInit
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Chart, layouts, registerables } from 'chart.js';
@@ -15,7 +16,9 @@ import { TaskView } from '@core/models/Task';
 import { Observable } from 'rxjs';
 import { UserModel } from '@core/models/UserModel';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { UserAuth } from '@core/services/user-auth/user-auth';
+import { UserService } from '@core/services/user/user.service';
+import { PermissionKey } from '@core/models/PermissionKey';
+import { TaskService } from '@core/services/task/task.service';
 
 Chart.register(...registerables);
 
@@ -48,15 +51,21 @@ interface Task {
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
 })
-export class Dashboard implements AfterViewInit, OnDestroy {
+export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
     tasks!: Signal<TaskView[]>;
     users$!: Observable<UserModel[] | null>;
     private destroyRef = inject(DestroyRef);
     users = signal<UserModel[] | null>(null);
 
+    constructor(private userService: UserService, private taskService: TaskService) {
+        this.tasks = this.taskService.tasksView;
+    }
+
     ngOnInit(): void {
         // this.isLoading.set(true);
+
+        this.users$ = this.userService.getUsersByParent();
 
         this.users$
             .pipe(takeUntilDestroyed(this.destroyRef))
@@ -99,13 +108,14 @@ export class Dashboard implements AfterViewInit, OnDestroy {
         '9': '#f97316',
     };
 
-    private permissionKeys = [
-        'TASK_VIEW',
-        'TASK_CREATE',
-        'TASK_EDIT',
-        'TASK_DELETE',
-        'MANAGE_USER',
+    private permissionKeys: PermissionKey[] = [
+        PermissionKey.TASK_VIEW,
+        PermissionKey.TASK_CREATE,
+        PermissionKey.TASK_EDIT,
+        PermissionKey.TASK_DELETE,
+        PermissionKey.MANAGE_USER,
     ];
+
     private permissionLabels = ['View', 'Create', 'Edit', 'Delete', 'Manage'];
 
     // ──────────── CHART INSTANCES ────────────
@@ -133,7 +143,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
         return this.tasks().filter((t) => t.status === 'INCOMPLETE').length;
     }
     get completionRate(): string {
-        return ((this.completedCount / this.tasks.length) * 100).toFixed(1);
+        return ((this.completedCount / this.tasks().length) * 100).toFixed(1);
     }
 
     // ──────────── LIFECYCLE ────────────
@@ -168,7 +178,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     }
 
     private getUserPermissions(id: string): number[] {
-        const u = this.users().find((x) => x.id === id);
+        const u = this.users()?.find((x) => x.id === id);
         return this.permissionKeys.map((k) =>
             u?.permissions.includes(k) ? 1 : 0
         );
@@ -387,7 +397,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
             labels: this.permissionLabels,
             datasets: this.selectedUserIds.map((uid) => {
                 const c = this.userColors[uid];
-                const u = this.users().find((x) => x.id === uid);
+                const u = this.users()?.find((x) => x.id === uid);
                 return {
                     label: u ? this.getShortName(u.name) : uid,
                     data: this.getUserPermissions(uid),
@@ -433,7 +443,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     private buildTimelineData(ctx?: CanvasRenderingContext2D): any {
         const map: Record<string, number> = {};
         this.tasks().forEach((t) => {
-            const d = t.createdAt.split('T')[0];
+            const d = new Date(t.createdAt).toISOString().split('T')[0];
             map[d] = (map[d] || 0) + 1;
         });
         const dates = Object.keys(map).sort();
@@ -599,7 +609,7 @@ export class Dashboard implements AfterViewInit, OnDestroy {
     private buildWorkloadData(): any {
         const uids = ['1', '2', '3', '4', '5', '6', '7'];
         const names = uids.map((id) => {
-            const u = this.users().find((x) => x.id === id);
+            const u = this.users()?.find((x) => x.id === id);
             return u ? this.getShortName(u.name) : id;
         });
         const cnt = (uid: string, s: string) =>
