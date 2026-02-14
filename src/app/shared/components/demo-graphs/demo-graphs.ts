@@ -6,11 +6,11 @@ import {
     ElementRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Chart, layouts, registerables } from 'chart.js';
+import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
-interface User {
+interface AppUser {
     id: string;
     name: string;
     email: string;
@@ -20,7 +20,7 @@ interface User {
     createdAt: string;
 }
 
-interface Task {
+interface AppTask {
     id: string;
     title: string;
     status: string;
@@ -37,17 +37,31 @@ interface Task {
     standalone: true,
     imports: [CommonModule],
     templateUrl: './demo-graphs.html',
-    styleUrl: './demo-graphs.css',
+    styles: [
+        `
+      :host {
+        display: block;
+      }
+      .toggle-track {
+        transition: background-color 0.3s;
+      }
+      .toggle-thumb {
+        transition: left 0.3s, background-color 0.3s;
+      }
+    `,
+    ],
 })
 export class DemoGraphs implements AfterViewInit, OnDestroy {
-    // ──────────── RAW DATA ────────────
-    users: User[] = [
+    /* ═══════════════════════════════════════════════════
+         RAW DATA
+       ═══════════════════════════════════════════════════ */
+
+    users: AppUser[] = [
         {
             id: '1',
             name: 'John',
             email: 'john@gmail.com',
-            avatar:
-                'https://upload.wikimedia.org/wikipedia/commons/5/5a/John_Doe%2C_born_John_Nommensen_Duchac.jpg',
+            avatar: '',
             permissions: [
                 'TASK_VIEW',
                 'TASK_CREATE',
@@ -150,13 +164,13 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         },
     ];
 
-    tasks: Task[] = [
+    tasks: AppTask[] = [
         { id: '1', title: 'Angular Project', status: 'IN_PROGRESS', priority: 'NORMAL', dueDate: '2026-01-01', assignedTo: ['5', '6'], userId: '1', parentId: '1', createdAt: '2026-01-21T02:24:42Z' },
         { id: '3', title: 'Musk Task', status: 'COMPLETED', priority: 'LOW', dueDate: '2026-01-01', assignedTo: ['4'], userId: '1', parentId: '1', createdAt: '2026-01-27T10:10:46Z' },
         { id: '9', title: 'Example1', status: 'IN_PROGRESS', priority: 'HIGH', dueDate: '2026-02-01', assignedTo: ['1', '2'], userId: '1', parentId: '1', createdAt: '2026-02-06T13:54:09Z' },
         { id: '10', title: 'Another Task', status: 'COMPLETED', priority: 'HIGH', dueDate: '2026-02-01', assignedTo: [], userId: '1', parentId: '1', createdAt: '2026-02-09T06:05:21Z' },
         { id: '11', title: "Yash's task", status: 'IN_PROGRESS', priority: 'HIGH', dueDate: '2026-02-01', assignedTo: ['3', '1', '2'], userId: '1', parentId: '1', createdAt: '2026-02-09T09:54:24Z' },
-        { id: '12', title: 'Extra Task with all users', status: 'COMPLETED', priority: 'LOW', dueDate: '2026-02-18', assignedTo: ['1', '2', '7', '6', '5', '3', '4'], userId: '1', parentId: '1', createdAt: '2026-02-09T09:57:55Z' },
+        { id: '12', title: 'Extra Task', status: 'COMPLETED', priority: 'LOW', dueDate: '2026-02-18', assignedTo: ['1', '2', '7', '6', '5', '3', '4'], userId: '1', parentId: '1', createdAt: '2026-02-09T09:57:55Z' },
         { id: '13', title: 'Hello', status: 'IN_PROGRESS', priority: 'LOW', dueDate: '2026-02-01', assignedTo: [], userId: '1', parentId: '1', createdAt: '2026-02-11T07:07:02Z' },
         { id: '14', title: 'Form Changed', status: 'COMPLETED', priority: 'NORMAL', dueDate: '2026-02-11', assignedTo: [], userId: '1', parentId: '1', createdAt: '2026-02-11T07:16:24Z' },
         { id: '15', title: 'UnTouched', status: 'COMPLETED', priority: 'HIGH', dueDate: '2026-02-12', assignedTo: ['2', '1'], userId: '1', parentId: '1', createdAt: '2026-02-11T07:22:24Z' },
@@ -190,159 +204,189 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         { id: '43', title: 'Analytics setup', status: 'COMPLETED', priority: 'NORMAL', dueDate: '2026-02-25', assignedTo: [], userId: '1', parentId: '1', createdAt: '2026-02-13T07:13:08Z' },
     ];
 
-    // ──────────── STATE ────────────
-    statusView: 'status' | 'priority' = 'status';
-    selectedUserIds: string[] = ['1', '2', '5'];
-    timelineMode: 'daily' | 'cumulative' = 'cumulative';
-    showCompletionLine = true;
-    workloadFilters: Record<string, boolean> = {
+    /* ═══════════════════════════════════════════════════
+         STATE
+       ═══════════════════════════════════════════════════ */
+
+    currentUserId = '1';
+    doughnutMode: 'status' | 'priority' = 'status';
+    timelineMode: 'stacked' | 'cumulative' = 'stacked';
+    polarMode: 'count' | 'percentage' = 'count';
+    matrixFilters: Record<string, boolean> = {
         COMPLETED: true,
         IN_PROGRESS: true,
         INCOMPLETE: true,
     };
+    bubbleFilter: 'all' | 'team' | 'others' = 'all';
 
-    userColors: Record<string, string> = {
-        '1': '#6366f1',
-        '2': '#06b6d4',
-        '3': '#f59e0b',
-        '4': '#ef4444',
-        '5': '#10b981',
-        '6': '#8b5cf6',
-        '7': '#ec4899',
-        '8': '#14b8a6',
-        '9': '#f97316',
-    };
+    /* ═══════════════════════════════════════════════════
+         INTERNAL STORAGE (for bubble tooltips)
+       ═══════════════════════════════════════════════════ */
 
-    private permissionKeys = [
+    bubbleTeamUsers: AppUser[] = [];
+    bubbleOtherUsers: AppUser[] = [];
+
+    /* ═══════════════════════════════════════════════════
+         PERMISSION MAP
+       ═══════════════════════════════════════════════════ */
+
+    permissionKeys = [
         'TASK_VIEW',
         'TASK_CREATE',
         'TASK_EDIT',
         'TASK_DELETE',
         'MANAGE_USER',
     ];
-    private permissionLabels = ['View', 'Create', 'Edit', 'Delete', 'Manage'];
+    permissionLabels = [
+        'View Tasks',
+        'Create Tasks',
+        'Edit Tasks',
+        'Delete Tasks',
+        'Manage Users',
+    ];
 
-    // ──────────── CHART INSTANCES ────────────
-    private statusChart: Chart | null = null;
-    private radarChart: Chart | null = null;
-    private timelineChart: Chart | null = null;
-    private workloadChart: Chart | null = null;
-    private dueDateChart: Chart | null = null;
+    /* ═══════════════════════════════════════════════════
+         CANVAS REFS
+       ═══════════════════════════════════════════════════ */
 
-    // ──────────── VIEW CHILDREN ────────────
-    @ViewChild('statusCanvas') statusCanvas!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('radarCanvas') radarCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('doughnutCanvas') doughnutCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('bubbleCanvas') bubbleCanvas!: ElementRef<HTMLCanvasElement>;
     @ViewChild('timelineCanvas') timelineCanvas!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('workloadCanvas') workloadCanvas!: ElementRef<HTMLCanvasElement>;
-    @ViewChild('dueDateCanvas') dueDateCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('polarCanvas') polarCanvas!: ElementRef<HTMLCanvasElement>;
+    @ViewChild('matrixCanvas') matrixCanvas!: ElementRef<HTMLCanvasElement>;
 
-    // ──────────── COMPUTED ────────────
+    /* ═══════════════════════════════════════════════════
+         CHART INSTANCES
+       ═══════════════════════════════════════════════════ */
+
+    private doughnutChart: Chart | null = null;
+    private bubbleChart: Chart | null = null;
+    private timelineChart: Chart | null = null;
+    private polarChart: Chart | null = null;
+    private matrixChart: Chart | null = null;
+
+    /* ═══════════════════════════════════════════════════
+         GETTERS (reactive stat cards)
+       ═══════════════════════════════════════════════════ */
+
+    get currentUser(): AppUser {
+        return (
+            this.users.find((u) => u.id === this.currentUserId) || this.users[0]
+        );
+    }
+
+    get teamSize(): number {
+        return this.users.filter((u) => u.parentId === this.currentUserId).length;
+    }
+
+    get myAssignedCount(): number {
+        return this.tasks.filter((t) =>
+            t.assignedTo.includes(this.currentUserId)
+        ).length;
+    }
+
     get completedCount(): number {
         return this.tasks.filter((t) => t.status === 'COMPLETED').length;
     }
+
     get inProgressCount(): number {
         return this.tasks.filter((t) => t.status === 'IN_PROGRESS').length;
     }
+
     get incompleteCount(): number {
         return this.tasks.filter((t) => t.status === 'INCOMPLETE').length;
     }
-    get completionRate(): string {
+
+    get completionPct(): string {
         return ((this.completedCount / this.tasks.length) * 100).toFixed(1);
     }
 
-    // ──────────── LIFECYCLE ────────────
+    get isAdmin(): boolean {
+        return this.currentUser.parentId === '-1';
+    }
+
+    /* ═══════════════════════════════════════════════════
+         LIFECYCLE
+       ═══════════════════════════════════════════════════ */
+
     ngAfterViewInit(): void {
         setTimeout(() => {
-            this.initStatusChart();
-            this.initRadarChart();
-            this.initTimelineChart();
-            this.initWorkloadChart();
-            this.initDueDateChart();
-        }, 0);
+            this.initDoughnut();
+            this.initBubble();
+            this.initTimeline();
+            this.initPolar();
+            this.initMatrix();
+        });
     }
 
     ngOnDestroy(): void {
         [
-            this.statusChart,
-            this.radarChart,
+            this.doughnutChart,
+            this.bubbleChart,
             this.timelineChart,
-            this.workloadChart,
-            this.dueDateChart,
+            this.polarChart,
+            this.matrixChart,
         ].forEach((c) => c?.destroy());
     }
 
-    // ──────────── HELPERS ────────────
-    getShortName(name: string): string {
-        const p = name.split(' ');
-        return p.length > 2 ? p[0] : name;
-    }
+    /* ═══════════════════════════════════════════════════
+         SHARED TOOLTIP STYLE
+       ═══════════════════════════════════════════════════ */
 
-    isUserSelected(id: string): boolean {
-        return this.selectedUserIds.includes(id);
-    }
-
-    private getUserPermissions(id: string): number[] {
-        const u = this.users.find((x) => x.id === id);
-        return this.permissionKeys.map((k) =>
-            u?.permissions.includes(k) ? 1 : 0
-        );
-    }
-
-    private lightTooltip(): any {
+    private tip(): any {
         return {
-            backgroundColor: '#ffffff',
-            titleColor: '#0f172a',
-            bodyColor: '#334155',
-            borderColor: 'rgba(0,0,0,0.08)',
+            backgroundColor: 'rgba(15,23,42,0.95)',
+            titleColor: '#f1f5f9',
+            bodyColor: '#cbd5e1',
+            borderColor: 'rgba(71,85,105,0.5)',
             borderWidth: 1,
             cornerRadius: 10,
             padding: 12,
             boxPadding: 4,
-            displayColors: true,
             titleFont: { size: 13, weight: 'bold' as const },
             bodyFont: { size: 12 },
         };
     }
 
-    // ═══════════════════════════════════════════
-    //  CHART 1 – DOUGHNUT (Status / Priority)
-    // ═══════════════════════════════════════════
-    private initStatusChart(): void {
-        const ctx = this.statusCanvas.nativeElement.getContext('2d')!;
+    /* ═══════════════════════════════════════════════════
+         CHART 1 — DOUGHNUT (Task Health)
+       ═══════════════════════════════════════════════════ */
 
-        const centerText = {
+    private initDoughnut(): void {
+        const ctx = this.doughnutCanvas.nativeElement.getContext('2d')!;
+
+        const centerPlugin = {
             id: 'doughnutCenter',
             beforeDraw: (chart: any) => {
-                const { ctx } = chart;
-                const { left, right, top, bottom } = chart.chartArea;
-
-                const centerX = (left + right) / 2;
-                const centerY = (top + bottom) / 2;
-
-                const total = (chart.data.datasets[0].data as number[])
-                    .reduce((a: number, b: number) => a + b, 0);
-
-                ctx.save();
-
-                // Total number
-                ctx.font = 'bold 26px Inter, system-ui, sans-serif';
-                ctx.fillStyle = '#0f172a';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(total.toString(), centerX, centerY - 8);
-
-                // Label
-                ctx.font = '12px Inter, system-ui, sans-serif';
-                ctx.fillStyle = '#64748b';
-                ctx.fillText('Total', centerX, centerY + 14);
-
-                ctx.restore();
+                const {
+                    ctx: c,
+                    width: w,
+                    height: h,
+                } = chart;
+                c.save();
+                const total = (chart.data.datasets[0].data as number[]).reduce(
+                    (a: number, b: number) => a + b,
+                    0
+                );
+                c.font = 'bold 26px Inter, system-ui, sans-serif';
+                c.fillStyle = '#e2e8f0';
+                c.textAlign = 'center';
+                c.textBaseline = 'middle';
+                c.fillText(total.toString(), w / 2, h / 2 - 10);
+                c.font = '11px Inter, system-ui, sans-serif';
+                c.fillStyle = '#64748b';
+                c.fillText(
+                    this.doughnutMode === 'status' ? 'Total Tasks' : 'By Priority',
+                    w / 2,
+                    h / 2 + 14
+                );
+                c.restore();
             },
         };
 
-        this.statusChart = new Chart(ctx, {
+        this.doughnutChart = new Chart(ctx, {
             type: 'doughnut',
-            data: this.buildStatusData(),
+            data: this.buildDoughnutData(),
             options: {
                 responsive: true,
                 maintainAspectRatio: true,
@@ -351,15 +395,15 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#475569',
-                            padding: 18,
+                            color: '#94a3b8',
+                            padding: 16,
                             usePointStyle: true,
                             pointStyle: 'circle',
-                            font: { size: 12 },
+                            font: { size: 11 },
                         },
                     },
                     tooltip: {
-                        ...this.lightTooltip(),
+                        ...this.tip(),
                         callbacks: {
                             label: (ctx: any) => {
                                 const total = (ctx.dataset.data as number[]).reduce(
@@ -367,7 +411,7 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                                     0
                                 );
                                 const pct = (((ctx.raw as number) / total) * 100).toFixed(1);
-                                return ` ${ctx.label}: ${ctx.raw} tasks (${pct}%)`;
+                                return ` ${ctx.label}: ${ctx.raw} (${pct}%)`;
                             },
                         },
                     },
@@ -375,16 +419,16 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                 animation: {
                     animateRotate: true,
                     animateScale: true,
-                    duration: 900,
+                    duration: 800,
                     easing: 'easeOutQuart',
                 },
             },
-            plugins: [centerText],
+            plugins: [centerPlugin],
         } as any);
     }
 
-    private buildStatusData(): any {
-        if (this.statusView === 'status') {
+    private buildDoughnutData(): any {
+        if (this.doughnutMode === 'status') {
             return {
                 labels: ['Completed', 'In Progress', 'Incomplete'],
                 datasets: [
@@ -395,17 +439,17 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                             this.incompleteCount,
                         ],
                         backgroundColor: [
-                            'rgba(16,185,129,0.75)',
-                            'rgba(245,158,11,0.75)',
-                            'rgba(239,68,68,0.75)',
+                            'rgba(16,185,129,0.72)',
+                            'rgba(245,158,11,0.72)',
+                            'rgba(239,68,68,0.72)',
                         ],
                         borderColor: [
-                            'rgba(16,185,129,1)',
-                            'rgba(245,158,11,1)',
-                            'rgba(239,68,68,1)',
+                            '#10b981',
+                            '#f59e0b',
+                            '#ef4444',
                         ],
                         borderWidth: 2,
-                        hoverOffset: 12,
+                        hoverOffset: 14,
                         hoverBorderWidth: 3,
                     },
                 ],
@@ -420,17 +464,13 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                     {
                         data: [h, n, l],
                         backgroundColor: [
-                            'rgba(239,68,68,0.75)',
-                            'rgba(99,102,241,0.75)',
-                            'rgba(6,182,212,0.75)',
+                            'rgba(239,68,68,0.72)',
+                            'rgba(99,102,241,0.72)',
+                            'rgba(6,182,212,0.72)',
                         ],
-                        borderColor: [
-                            'rgba(239,68,68,1)',
-                            'rgba(99,102,241,1)',
-                            'rgba(6,182,212,1)',
-                        ],
+                        borderColor: ['#ef4444', '#6366f1', '#06b6d4'],
                         borderWidth: 2,
-                        hoverOffset: 15,
+                        hoverOffset: 14,
                         hoverBorderWidth: 3,
                     },
                 ],
@@ -438,43 +478,55 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         }
     }
 
-    toggleStatusView(v: 'status' | 'priority'): void {
-        this.statusView = v;
-        if (this.statusChart) {
-            this.statusChart.data = this.buildStatusData();
-            this.statusChart.update();
+    toggleDoughnut(m: 'status' | 'priority'): void {
+        this.doughnutMode = m;
+        if (this.doughnutChart) {
+            this.doughnutChart.data = this.buildDoughnutData();
+            this.doughnutChart.update('active');
         }
     }
 
-    // ═══════════════════════════════════════════
-    //  CHART 2 – RADAR (Permissions)
-    // ═══════════════════════════════════════════
-    private initRadarChart(): void {
-        const ctx = this.radarCanvas.nativeElement.getContext('2d')!;
-        this.radarChart = new Chart(ctx, {
-            type: 'radar',
-            data: this.buildRadarData(),
+    /* ═══════════════════════════════════════════════════
+         CHART 2 — BUBBLE (Team Galaxy / Hierarchy)
+       ═══════════════════════════════════════════════════ */
+
+    private initBubble(): void {
+        const ctx = this.bubbleCanvas.nativeElement.getContext('2d')!;
+        this.bubbleChart = new Chart(ctx, {
+            type: 'bubble',
+            data: this.buildBubbleData(),
             options: {
                 responsive: true,
-                maintainAspectRatio: true,
+                maintainAspectRatio: false,
                 scales: {
-                    r: {
-                        angleLines: { color: 'rgba(0,0,0,0.08)' },
-                        grid: { color: 'rgba(0,0,0,0.06)' },
-                        pointLabels: {
-                            color: '#334155',
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Tasks Assigned →',
+                            color: '#64748b',
                             font: { size: 11, weight: 'bold' as any },
                         },
-                        ticks: { display: false, stepSize: 1 },
-                        suggestedMin: 0,
-                        suggestedMax: 1,
+                        grid: { color: 'rgba(71,85,105,0.15)' },
+                        ticks: { color: '#64748b', stepSize: 1, font: { size: 10 } },
+                        beginAtZero: true,
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Direct Reports →',
+                            color: '#64748b',
+                            font: { size: 11, weight: 'bold' as any },
+                        },
+                        grid: { color: 'rgba(71,85,105,0.15)' },
+                        ticks: { color: '#64748b', stepSize: 1, font: { size: 10 } },
+                        beginAtZero: true,
                     },
                 },
                 plugins: {
                     legend: {
                         position: 'bottom',
                         labels: {
-                            color: '#475569',
+                            color: '#94a3b8',
                             usePointStyle: true,
                             pointStyle: 'circle',
                             padding: 14,
@@ -482,11 +534,27 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                         },
                     },
                     tooltip: {
-                        ...this.lightTooltip(),
+                        ...this.tip(),
                         callbacks: {
+                            title: (items: any) => {
+                                const ds = items[0]?.datasetIndex;
+                                return ds === 0 ? '🔵  Your Team' : '⚪  Others';
+                            },
                             label: (ctx: any) => {
-                                const perm = this.permissionLabels[ctx.dataIndex];
-                                return ` ${ctx.dataset.label}: ${ctx.raw === 1 ? '✓' : '✗'} ${perm}`;
+                                const arr =
+                                    ctx.datasetIndex === 0
+                                        ? this.bubbleTeamUsers
+                                        : this.bubbleOtherUsers;
+                                const u = arr[ctx.dataIndex];
+                                if (!u) return '';
+                                const raw = ctx.raw as any;
+                                return [
+                                    ` ${u.name}`,
+                                    ` Assigned: ${raw.x} tasks`,
+                                    ` Reports: ${raw.y} members`,
+                                    ` Permissions: ${u.permissions.length}/5`,
+                                    ` ${u.parentId === '-1' ? '👑 Admin' : '👤 Member'}`,
+                                ];
                             },
                         },
                     },
@@ -496,194 +564,358 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         });
     }
 
-    private buildRadarData(): any {
+    private buildBubbleData(): any {
+        const teamIds = new Set([
+            this.currentUserId,
+            ...this.users
+                .filter((u) => u.parentId === this.currentUserId)
+                .map((u) => u.id),
+        ]);
+
+        this.bubbleTeamUsers = this.users.filter((u) => teamIds.has(u.id));
+        this.bubbleOtherUsers = this.users.filter((u) => !teamIds.has(u.id));
+
+        // Dynamic sizing based on user count
+        const n = this.users.length;
+        const baseR = n > 50 ? 3 : n > 20 ? 5 : 7;
+        const scale = n > 50 ? 1.5 : n > 20 ? 2.5 : 3;
+
+        const bubble = (u: AppUser) => ({
+            x: this.tasks.filter((t) => t.assignedTo.includes(u.id)).length,
+            y: this.users.filter((o) => o.parentId === u.id).length,
+            r: u.permissions.length * scale + baseR,
+        });
+
         return {
-            labels: this.permissionLabels,
-            datasets: this.selectedUserIds.map((uid) => {
-                const c = this.userColors[uid];
-                const u = this.users.find((x) => x.id === uid);
-                return {
-                    label: u ? this.getShortName(u.name) : uid,
-                    data: this.getUserPermissions(uid),
-                    backgroundColor: c + '18',
-                    borderColor: c,
-                    pointBackgroundColor: c,
-                    pointBorderColor: '#ffffff',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    pointHoverRadius: 8,
-                    borderWidth: 2.5,
-                    fill: true,
-                };
-            }),
+            datasets: [
+                {
+                    label: 'Your Team',
+                    data: this.bubbleTeamUsers.map(bubble),
+                    backgroundColor: 'rgba(99,102,241,0.45)',
+                    borderColor: 'rgba(99,102,241,0.9)',
+                    borderWidth: 2,
+                    hoverBackgroundColor: 'rgba(99,102,241,0.7)',
+                    hoverBorderWidth: 3,
+                },
+                {
+                    label: 'Others',
+                    data: this.bubbleOtherUsers.map(bubble),
+                    backgroundColor: 'rgba(100,116,139,0.18)',
+                    borderColor: 'rgba(100,116,139,0.4)',
+                    borderWidth: 1.5,
+                    hoverBackgroundColor: 'rgba(100,116,139,0.35)',
+                    hoverBorderWidth: 2,
+                },
+            ],
         };
     }
 
-    toggleUserSelection(id: string): void {
-        const i = this.selectedUserIds.indexOf(id);
-        if (i > -1) {
-            if (this.selectedUserIds.length > 1) this.selectedUserIds.splice(i, 1);
-        } else {
-            this.selectedUserIds.push(id);
-        }
-        if (this.radarChart) {
-            this.radarChart.data = this.buildRadarData();
-            this.radarChart.update('active');
+    onUserChange(e: Event): void {
+        this.currentUserId = (e.target as HTMLSelectElement).value;
+        this.bubbleFilter = 'all';
+        if (this.bubbleChart) {
+            this.bubbleChart.setDatasetVisibility(0, true);
+            this.bubbleChart.setDatasetVisibility(1, true);
+            this.bubbleChart.data = this.buildBubbleData();
+            this.bubbleChart.update('active');
         }
     }
 
-    // ═══════════════════════════════════════════
-    //  CHART 3 – TIMELINE (Daily / Cumulative)
-    // ═══════════════════════════════════════════
-    private initTimelineChart(): void {
+    toggleBubbleFilter(f: 'all' | 'team' | 'others'): void {
+        this.bubbleFilter = f;
+        if (!this.bubbleChart) return;
+        this.bubbleChart.setDatasetVisibility(0, f !== 'others');
+        this.bubbleChart.setDatasetVisibility(1, f !== 'team');
+        this.bubbleChart.update('active');
+    }
+
+    /* ═══════════════════════════════════════════════════
+         CHART 3 — TIMELINE (Weekly Stacked / Cumulative)
+       ═══════════════════════════════════════════════════ */
+
+    private initTimeline(): void {
         const ctx = this.timelineCanvas.nativeElement.getContext('2d')!;
-        this.timelineChart = new Chart(ctx, {
-            type: this.timelineMode === 'cumulative' ? 'line' : 'bar',
-            data: this.buildTimelineData(ctx),
-            options: this.timelineOpts(),
-        });
+        if (this.timelineMode === 'stacked') {
+            this.timelineChart = new Chart(ctx, {
+                type: 'bar',
+                data: this.buildTimelineStacked(),
+                options: this.timelineOpts(true),
+            });
+        } else {
+            this.timelineChart = new Chart(ctx, {
+                type: 'line',
+                data: this.buildTimelineCumulative(ctx),
+                options: this.timelineOpts(false),
+            });
+        }
     }
 
-    private buildTimelineData(ctx?: CanvasRenderingContext2D): any {
+    private getWeekKey(dateStr: string): string {
+        const d = new Date(dateStr);
+        const day = d.getUTCDay();
+        const offset = day === 0 ? -6 : 1 - day;
+        const mon = new Date(d.getTime());
+        mon.setUTCDate(d.getUTCDate() + offset);
+        const y = mon.getUTCFullYear();
+        const m = String(mon.getUTCMonth() + 1).padStart(2, '0');
+        const dd = String(mon.getUTCDate()).padStart(2, '0');
+        return `${y}-${m}-${dd}`;
+    }
+
+    private weekLabel(key: string): string {
+        const [y, m, d] = key.split('-').map(Number);
+        const dt = new Date(y, m - 1, d);
+        return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    private buildTimelineStacked(): any {
+        const map: Record<
+            string,
+            { COMPLETED: number; IN_PROGRESS: number; INCOMPLETE: number }
+        > = {};
+        this.tasks.forEach((t) => {
+            const wk = this.getWeekKey(t.createdAt);
+            if (!map[wk])
+                map[wk] = { COMPLETED: 0, IN_PROGRESS: 0, INCOMPLETE: 0 };
+            if (t.status in map[wk])
+                (map[wk] as any)[t.status]++;
+        });
+        const weeks = Object.keys(map).sort();
+        return {
+            labels: weeks.map((w) => 'Week ' + this.weekLabel(w)),
+            datasets: [
+                {
+                    label: 'Completed',
+                    data: weeks.map((w) => map[w].COMPLETED),
+                    backgroundColor: 'rgba(16,185,129,0.7)',
+                    borderColor: '#10b981',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                },
+                {
+                    label: 'In Progress',
+                    data: weeks.map((w) => map[w].IN_PROGRESS),
+                    backgroundColor: 'rgba(245,158,11,0.7)',
+                    borderColor: '#f59e0b',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                },
+                {
+                    label: 'Incomplete',
+                    data: weeks.map((w) => map[w].INCOMPLETE),
+                    backgroundColor: 'rgba(239,68,68,0.7)',
+                    borderColor: '#ef4444',
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    borderSkipped: false,
+                },
+            ],
+        };
+    }
+
+    private buildTimelineCumulative(ctx?: CanvasRenderingContext2D): any {
         const map: Record<string, number> = {};
         this.tasks.forEach((t) => {
-            const d = t.createdAt.split('T')[0];
-            map[d] = (map[d] || 0) + 1;
+            const wk = this.getWeekKey(t.createdAt);
+            map[wk] = (map[wk] || 0) + 1;
         });
-        const dates = Object.keys(map).sort();
-        const daily = dates.map((d) => map[d]);
-        const cumulative: number[] = [];
-        let sum = 0;
-        daily.forEach((c) => {
-            sum += c;
-            cumulative.push(sum);
-        });
-        const labels = dates.map((d) => {
-            const dt = new Date(d + 'T00:00:00');
-            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        const weeks = Object.keys(map).sort();
+        const cum: number[] = [];
+        let s = 0;
+        weeks.forEach((w) => {
+            s += map[w];
+            cum.push(s);
         });
 
-        if (this.timelineMode === 'cumulative') {
-            let bg: any = 'rgba(99,102,241,0.12)';
-            if (ctx) {
-                const g = ctx.createLinearGradient(0, 0, 0, 280);
-                g.addColorStop(0, 'rgba(99,102,241,0.35)');
-                g.addColorStop(1, 'rgba(99,102,241,0.01)');
-                bg = g;
-            }
-            return {
-                labels,
-                datasets: [
-                    {
-                        label: 'Cumulative Tasks',
-                        data: cumulative,
-                        fill: true,
-                        backgroundColor: bg,
-                        borderColor: '#6366f1',
-                        tension: 0.45,
-                        pointRadius: 6,
-                        pointHoverRadius: 10,
-                        pointBackgroundColor: '#6366f1',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 3,
-                        borderWidth: 3,
-                    },
-                ],
-            };
-        } else {
-            return {
-                labels,
-                datasets: [
-                    {
-                        label: 'Tasks Created',
-                        data: daily,
-                        backgroundColor: [
-                            'rgba(99,102,241,0.55)',
-                            'rgba(139,92,246,0.55)',
-                            'rgba(6,182,212,0.55)',
-                            'rgba(16,185,129,0.55)',
-                            'rgba(245,158,11,0.55)',
-                            'rgba(239,68,68,0.55)',
-                        ],
-                        borderColor: [
-                            'rgba(99,102,241,0.9)',
-                            'rgba(139,92,246,0.9)',
-                            'rgba(6,182,212,0.9)',
-                            'rgba(16,185,129,0.9)',
-                            'rgba(245,158,11,0.9)',
-                            'rgba(239,68,68,0.9)',
-                        ],
-                        borderWidth: 1.5,
-                        borderRadius: 10,
-                        hoverBackgroundColor: 'rgba(99,102,241,0.85)',
-                        barPercentage: 0.65,
-                    },
-                ],
-            };
+        let bg: any = 'rgba(99,102,241,0.1)';
+        if (ctx) {
+            const g = ctx.createLinearGradient(0, 0, 0, 280);
+            g.addColorStop(0, 'rgba(99,102,241,0.32)');
+            g.addColorStop(1, 'rgba(99,102,241,0.01)');
+            bg = g;
         }
+
+        return {
+            labels: weeks.map((w) => 'Week ' + this.weekLabel(w)),
+            datasets: [
+                {
+                    label: 'Total Tasks',
+                    data: cum,
+                    fill: true,
+                    backgroundColor: bg,
+                    borderColor: '#6366f1',
+                    tension: 0.42,
+                    pointRadius: 6,
+                    pointHoverRadius: 11,
+                    pointBackgroundColor: '#6366f1',
+                    pointBorderColor: '#0f172a',
+                    pointBorderWidth: 3,
+                    borderWidth: 3,
+                },
+            ],
+        };
     }
 
-    private timelineOpts(): any {
+    private timelineOpts(stacked: boolean): any {
         return {
             responsive: true,
             maintainAspectRatio: false,
             interaction: { mode: 'index', intersect: false },
             scales: {
                 x: {
+                    stacked,
                     grid: { color: 'rgba(71,85,105,0.12)' },
-                    ticks: { color: '#6b7280', font: { size: 11 } },
+                    ticks: { color: '#64748b', font: { size: 11 } },
                 },
                 y: {
+                    stacked,
                     grid: { color: 'rgba(71,85,105,0.12)' },
-                    ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 5 },
+                    ticks: { color: '#64748b', font: { size: 11 }, stepSize: 5 },
                     beginAtZero: true,
                 },
             },
             plugins: {
-                legend: { display: false },
-                tooltip: {
-                    ...this.lightTooltip(),
-                    displayColors: false,
+                legend: {
+                    position: 'bottom' as const,
+                    labels: {
+                        color: '#94a3b8',
+                        usePointStyle: true,
+                        pointStyle: 'circle',
+                        padding: 14,
+                        font: { size: 11 },
+                    },
                 },
+                tooltip: { ...this.tip() },
             },
-            animation: { duration: 900, easing: 'easeOutQuart' },
+            animation: { duration: 800, easing: 'easeOutQuart' },
         };
     }
 
-    toggleTimelineMode(m: 'daily' | 'cumulative'): void {
+    toggleTimeline(m: 'stacked' | 'cumulative'): void {
         this.timelineMode = m;
         this.timelineChart?.destroy();
-        const ctx = this.timelineCanvas.nativeElement.getContext('2d')!;
-        this.timelineChart = new Chart(ctx, {
-            type: m === 'cumulative' ? 'line' : 'bar',
-            data: this.buildTimelineData(ctx),
-            options: this.timelineOpts(),
-        });
+        this.initTimeline();
     }
 
-    // ═══════════════════════════════════════════
-    //  CHART 4 – HORIZONTAL STACKED BAR (Workload)
-    // ═══════════════════════════════════════════
-    private initWorkloadChart(): void {
-        const ctx = this.workloadCanvas.nativeElement.getContext('2d')!;
-        this.workloadChart = new Chart(ctx, {
-            type: 'bar',
-            data: this.buildWorkloadData(),
+    /* ═══════════════════════════════════════════════════
+         CHART 4 — POLAR AREA (Permissions)
+       ═══════════════════════════════════════════════════ */
+
+    private initPolar(): void {
+        const ctx = this.polarCanvas.nativeElement.getContext('2d')!;
+        this.polarChart = new Chart(ctx, {
+            type: 'polarArea',
+            data: this.buildPolarData(),
             options: {
-                indexAxis: 'y' as const,
+                responsive: true,
+                maintainAspectRatio: true,
+                scales: {
+                    r: {
+                        grid: { color: 'rgba(71,85,105,0.2)' },
+                        ticks: {
+                            display: false,
+                        },
+                        beginAtZero: true,
+                    },
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#94a3b8',
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            padding: 12,
+                            font: { size: 10 },
+                        },
+                    },
+                    tooltip: {
+                        ...this.tip(),
+                        callbacks: {
+                            label: (ctx: any) => {
+                                if (this.polarMode === 'count') {
+                                    return ` ${ctx.label}: ${ctx.raw} users`;
+                                } else {
+                                    return ` ${ctx.label}: ${(ctx.raw as number).toFixed(1)}%`;
+                                }
+                            },
+                        },
+                    },
+                },
+                animation: { duration: 800, easing: 'easeOutQuart', animateRotate: true, animateScale: true },
+            },
+        } as any);
+    }
+
+    private buildPolarData(): any {
+        const counts = this.permissionKeys.map(
+            (k) => this.users.filter((u) => u.permissions.includes(k)).length
+        );
+        const data =
+            this.polarMode === 'count'
+                ? counts
+                : counts.map((c) => +((c / this.users.length) * 100).toFixed(1));
+
+        return {
+            labels: this.permissionLabels,
+            datasets: [
+                {
+                    data,
+                    backgroundColor: [
+                        'rgba(59,130,246,0.55)',
+                        'rgba(16,185,129,0.55)',
+                        'rgba(245,158,11,0.55)',
+                        'rgba(239,68,68,0.55)',
+                        'rgba(139,92,246,0.55)',
+                    ],
+                    borderColor: [
+                        '#3b82f6',
+                        '#10b981',
+                        '#f59e0b',
+                        '#ef4444',
+                        '#8b5cf6',
+                    ],
+                    borderWidth: 2,
+                    hoverBorderWidth: 3,
+                },
+            ],
+        };
+    }
+
+    togglePolar(m: 'count' | 'percentage'): void {
+        this.polarMode = m;
+        if (this.polarChart) {
+            this.polarChart.data = this.buildPolarData();
+            this.polarChart.update('active');
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+         CHART 5 — MATRIX (Priority × Status)
+       ═══════════════════════════════════════════════════ */
+
+    private initMatrix(): void {
+        const ctx = this.matrixCanvas.nativeElement.getContext('2d')!;
+        this.matrixChart = new Chart(ctx, {
+            type: 'bar',
+            data: this.buildMatrixData(),
+            options: {
                 responsive: true,
                 maintainAspectRatio: true,
                 scales: {
                     x: {
-                        stacked: true,
-                        grid: { color: 'rgba(0,0,0,0.06)' },
-                        ticks: { color: '#475569', font: { size: 11 }, stepSize: 1 },
-                        beginAtZero: true,
+                        grid: { display: false },
+                        ticks: {
+                            color: '#cbd5e1',
+                            font: { size: 12, weight: 'bold' as any },
+                        },
                     },
                     y: {
-                        stacked: true,
-                        grid: { display: false },
-                        ticks: { color: '#475569', font: { size: 12, weight: 'bold' as any } },
+                        grid: { color: 'rgba(71,85,105,0.12)' },
+                        ticks: { color: '#64748b', font: { size: 11 }, stepSize: 2 },
+                        beginAtZero: true,
                     },
                 },
                 plugins: {
@@ -691,16 +923,15 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
                         display: false,
                     },
                     tooltip: {
-                        ...this.lightTooltip(),
+                        ...this.tip(),
                         callbacks: {
                             afterBody: (items: any) => {
-                                const idx = items[0]?.dataIndex;
-                                if (idx === undefined) return '';
-                                const uids = ['1', '2', '3', '4', '5', '6', '7'];
-                                const total = this.tasks.filter((t) =>
-                                    t.assignedTo.includes(uids[idx])
+                                const pri = ['HIGH', 'NORMAL', 'LOW'][items[0]?.dataIndex];
+                                if (!pri) return '';
+                                const total = this.tasks.filter(
+                                    (t) => t.priority === pri
                                 ).length;
-                                return `Total assigned: ${total}`;
+                                return `Total ${pri.toLowerCase()} priority: ${total}`;
                             },
                         },
                     },
@@ -710,200 +941,65 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         });
     }
 
-    private buildWorkloadData(): any {
-        const uids = ['1', '2', '3', '4', '5', '6', '7'];
-        const names = uids.map((id) => {
-            const u = this.users.find((x) => x.id === id);
-            return u ? this.getShortName(u.name) : id;
-        });
-        const cnt = (uid: string, s: string) =>
-            this.tasks.filter((t) => t.assignedTo.includes(uid) && t.status === s)
-                .length;
-        const ds: any[] = [];
-        if (this.workloadFilters['COMPLETED'])
-            ds.push({
-                label: 'Completed',
-                data: uids.map((u) => cnt(u, 'COMPLETED')),
-                backgroundColor: 'rgba(16,185,129,0.7)',
-                borderColor: 'rgba(16,185,129,1)',
-                borderWidth: 1,
-                borderRadius: 4,
-                borderSkipped: false,
-            });
-        if (this.workloadFilters['IN_PROGRESS'])
-            ds.push({
-                label: 'In Progress',
-                data: uids.map((u) => cnt(u, 'IN_PROGRESS')),
-                backgroundColor: 'rgba(245,158,11,0.7)',
-                borderColor: 'rgba(245,158,11,1)',
-                borderWidth: 1,
-                borderRadius: 4,
-                borderSkipped: false,
-            });
-        if (this.workloadFilters['INCOMPLETE'])
-            ds.push({
-                label: 'Incomplete',
-                data: uids.map((u) => cnt(u, 'INCOMPLETE')),
-                backgroundColor: 'rgba(239,68,68,0.7)',
-                borderColor: 'rgba(239,68,68,1)',
-                borderWidth: 1,
-                borderRadius: 4,
-                borderSkipped: false,
-            });
-        return { labels: names, datasets: ds };
-    }
+    private buildMatrixData(): any {
+        const priorities = ['HIGH', 'NORMAL', 'LOW'];
+        const statuses = ['COMPLETED', 'IN_PROGRESS', 'INCOMPLETE'];
+        const cnt = (p: string, s: string) =>
+            this.tasks.filter((t) => t.priority === p && t.status === s).length;
 
-    toggleWorkloadFilter(s: string): void {
-        const active = Object.values(this.workloadFilters).filter((v) => v).length;
-        if (this.workloadFilters[s] && active <= 1) return;
-        this.workloadFilters[s] = !this.workloadFilters[s];
-        if (this.workloadChart) {
-            this.workloadChart.data = this.buildWorkloadData();
-            this.workloadChart.update('active');
-        }
-    }
-
-    // ═══════════════════════════════════════════
-    //  CHART 5 – MIXED BAR + LINE (Due Date)
-    // ═══════════════════════════════════════════
-    private initDueDateChart(): void {
-        const ctx = this.dueDateCanvas.nativeElement.getContext('2d')!;
-        this.dueDateChart = new Chart(ctx, {
-            type: 'bar',
-            data: this.buildDueDateData(),
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                interaction: { mode: 'index', intersect: false },
-                scales: {
-                    x: {
-                        grid: { color: 'rgba(71,85,105,0.12)' },
-                        ticks: {
-                            color: '#6b7280',
-                            font: { size: 10 },
-                            maxRotation: 45,
-                            minRotation: 30,
-                        },
-                    },
-                    y: {
-                        position: 'left' as const,
-                        grid: { color: 'rgba(71,85,105,0.12)' },
-                        ticks: { color: '#6b7280', font: { size: 11 }, stepSize: 2 },
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Tasks',
-                            color: '#64748b',
-                            font: { size: 11 },
-                        },
-                    },
-                    y1: {
-                        position: 'right' as const,
-                        display: this.showCompletionLine,
-                        grid: { drawOnChartArea: false },
-                        ticks: {
-                            color: '#10b981',
-                            font: { size: 11 },
-                            callback: (v: any) => v + '%',
-                        },
-                        min: 0,
-                        max: 100,
-                        title: {
-                            display: true,
-                            text: 'Completion %',
-                            color: '#10b981',
-                            font: { size: 11 },
-                        },
-                    },
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom' as const,
-                        labels: {
-                            color: '#475569',
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            padding: 14,
-                            font: { size: 11 },
-                        },
-                    },
-                    tooltip: {
-                        ...this.lightTooltip(),
-                        callbacks: {
-                            label: (ctx: any) => {
-                                if (ctx.dataset.yAxisID === 'y1')
-                                    return ` Completion: ${(ctx.raw as number).toFixed(1)}%`;
-                                return ` ${ctx.dataset.label}: ${ctx.raw} tasks`;
-                            },
-                        },
-                    },
-                },
-                animation: { duration: 800, easing: 'easeOutQuart' },
+        const colors: Record<string, { bg: string; border: string }> = {
+            COMPLETED: {
+                bg: 'rgba(16,185,129,0.65)',
+                border: '#10b981',
             },
-        } as any);
-    }
+            IN_PROGRESS: {
+                bg: 'rgba(245,158,11,0.65)',
+                border: '#f59e0b',
+            },
+            INCOMPLETE: {
+                bg: 'rgba(239,68,68,0.65)',
+                border: '#ef4444',
+            },
+        };
 
-    private buildDueDateData(): any {
-        const map: Record<string, Task[]> = {};
-        this.tasks.forEach((t) => {
-            if (!map[t.dueDate]) map[t.dueDate] = [];
-            map[t.dueDate].push(t);
-        });
-        const dates = Object.keys(map).sort();
-        const labels = dates.map((d) => {
-            const dt = new Date(d + 'T00:00:00');
-            return dt.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        });
-        const counts = dates.map((d) => map[d].length);
-        const rates = dates.map((d) => {
-            const arr = map[d];
-            const c = arr.filter((t) => t.status === 'COMPLETED').length;
-            return arr.length > 0 ? +((c / arr.length) * 100).toFixed(1) : 0;
-        });
+        const labelMap: Record<string, string> = {
+            COMPLETED: 'Completed',
+            IN_PROGRESS: 'In Progress',
+            INCOMPLETE: 'Incomplete',
+        };
 
-        const ds: any[] = [
-            {
-                type: 'bar' as const,
-                label: 'Tasks Due',
-                data: counts,
-                backgroundColor: 'rgba(99,102,241,0.5)',
-                borderColor: 'rgba(99,102,241,0.9)',
+        const ds = statuses
+            .filter((s) => this.matrixFilters[s])
+            .map((s) => ({
+                label: labelMap[s],
+                data: priorities.map((p) => cnt(p, s)),
+                backgroundColor: colors[s].bg,
+                borderColor: colors[s].border,
                 borderWidth: 1.5,
-                borderRadius: 8,
-                order: 2,
+                borderRadius: 6,
+                hoverBackgroundColor: colors[s].border,
                 barPercentage: 0.7,
-            },
-        ];
+                categoryPercentage: 0.7,
+            }));
 
-        if (this.showCompletionLine) {
-            ds.push({
-                type: 'line' as const,
-                label: 'Completion Rate',
-                data: rates,
-                borderColor: '#10b981',
-                backgroundColor: 'rgba(16,185,129,0.08)',
-                tension: 0.4,
-                pointRadius: 5,
-                pointHoverRadius: 9,
-                pointBackgroundColor: '#10b981',
-                pointBorderColor: '#ffffff',
-                pointBorderWidth: 3,
-                borderWidth: 2.5,
-                yAxisID: 'y1',
-                fill: false,
-                order: 1,
-            });
-        }
-        return { labels, datasets: ds };
+        return { labels: ['🔴 High', '🟡 Normal', '🔵 Low'], datasets: ds };
     }
 
-    toggleCompletionLine(): void {
-        this.showCompletionLine = !this.showCompletionLine;
-        if (this.dueDateChart) {
-            this.dueDateChart.data = this.buildDueDateData();
-            const s = (this.dueDateChart.options as any).scales;
-            if (s?.y1) s.y1.display = this.showCompletionLine;
-            this.dueDateChart.update('active');
+    toggleMatrixFilter(s: string): void {
+        const active = Object.values(this.matrixFilters).filter((v) => v).length;
+        if (this.matrixFilters[s] && active <= 1) return;
+        this.matrixFilters[s] = !this.matrixFilters[s];
+        if (this.matrixChart) {
+            this.matrixChart.data = this.buildMatrixData();
+            this.matrixChart.update('active');
         }
+    }
+
+    /* ═══════════════════════════════════════════════════
+         UTILITIES
+       ═══════════════════════════════════════════════════ */
+
+    truncate(name: string, max = 18): string {
+        return name.length > max ? name.substring(0, max - 1) + '…' : name;
     }
 }
