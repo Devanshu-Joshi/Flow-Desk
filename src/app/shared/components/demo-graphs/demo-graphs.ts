@@ -284,18 +284,34 @@ export class DemoGraphs implements AfterViewInit, OnDestroy {
         const centerPlugin = {
             id: 'doughnutCenter',
             beforeDraw: (chart: any) => {
-                const { ctx: c, width: w, height: h } = chart;
-                c.save();
-                const total = (chart.data.datasets[0].data as number[]).reduce((a: number, b: number) => a + b, 0);
-                c.font = 'bold 28px Inter, system-ui, sans-serif';
-                c.fillStyle = this.centerNumColor;
-                c.textAlign = 'center';
-                c.textBaseline = 'middle';
-                c.fillText(total.toString(), w / 2, h / 2 - 10);
-                c.font = '11px Inter, system-ui, sans-serif';
-                c.fillStyle = this.centerLabelColor;
-                c.fillText(this.doughnutMode === 'status' ? 'Total Tasks' : 'By Priority', w / 2, h / 2 + 14);
-                c.restore();
+                const { ctx, chartArea } = chart;
+                if (!chartArea) return;
+
+                const centerX = (chartArea.left + chartArea.right) / 2;
+                const centerY = (chartArea.top + chartArea.bottom) / 2;
+
+                ctx.save();
+
+                const total = (chart.data.datasets[0].data as number[])
+                    .reduce((a: number, b: number) => a + b, 0);
+
+                // number
+                ctx.font = 'bold 28px Inter, system-ui, sans-serif';
+                ctx.fillStyle = this.centerNumColor;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(total.toString(), centerX, centerY - 8);
+
+                // label
+                ctx.font = '11px Inter, system-ui, sans-serif';
+                ctx.fillStyle = this.centerLabelColor;
+                ctx.fillText(
+                    this.doughnutMode === 'status' ? 'Total Tasks' : 'By Priority',
+                    centerX,
+                    centerY + 14
+                );
+
+                ctx.restore();
             },
         };
         this.doughnutChart = new Chart(ctx, {
