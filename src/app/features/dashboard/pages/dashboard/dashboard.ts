@@ -169,7 +169,21 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
     /* ──────────────── STAT GETTERS ──────────────── */
 
     get teamSize(): number {
-        return this.users().filter(u => u.parentId?.toString() === this.currentUserId).length;
+        const users = this.users();
+        const currentUser = users.find(u => u.id === this.currentUserId);
+
+        if (!currentUser) return 0;
+
+        // find team root (manager)
+        const rootId =
+            currentUser.parentId === "-1"
+                ? currentUser.id
+                : currentUser.parentId;
+
+        const childrenCount = users.filter(u => u.parentId === rootId).length;
+
+        // parent + children
+        return childrenCount + 1;
     }
 
     get myAssignedCount(): number {
