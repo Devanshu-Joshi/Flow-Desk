@@ -45,13 +45,16 @@ interface TeamMember {
     templateUrl: './dashboard.html',
     styleUrl: './dashboard.css',
 })
-export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
+export class Dashboard implements OnDestroy, OnInit {
 
     tasks!: Signal<TaskView[]>;
     users$!: Observable<UserModel[] | null>;
     private destroyRef = inject(DestroyRef);
     users = signal<UserModel[]>([]);
     currentUser!: Signal<UserModel | null>;
+    private viewReady = false;
+    private lastRenderKey = '';
+    private destroyEffect!: any;
 
     constructor(
         private userService: UserService,
@@ -60,6 +63,7 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
     ) {
         this.tasks = this.taskService.tasksView;
         this.currentUser = this.userAuth.currentUserSignal;
+        this.destroyEffect = this.initEffect;
     }
 
 
@@ -170,7 +174,7 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
     get teamSize(): number {
         const users = this.users();
-        const currentUser = users.find(u => u.id === this.currentUserId);
+        const currentUser = users.find(u => u.id?.toString() === this.currentUserId);
 
         if (!currentUser) return 0;
 
@@ -225,7 +229,7 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
         const tasksArr = this.tasks();
 
         const members = usersArr.map((u, i) => {
-            const ut = tasksArr.filter(t => t.assignedTo.includes(u.id?.toString()));
+            const ut = tasksArr.filter(t => t.assignedTo.map(String).includes(u.id?.toString()));
             return {
                 id: u.id?.toString(),
                 name: u.name,
@@ -267,14 +271,47 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
     /* ──────────────── LIFECYCLE ──────────────── */
 
     ngAfterViewInit(): void {
-        setTimeout(() => this.initAllCharts());
+        this.viewReady = true;
     }
+
+    initEffect = effect(() => {
+        const tasks = this.tasks();
+        const users = this.users();
+        const user = this.currentUser();
+
+        if (!this.viewReady) return;
+        if (!tasks || !users.length || !user) return;
+
+        const renderKey =
+            tasks.length +
+            '-' +
+            this.completedCount +
+            '-' +
+            this.inProgressCount +
+            '-' +
+            this.incompleteCount +
+            '-' +
+            users.length +
+            '-' +
+            user.id;
+
+        if (renderKey === this.lastRenderKey) return;
+        this.lastRenderKey = renderKey;
+
+        queueMicrotask(() => {
+            this.destroyAllCharts();
+            this.initAllCharts();
+        });
+    });
 
     ngOnDestroy(): void {
         this.destroyAllCharts();
+        this.destroyEffect.destroy();
     }
 
     private initAllCharts(): void {
+        if (!this.doughnutCanvas || !this.polarCanvas || !this.matrixCanvas || !this.timelineCanvas) return;
+
         this.initDoughnut();
         this.initPolar();
         this.initMatrix();
@@ -282,7 +319,15 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
     }
 
     private destroyAllCharts(): void {
-        [this.doughnutChart, this.polarChart, this.matrixChart, this.timelineChart].forEach(c => c?.destroy());
+        this.doughnutChart?.destroy();
+        this.polarChart?.destroy();
+        this.matrixChart?.destroy();
+        this.timelineChart?.destroy();
+
+        this.doughnutChart = null;
+        this.polarChart = null;
+        this.matrixChart = null;
+        this.timelineChart = null;
     }
 
     /* ──────────────── THEME TOGGLE ──────────────── */
@@ -290,7 +335,7 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
     toggleTheme(): void {
         this.isDark = !this.isDark;
         this.destroyAllCharts();
-        setTimeout(() => this.initAllCharts());
+        requestAnimationFrame(() => this.initAllCharts());
     }
 
     /* ──────────────── TOOLTIP ──────────────── */
@@ -329,8 +374,8 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
                 chartCtx.save();
 
-                const total = (chart.data.datasets[0].data as number[])
-                    .reduce((a: number, b: number) => a + b, 0);
+                const data = chart.data.datasets?.[0]?.data as number[] || [];
+                const total = data.reduce((a, b) => a + b, 0);
 
                 chartCtx.font = 'bold 28px Inter, system-ui, sans-serif';
                 chartCtx.fillStyle = this.centerNumColor;
@@ -340,11 +385,14 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
                 chartCtx.font = '11px Inter, system-ui, sans-serif';
                 chartCtx.fillStyle = this.centerLabelColor;
-                chartCtx.fillText(
-                    this.doughnutMode === 'status' ? 'My Tasks' : 'By Priority',
-                    centerX,
-                    centerY + 14
-                );
+                const label =
+                    total === 0
+                        ? 'No Tasks'
+                        : this.doughnutMode === 'status'
+                            ? 'My Tasks'
+                            : 'By Priority';
+
+                chartCtx.fillText(label, centerX, centerY + 14);
 
                 chartCtx.restore();
             },
@@ -355,7 +403,11 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
             options: {
                 responsive: true, maintainAspectRatio: true, cutout: '68%',
                 plugins: {
-                    legend: { position: 'bottom', labels: { color: this.lc, padding: 16, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } } },
+                    legend: {
+                        display: this.tasks().some(t =>
+                            t.assignedTo.map(String).includes(this.currentUserId)
+                        ), position: 'bottom', labels: { color: this.lc, padding: 16, usePointStyle: true, pointStyle: 'circle', font: { size: 11 } }
+                    },
                     tooltip: { ...this.tip(), callbacks: { label: (context: any) => { const total = (context.dataset.data as number[]).reduce((a: number, b: number) => a + b, 0); const pct = (((context.raw as number) / total) * 100).toFixed(1); return ` ${context.label}: ${context.raw} (${pct}%)`; } } },
                 },
                 animation: { animateRotate: true, animateScale: true, duration: 800, easing: 'easeOutQuart' },
@@ -414,7 +466,8 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
     private buildPolarData(): any {
         const usersArr = this.users();
-        const counts = this.permissionKeys.map(k => usersArr.filter(u => u.permissions.includes(k)).length);
+        const counts = this.permissionKeys.map(k => usersArr.filter(u => (u.permissions ?? []).includes(k)
+        ).length);
         const data = this.polarMode === 'count'
             ? counts
             : counts.map(c => usersArr.length > 0 ? +((c / usersArr.length) * 100).toFixed(1) : 0);
@@ -468,6 +521,7 @@ export class Dashboard implements AfterViewInit, OnDestroy, OnInit {
 
     private buildMatrixData(): any {
         const tasksArr = this.tasks();
+        if (!tasksArr.length) return { labels: [], datasets: [] };
         const priorities = ['HIGH', 'NORMAL', 'LOW'];
         const statuses = ['COMPLETED', 'IN_PROGRESS', 'INCOMPLETE'];
         const cnt = (p: string, s: string) => tasksArr.filter(t => t.priority === p && t.status === s).length;
