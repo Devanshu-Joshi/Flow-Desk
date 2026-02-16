@@ -1,4 +1,6 @@
-<div class="min-h-screen bg-linear-to-br from-white via-slate-50 to-white p-4 md:p-6 lg:p-8">
+<div class="min-h-screen p-4 md:p-6 lg:p-8 transition-colors duration-500" [ngClass]="isDark
+      ? 'bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950'
+      : 'bg-gradient-to-br from-white via-slate-50 to-white'">
 
     <!-- ══════════════════════════════════════════════════════════
          SKELETON LOADING STATE
@@ -9,10 +11,13 @@
         <!-- Skeleton Header -->
         <div class="mb-8">
             <div class="flex items-center gap-3 mb-1">
-                <div class="w-10 h-10 rounded-xl skeleton-shimmer"></div>
+                <div class="w-10 h-10 rounded-xl" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                </div>
                 <div class="space-y-2">
-                    <div class="h-7 w-52 rounded-lg skeleton-shimmer"></div>
-                    <div class="h-3.5 w-72 rounded-md skeleton-shimmer"></div>
+                    <div class="h-7 w-52 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
+                    <div class="h-3.5 w-72 rounded-md"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                 </div>
             </div>
         </div>
@@ -20,14 +25,20 @@
         <!-- Skeleton Stat Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
             @for (i of [1,2,3,4]; track i) {
-            <div class="rounded-2xl p-4 md:p-5 border border-gray-100 bg-white overflow-hidden relative">
-                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full bg-gray-50"></div>
+            <div class="rounded-2xl p-4 md:p-5 border overflow-hidden relative"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
+                <div class="absolute -top-6 -right-6 w-20 h-20 rounded-full"
+                    [ngClass]="isDark ? 'bg-slate-700/30' : 'bg-gray-50'"></div>
                 <div class="flex items-center gap-2 mb-3">
-                    <div class="w-8 h-8 rounded-lg skeleton-shimmer"></div>
-                    <div class="h-3 w-16 rounded skeleton-shimmer"></div>
+                    <div class="w-8 h-8 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
+                    <div class="h-3 w-16 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
                 </div>
-                <div class="h-9 w-14 rounded-lg skeleton-shimmer mb-1"></div>
-                <div class="h-3 w-20 rounded skeleton-shimmer mt-1.5"></div>
+                <div class="h-9 w-14 rounded-lg mb-1" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                </div>
+                <div class="h-3 w-20 rounded mt-1.5" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                </div>
             </div>
             }
         </div>
@@ -35,70 +46,83 @@
         <!-- Skeleton Charts Grid -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
             <!-- Doughnut Skeleton -->
-            <div class="rounded-2xl p-5 md:p-6 border border-gray-100 bg-white">
+            <div class="rounded-2xl p-5 md:p-6 border"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
                 <div class="flex items-center justify-between mb-5">
                     <div class="space-y-2">
-                        <div class="h-4 w-36 rounded skeleton-shimmer"></div>
-                        <div class="h-3 w-28 rounded skeleton-shimmer"></div>
+                        <div class="h-4 w-36 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
+                        <div class="h-3 w-28 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
-                    <div class="flex gap-1 rounded-xl bg-gray-50 p-1">
-                        <div class="h-7 w-16 rounded-lg skeleton-shimmer"></div>
-                        <div class="h-7 w-16 rounded-lg skeleton-shimmer"></div>
+                    <div class="flex gap-1 rounded-xl p-1" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-50'">
+                        <div class="h-7 w-16 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                        <div class="h-7 w-16 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                     </div>
                 </div>
                 <div class="flex items-center justify-center py-4">
                     <div class="relative">
-                        <div class="w-48 h-48 rounded-full skeleton-shimmer-ring"></div>
+                        <div class="w-48 h-48 rounded-full"
+                            [ngClass]="isDark ? 'skeleton-shimmer-ring-dark' : 'skeleton-shimmer-ring'"></div>
                         <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="w-32 h-32 rounded-full bg-white"></div>
+                            <div class="w-32 h-32 rounded-full" [ngClass]="isDark ? 'bg-slate-800' : 'bg-white'"></div>
                         </div>
                         <div class="absolute inset-0 flex flex-col items-center justify-center">
-                            <div class="h-7 w-10 rounded skeleton-shimmer mb-1"></div>
-                            <div class="h-3 w-14 rounded skeleton-shimmer"></div>
+                            <div class="h-7 w-10 rounded mb-1"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                            <div class="h-3 w-14 rounded"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                         </div>
                     </div>
                 </div>
                 <div class="flex justify-center gap-6 mt-3">
+                    @for (dot of [1,2,3]; track dot) {
                     <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded-full skeleton-shimmer"></div>
-                        <div class="h-3 w-16 rounded skeleton-shimmer"></div>
+                        <div class="w-3 h-3 rounded-full"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                        <div class="h-3 w-16 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded-full skeleton-shimmer"></div>
-                        <div class="h-3 w-16 rounded skeleton-shimmer"></div>
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded-full skeleton-shimmer"></div>
-                        <div class="h-3 w-16 rounded skeleton-shimmer"></div>
-                    </div>
+                    }
                 </div>
             </div>
 
             <!-- Polar Skeleton -->
-            <div class="rounded-2xl p-5 md:p-6 border border-gray-100 bg-white">
+            <div class="rounded-2xl p-5 md:p-6 border"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
                 <div class="flex items-center justify-between mb-4">
                     <div class="space-y-2">
-                        <div class="h-4 w-36 rounded skeleton-shimmer"></div>
-                        <div class="h-3 w-52 rounded skeleton-shimmer"></div>
+                        <div class="h-4 w-36 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
+                        <div class="h-3 w-52 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
-                    <div class="flex gap-1 rounded-xl bg-gray-50 p-1">
-                        <div class="h-7 w-14 rounded-lg skeleton-shimmer"></div>
-                        <div class="h-7 w-8 rounded-lg skeleton-shimmer"></div>
+                    <div class="flex gap-1 rounded-xl p-1" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-50'">
+                        <div class="h-7 w-14 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                        <div class="h-7 w-8 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                     </div>
                 </div>
                 <div class="flex items-center justify-center py-4">
                     <div class="relative">
                         <svg class="w-48 h-48" viewBox="0 0 200 200">
-                            <!-- Pre-computed polar segments (72° each) -->
-                            <path d="M100,100 L100,20 A80,80 0 0,1 176.1,56.9 Z" class="skeleton-shimmer-svg"
+                            <path d="M100,100 L100,20 A80,80 0 0,1 176.1,56.9 Z"
+                                [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'"
                                 style="animation-delay: 0s" />
-                            <path d="M100,100 L176.1,56.9 A80,80 0 0,1 149.4,168.9 Z" class="skeleton-shimmer-svg"
+                            <path d="M100,100 L176.1,56.9 A80,80 0 0,1 149.4,168.9 Z"
+                                [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'"
                                 style="animation-delay: 0.15s" />
-                            <path d="M100,100 L149.4,168.9 A80,80 0 0,1 50.6,168.9 Z" class="skeleton-shimmer-svg"
+                            <path d="M100,100 L149.4,168.9 A80,80 0 0,1 50.6,168.9 Z"
+                                [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'"
                                 style="animation-delay: 0.3s" />
-                            <path d="M100,100 L50.6,168.9 A80,80 0 0,1 23.9,56.9 Z" class="skeleton-shimmer-svg"
+                            <path d="M100,100 L50.6,168.9 A80,80 0 0,1 23.9,56.9 Z"
+                                [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'"
                                 style="animation-delay: 0.45s" />
-                            <path d="M100,100 L23.9,56.9 A80,80 0 0,1 100,20 Z" class="skeleton-shimmer-svg"
+                            <path d="M100,100 L23.9,56.9 A80,80 0 0,1 100,20 Z"
+                                [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'"
                                 style="animation-delay: 0.6s" />
                         </svg>
                     </div>
@@ -106,28 +130,37 @@
                 <div class="flex justify-center flex-wrap gap-4 mt-3">
                     @for (j of [1,2,3,4,5]; track j) {
                     <div class="flex items-center gap-1.5">
-                        <div class="w-3 h-3 rounded-full skeleton-shimmer"></div>
-                        <div class="h-3 w-14 rounded skeleton-shimmer"></div>
+                        <div class="w-3 h-3 rounded-full"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                        <div class="h-3 w-14 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
                     }
                 </div>
             </div>
 
             <!-- Matrix Bar Chart Skeleton -->
-            <div class="rounded-2xl p-5 md:p-6 border border-gray-100 bg-white">
+            <div class="rounded-2xl p-5 md:p-6 border"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
                 <div class="space-y-2 mb-3">
-                    <div class="h-4 w-44 rounded skeleton-shimmer"></div>
-                    <div class="h-3 w-64 rounded skeleton-shimmer"></div>
+                    <div class="h-4 w-44 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
+                    <div class="h-3 w-64 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
                 </div>
                 <div class="flex gap-1.5 mb-4">
-                    <div class="h-7 w-24 rounded-lg skeleton-shimmer"></div>
-                    <div class="h-7 w-24 rounded-lg skeleton-shimmer"></div>
-                    <div class="h-7 w-24 rounded-lg skeleton-shimmer"></div>
+                    <div class="h-7 w-24 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
+                    <div class="h-7 w-24 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
+                    <div class="h-7 w-24 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
                 </div>
                 <div class="h-55 md:h-70 flex items-end justify-around gap-4 px-4 pt-4 pb-8">
                     @for (bar of [75,55,85,45,65,40,70,50,60]; track $index) {
                     <div class="flex-1 flex flex-col items-center gap-1">
-                        <div class="w-full rounded-t-md skeleton-shimmer" [style.height.%]="bar"
+                        <div class="w-full rounded-t-md"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'" [style.height.%]="bar"
                             [style.animation-delay]="$index * 0.08 + 's'"></div>
                     </div>
                     }
@@ -135,42 +168,50 @@
             </div>
 
             <!-- Timeline Skeleton -->
-            <div class="rounded-2xl p-5 md:p-6 border border-gray-100 bg-white">
+            <div class="rounded-2xl p-5 md:p-6 border"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
                 <div class="flex items-center justify-between mb-5">
                     <div class="space-y-2">
-                        <div class="h-4 w-40 rounded skeleton-shimmer"></div>
-                        <div class="h-3 w-56 rounded skeleton-shimmer"></div>
+                        <div class="h-4 w-40 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
+                        <div class="h-3 w-56 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
-                    <div class="flex gap-1 rounded-xl bg-gray-50 p-1">
-                        <div class="h-7 w-16 rounded-lg skeleton-shimmer"></div>
-                        <div class="h-7 w-20 rounded-lg skeleton-shimmer"></div>
+                    <div class="flex gap-1 rounded-xl p-1" [ngClass]="isDark ? 'bg-slate-700/40' : 'bg-gray-50'">
+                        <div class="h-7 w-16 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                        <div class="h-7 w-20 rounded-lg"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                     </div>
                 </div>
                 <div class="h-55 md:h-70 relative">
-                    <!-- Fake grid lines -->
                     <div class="absolute inset-0 flex flex-col justify-between py-2">
                         @for (line of [1,2,3,4,5]; track line) {
-                        <div class="border-t border-gray-100 w-full"></div>
+                        <div class="w-full"
+                            [ngClass]="isDark ? 'border-t border-slate-700/30' : 'border-t border-gray-100'"></div>
                         }
                     </div>
-                    <!-- Fake line chart path -->
                     <svg class="absolute inset-0 w-full h-full" preserveAspectRatio="none" viewBox="0 0 400 200">
                         <defs>
                             <linearGradient id="skelGrad" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stop-color="#e0e7ff" stop-opacity="0.5" />
-                                <stop offset="100%" stop-color="#e0e7ff" stop-opacity="0" />
+                                <stop offset="0%" [attr.stop-color]="isDark ? '#4338ca' : '#e0e7ff'"
+                                    stop-opacity="0.3" />
+                                <stop offset="100%" [attr.stop-color]="isDark ? '#4338ca' : '#e0e7ff'"
+                                    stop-opacity="0" />
                             </linearGradient>
                         </defs>
                         <path d="M0,180 Q50,160 100,140 T200,100 T300,70 T400,40 L400,200 L0,200 Z"
-                            fill="url(#skelGrad)" class="skeleton-shimmer-svg" />
-                        <path d="M0,180 Q50,160 100,140 T200,100 T300,70 T400,40" fill="none" stroke="#c7d2fe"
-                            stroke-width="3" stroke-linecap="round" class="skeleton-shimmer-svg" />
+                            fill="url(#skelGrad)"
+                            [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'" />
+                        <path d="M0,180 Q50,160 100,140 T200,100 T300,70 T400,40" fill="none"
+                            [attr.stroke]="isDark ? '#4338ca' : '#c7d2fe'" stroke-width="3" stroke-linecap="round"
+                            [ngClass]="isDark ? 'skeleton-shimmer-svg-dark' : 'skeleton-shimmer-svg'" />
                     </svg>
-                    <!-- Fake dots -->
                     <div class="absolute inset-0 flex items-end justify-between px-2 pb-6">
                         @for (dot of [80,60,40,30,50,25,20]; track $index) {
-                        <div class="w-3 h-3 rounded-full skeleton-shimmer" [style.margin-bottom.%]="dot"
-                            [style.animation-delay]="$index * 0.1 + 's'"></div>
+                        <div class="w-3 h-3 rounded-full"
+                            [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"
+                            [style.margin-bottom.%]="dot" [style.animation-delay]="$index * 0.1 + 's'"></div>
                         }
                     </div>
                 </div>
@@ -179,45 +220,61 @@
 
         <!-- Skeleton Team Roster -->
         <div class="mt-8">
-            <div class="rounded-2xl p-5 md:p-6 border border-gray-100 bg-white">
+            <div class="rounded-2xl p-5 md:p-6 border"
+                [ngClass]="isDark ? 'bg-slate-800/50 border-slate-700/30' : 'bg-white border-gray-100'">
                 <div class="flex items-center gap-3 mb-5">
-                    <div class="w-9 h-9 rounded-xl skeleton-shimmer"></div>
+                    <div class="w-9 h-9 rounded-xl" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                    </div>
                     <div class="space-y-2">
-                        <div class="h-4 w-28 rounded skeleton-shimmer"></div>
-                        <div class="h-3 w-48 rounded skeleton-shimmer"></div>
+                        <div class="h-4 w-28 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
+                        <div class="h-3 w-48 rounded" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
+                        </div>
                     </div>
                 </div>
-                <!-- Table Header -->
                 <div class="hidden md:grid grid-cols-12 gap-3 px-4 py-2.5 rounded-xl mb-2">
-                    <div class="col-span-4 h-3 w-16 rounded skeleton-shimmer"></div>
-                    <div class="col-span-2 h-3 w-16 rounded skeleton-shimmer mx-auto"></div>
-                    <div class="col-span-2 h-3 w-16 rounded skeleton-shimmer mx-auto"></div>
-                    <div class="col-span-2 h-3 w-16 rounded skeleton-shimmer mx-auto"></div>
-                    <div class="col-span-2 h-3 w-16 rounded skeleton-shimmer mx-auto"></div>
+                    <div class="col-span-4 h-3 w-16 rounded"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                    <div class="col-span-2 h-3 w-16 rounded mx-auto"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                    <div class="col-span-2 h-3 w-16 rounded mx-auto"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                    <div class="col-span-2 h-3 w-16 rounded mx-auto"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
+                    <div class="col-span-2 h-3 w-16 rounded mx-auto"
+                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                 </div>
-                <!-- Skeleton Rows -->
                 <div class="space-y-1.5">
                     @for (row of [1,2,3,4,5]; track row) {
-                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-center px-4 py-3 rounded-xl border border-gray-50"
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 items-center px-4 py-3 rounded-xl border"
+                        [ngClass]="isDark ? 'border-slate-700/20' : 'border-gray-50'"
                         [style.animation-delay]="row * 0.1 + 's'">
                         <div class="col-span-1 md:col-span-4 flex items-center gap-3">
-                            <div class="w-9 h-9 rounded-xl skeleton-shimmer shrink-0"></div>
+                            <div class="w-9 h-9 rounded-xl shrink-0"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                             <div class="space-y-1.5 flex-1">
-                                <div class="h-3.5 rounded skeleton-shimmer" [style.width]="(60 + row * 8) + '%'"></div>
-                                <div class="h-3 w-14 rounded skeleton-shimmer"></div>
+                                <div class="h-3.5 rounded"
+                                    [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"
+                                    [style.width]="(60 + row * 8) + '%'"></div>
+                                <div class="h-3 w-14 rounded"
+                                    [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                             </div>
                         </div>
                         <div class="hidden md:flex col-span-2 justify-center">
-                            <div class="h-6 w-9 rounded-lg skeleton-shimmer"></div>
+                            <div class="h-6 w-9 rounded-lg"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                         </div>
                         <div class="hidden md:flex col-span-2 justify-center">
-                            <div class="h-6 w-9 rounded-lg skeleton-shimmer"></div>
+                            <div class="h-6 w-9 rounded-lg"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                         </div>
                         <div class="hidden md:flex col-span-2 justify-center">
-                            <div class="h-6 w-9 rounded-lg skeleton-shimmer"></div>
+                            <div class="h-6 w-9 rounded-lg"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                         </div>
                         <div class="hidden md:flex col-span-2 justify-center">
-                            <div class="h-6 w-9 rounded-lg skeleton-shimmer"></div>
+                            <div class="h-6 w-9 rounded-lg"
+                                [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
                         </div>
                     </div>
                     }
@@ -232,27 +289,6 @@
          ══════════════════════════════════════════════════════════ -->
     @if (dataLoaded()) {
     <div class="animate-fade-in">
-
-        <!-- ─── HEADER ─── -->
-        <div class="mb-8">
-            <div class="flex items-center gap-3 mb-1">
-                <div
-                    class="w-10 h-10 bg-linear-to-br from-indigo-400 to-cyan-400 rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200/40">
-                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                </div>
-                <h1 class="text-2xl md:text-3xl font-bold tracking-tight">
-                    <span
-                        class="bg-linear-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">Flowdesk</span>
-                    <span class="text-gray-600 font-light ml-2">Analytics</span>
-                </h1>
-            </div>
-            <p class="text-gray-700 text-sm ml-13">
-                Real-time insights into your team's productivity
-            </p>
-        </div>
 
         <!-- ════════════ STAT CARDS ════════════ -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
@@ -595,5 +631,247 @@
 
     </div>
     }
+
+    <!-- ══════════════════════════════════════════════════════════
+     FLOATING THEME TOGGLER — RIGHT EDGE
+     ══════════════════════════════════════════════════════════ -->
+
+    <!-- Backdrop overlay when panel is open -->
+    <div class="fixed inset-0 z-[998] transition-opacity duration-300"
+        [ngClass]="themeMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'"
+        (click)="closeThemePanel()"></div>
+
+    <!-- The floating assembly -->
+    <div class="fixed right-0 top-1/2 -translate-y-1/2 z-[999] flex items-center">
+
+        <!-- ── Expanded Panel (slides from right) ── -->
+        <div class="absolute right-0 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]" [ngClass]="themeMenuOpen
+      ? 'translate-x-0 opacity-100 scale-100'
+      : 'translate-x-full opacity-0 scale-95 pointer-events-none'">
+            <div class="mr-2 rounded-2xl border shadow-2xl backdrop-blur-xl p-4 w-[220px] transition-colors duration-300"
+                [ngClass]="isDark
+        ? 'bg-slate-900/95 border-slate-700/50 shadow-black/40'
+        : 'bg-white/95 border-gray-200/60 shadow-gray-300/30'">
+                <!-- Panel Header -->
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-7 h-7 rounded-lg flex items-center justify-center transition-colors duration-300"
+                            [ngClass]="isDark ? 'bg-indigo-500/15' : 'bg-indigo-50'">
+                            <i class="bx bx-palette text-indigo-500 text-sm"></i>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-wider"
+                            [ngClass]="isDark ? 'text-gray-300' : 'text-gray-700'">Theme</span>
+                    </div>
+                    <button (click)="closeThemePanel()"
+                        class="w-6 h-6 rounded-lg flex items-center justify-center transition-all duration-200 hover:rotate-90"
+                        [ngClass]="isDark
+            ? 'text-gray-500 hover:text-gray-300 hover:bg-slate-700/50'
+            : 'text-gray-400 hover:text-gray-600 hover:bg-gray-100'">
+                        <i class="bx bx-x text-base"></i>
+                    </button>
+                </div>
+
+                <!-- Theme Options -->
+                <div class="space-y-1.5">
+
+                    <!-- Light -->
+                    <button (click)="setTheme('light')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all duration-300 group relative overflow-hidden"
+                        [ngClass]="themeMode === 'light'
+            ? (isDark
+                ? 'bg-amber-500/10 border-amber-500/40 shadow-lg shadow-amber-500/10'
+                : 'bg-amber-50 border-amber-300/60 shadow-lg shadow-amber-200/30')
+            : (isDark
+                ? 'border-slate-700/30 hover:border-slate-600/50 hover:bg-slate-800/40'
+                : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50')">
+                        <!-- Animated sun rays on selected -->
+                        <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full transition-all duration-700"
+                            [ngClass]="themeMode === 'light'
+              ? 'bg-amber-400/10 scale-100'
+              : 'bg-transparent scale-0'"></div>
+
+                        <div class="relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                            [ngClass]="themeMode === 'light'
+              ? 'bg-amber-400 shadow-lg shadow-amber-400/40 scale-110'
+              : (isDark ? 'bg-slate-700/40' : 'bg-gray-100')">
+                            <i class="bx bx-sun text-base transition-all duration-300" [ngClass]="themeMode === 'light'
+                ? 'text-white animate-[spin_8s_linear_infinite]'
+                : (isDark ? 'text-gray-500' : 'text-gray-400')"></i>
+                        </div>
+
+                        <div class="text-left relative">
+                            <div class="text-xs font-semibold" [ngClass]="themeMode === 'light'
+                ? (isDark ? 'text-amber-400' : 'text-amber-600')
+                : (isDark ? 'text-gray-400' : 'text-gray-600')">Light</div>
+                            <div class="text-[10px]" [ngClass]="isDark ? 'text-gray-600' : 'text-gray-400'">Clean &
+                                bright</div>
+                        </div>
+
+                        <!-- Checkmark -->
+                        <div class="ml-auto transition-all duration-300" [ngClass]="themeMode === 'light'
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-50'">
+                            <div class="w-5 h-5 rounded-full bg-amber-400 flex items-center justify-center">
+                                <i class="bx bx-check text-white text-xs font-bold"></i>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- Dark -->
+                    <button (click)="setTheme('dark')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all duration-300 group relative overflow-hidden"
+                        [ngClass]="themeMode === 'dark'
+            ? (isDark
+                ? 'bg-indigo-500/10 border-indigo-500/40 shadow-lg shadow-indigo-500/10'
+                : 'bg-indigo-50 border-indigo-300/60 shadow-lg shadow-indigo-200/30')
+            : (isDark
+                ? 'border-slate-700/30 hover:border-slate-600/50 hover:bg-slate-800/40'
+                : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50')">
+                        <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full transition-all duration-700"
+                            [ngClass]="themeMode === 'dark'
+              ? 'bg-indigo-500/10 scale-100'
+              : 'bg-transparent scale-0'"></div>
+
+                        <div class="relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                            [ngClass]="themeMode === 'dark'
+              ? 'bg-indigo-500 shadow-lg shadow-indigo-500/40 scale-110'
+              : (isDark ? 'bg-slate-700/40' : 'bg-gray-100')">
+                            <i class="bx bx-moon text-base transition-all duration-500" [ngClass]="themeMode === 'dark'
+                ? 'text-white rotate-[-20deg]'
+                : (isDark ? 'text-gray-500' : 'text-gray-400')"></i>
+                        </div>
+
+                        <div class="text-left relative">
+                            <div class="text-xs font-semibold" [ngClass]="themeMode === 'dark'
+                ? (isDark ? 'text-indigo-400' : 'text-indigo-600')
+                : (isDark ? 'text-gray-400' : 'text-gray-600')">Dark</div>
+                            <div class="text-[10px]" [ngClass]="isDark ? 'text-gray-600' : 'text-gray-400'">Easy on the
+                                eyes</div>
+                        </div>
+
+                        <div class="ml-auto transition-all duration-300" [ngClass]="themeMode === 'dark'
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-50'">
+                            <div class="w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
+                                <i class="bx bx-check text-white text-xs font-bold"></i>
+                            </div>
+                        </div>
+                    </button>
+
+                    <!-- System -->
+                    <button (click)="setTheme('system')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl border transition-all duration-300 group relative overflow-hidden"
+                        [ngClass]="themeMode === 'system'
+            ? (isDark
+                ? 'bg-cyan-500/10 border-cyan-500/40 shadow-lg shadow-cyan-500/10'
+                : 'bg-cyan-50 border-cyan-300/60 shadow-lg shadow-cyan-200/30')
+            : (isDark
+                ? 'border-slate-700/30 hover:border-slate-600/50 hover:bg-slate-800/40'
+                : 'border-gray-100 hover:border-gray-200 hover:bg-gray-50')">
+                        <div class="absolute -top-4 -left-4 w-16 h-16 rounded-full transition-all duration-700"
+                            [ngClass]="themeMode === 'system'
+              ? 'bg-cyan-500/10 scale-100'
+              : 'bg-transparent scale-0'"></div>
+
+                        <div class="relative w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-300"
+                            [ngClass]="themeMode === 'system'
+              ? 'bg-cyan-500 shadow-lg shadow-cyan-500/40 scale-110'
+              : (isDark ? 'bg-slate-700/40' : 'bg-gray-100')">
+                            <i class="bx bx-laptop text-base transition-all duration-300" [ngClass]="themeMode === 'system'
+                ? 'text-white'
+                : (isDark ? 'text-gray-500' : 'text-gray-400')"></i>
+                        </div>
+
+                        <div class="text-left relative">
+                            <div class="text-xs font-semibold" [ngClass]="themeMode === 'system'
+                ? (isDark ? 'text-cyan-400' : 'text-cyan-600')
+                : (isDark ? 'text-gray-400' : 'text-gray-600')">System</div>
+                            <div class="text-[10px]" [ngClass]="isDark ? 'text-gray-600' : 'text-gray-400'">Follow OS
+                                setting</div>
+                        </div>
+
+                        <div class="ml-auto transition-all duration-300" [ngClass]="themeMode === 'system'
+              ? 'opacity-100 scale-100'
+              : 'opacity-0 scale-50'">
+                            <div class="w-5 h-5 rounded-full bg-cyan-500 flex items-center justify-center">
+                                <i class="bx bx-check text-white text-xs font-bold"></i>
+                            </div>
+                        </div>
+                    </button>
+                </div>
+
+                <!-- Decorative footer -->
+                <div class="mt-4 pt-3 border-t" [ngClass]="isDark ? 'border-slate-700/40' : 'border-gray-100'">
+                    <div class="flex items-center justify-center gap-1.5">
+                        <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300"
+                            [ngClass]="themeMode === 'light' ? 'bg-amber-400' : (isDark ? 'bg-slate-700' : 'bg-gray-200')">
+                        </div>
+                        <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300"
+                            [ngClass]="themeMode === 'dark' ? 'bg-indigo-500' : (isDark ? 'bg-slate-700' : 'bg-gray-200')">
+                        </div>
+                        <div class="w-1.5 h-1.5 rounded-full transition-colors duration-300"
+                            [ngClass]="themeMode === 'system' ? 'bg-cyan-500' : (isDark ? 'bg-slate-700' : 'bg-gray-200')">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Floating Tab Trigger (always visible on edge) ── -->
+        <button (click)="toggleThemePanel()"
+            class="relative group transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)]"
+            [ngClass]="themeMenuOpen ? 'translate-x-full opacity-0 scale-75 pointer-events-none' : 'translate-x-0 opacity-100 scale-100'">
+            <!-- The pill-shaped tab -->
+            <div class="flex flex-col items-center gap-2 px-1.5 py-3 rounded-l-2xl border-y border-l shadow-xl backdrop-blur-xl transition-all duration-300 cursor-pointer"
+                [ngClass]="isDark
+        ? 'bg-slate-900/90 border-slate-700/50 shadow-black/30 hover:bg-slate-800/90 hover:border-indigo-500/30'
+        : 'bg-white/90 border-gray-200/60 shadow-gray-200/40 hover:bg-white hover:border-indigo-300/50'">
+                <!-- Animated icon container -->
+                <div class="relative w-8 h-8 flex items-center justify-center">
+                    <!-- Sun icon (shown in light mode) -->
+                    <i class="bx bx-sun absolute text-lg transition-all duration-500" [ngClass]="!isDark
+            ? 'opacity-100 rotate-0 scale-100 text-amber-400'
+            : 'opacity-0 rotate-180 scale-50 text-amber-400'"></i>
+                    <!-- Moon icon (shown in dark mode) -->
+                    <i class="bx bx-moon absolute text-lg transition-all duration-500" [ngClass]="isDark
+            ? 'opacity-100 rotate-0 scale-100 text-indigo-400'
+            : 'opacity-0 -rotate-180 scale-50 text-indigo-400'"></i>
+                </div>
+
+                <!-- Vertical text -->
+                <div class="flex flex-col items-center">
+                    <span
+                        class="text-[9px] font-bold uppercase tracking-[0.2em] leading-tight transition-colors duration-300"
+                        [ngClass]="isDark ? 'text-gray-500' : 'text-gray-400'"
+                        style="writing-mode: vertical-lr; text-orientation: mixed;">THEME</span>
+                </div>
+
+                <!-- Active indicator dot -->
+                <div class="relative">
+                    <div class="w-2 h-2 rounded-full transition-colors duration-300" [ngClass]="{
+            'bg-amber-400 shadow-sm shadow-amber-400/50': themeMode === 'light',
+            'bg-indigo-500 shadow-sm shadow-indigo-500/50': themeMode === 'dark',
+            'bg-cyan-500 shadow-sm shadow-cyan-500/50': themeMode === 'system'
+          }"></div>
+                    <!-- Pulse ring -->
+                    <div class="absolute inset-0 w-2 h-2 rounded-full animate-ping opacity-40" [ngClass]="{
+            'bg-amber-400': themeMode === 'light',
+            'bg-indigo-500': themeMode === 'dark',
+            'bg-cyan-500': themeMode === 'system'
+          }"></div>
+                </div>
+            </div>
+
+            <!-- Hover tooltip -->
+            <div class="absolute right-full top-1/2 -translate-y-1/2 mr-2 px-2.5 py-1 rounded-lg text-[10px] font-semibold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none translate-x-2 group-hover:translate-x-0"
+                [ngClass]="isDark
+        ? 'bg-slate-800 text-gray-300 shadow-lg shadow-black/30'
+        : 'bg-gray-800 text-white shadow-lg shadow-gray-300/30'">
+                Toggle theme
+                <div class="absolute top-1/2 -translate-y-1/2 right-0 translate-x-full w-0 h-0 border-t-4 border-b-4 border-l-4 border-transparent"
+                    [ngClass]="isDark ? 'border-l-slate-800' : 'border-l-gray-800'"></div>
+            </div>
+        </button>
+    </div>
 
 </div>

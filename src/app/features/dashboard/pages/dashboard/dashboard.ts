@@ -90,6 +90,18 @@ export class Dashboard implements OnDestroy, OnInit {
                 this.users.set(users);
                 this.usersLoaded.set(true);
             });
+
+        const saved = localStorage.getItem('theme-preference') as 'light' | 'dark' | 'system' | null;
+        if (saved) {
+            this.setTheme(saved);
+        }
+
+        // Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (this.themeMode === 'system') {
+                this.isDark = e.matches;
+            }
+        });
     }
 
     // ──────────── STATE ────────────
@@ -102,7 +114,6 @@ export class Dashboard implements OnDestroy, OnInit {
     ];
     private permissionLabels = ['View Tasks', 'Create Tasks', 'Edit Tasks', 'Delete Tasks', 'Manage Users'];
 
-    isDark = false;
     doughnutMode: 'status' | 'priority' = 'status';
     polarMode: 'count' | 'percentage' = 'count';
     timelineMode: 'stacked' | 'cumulative' = 'stacked';
@@ -115,6 +126,41 @@ export class Dashboard implements OnDestroy, OnInit {
         '#8b5cf6', '#ec4899', '#14b8a6', '#f97316', '#3b82f6',
         '#84cc16', '#a855f7', '#e11d48', '#0891b2', '#d97706',
     ];
+
+    /* ---------------- Theme --------------------- */
+
+    // Theme state
+    isDark = false;
+    themeMenuOpen = false;
+    themeMode: 'light' | 'dark' | 'system' = 'light';
+
+    // Toggle theme panel
+    toggleThemePanel(): void {
+        this.themeMenuOpen = !this.themeMenuOpen;
+    }
+
+    // Close panel
+    closeThemePanel(): void {
+        this.themeMenuOpen = false;
+    }
+
+    // Set theme
+    setTheme(mode: 'light' | 'dark' | 'system'): void {
+        this.themeMode = mode;
+
+        if (mode === 'system') {
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            this.isDark = prefersDark;
+        } else {
+            this.isDark = mode === 'dark';
+        }
+
+        // Persist preference
+        localStorage.setItem('theme-preference', mode);
+
+        // Close panel after selection with slight delay for visual feedback
+        setTimeout(() => this.closeThemePanel(), 400);
+    }
 
     /* ──────────────── CANVAS REFS ──────────────── */
 
