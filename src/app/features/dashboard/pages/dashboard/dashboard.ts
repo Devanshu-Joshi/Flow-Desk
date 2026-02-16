@@ -52,9 +52,19 @@ export class Dashboard implements OnDestroy, OnInit {
     private destroyRef = inject(DestroyRef);
     users = signal<UserModel[]>([]);
     currentUser!: Signal<UserModel | null>;
-    private viewReady = false;
+    private viewReady = signal(false);
     private lastRenderKey = '';
     private destroyEffect!: any;
+
+    // Loading state
+    usersLoaded = signal(false);
+    tasksLoading!: Signal<boolean>;
+    dataLoaded = computed(() => {
+        const currentUser = this.currentUser();
+        const tasksLoading = this.tasksLoading();
+        const usersLoaded = this.usersLoaded();
+        return currentUser !== null && !tasksLoading && usersLoaded;
+    });
 
     constructor(
         private userService: UserService,
@@ -62,6 +72,7 @@ export class Dashboard implements OnDestroy, OnInit {
         private userAuth: UserAuth
     ) {
         this.tasks = this.taskService.tasksView;
+        this.tasksLoading = this.taskService.loading;
         this.currentUser = this.userAuth.currentUserSignal;
         this.destroyEffect = this.initEffect;
     }
@@ -77,6 +88,7 @@ export class Dashboard implements OnDestroy, OnInit {
                     return;
                 }
                 this.users.set(users);
+                this.usersLoaded.set(true);
             });
     }
 
@@ -271,7 +283,7 @@ export class Dashboard implements OnDestroy, OnInit {
     /* ──────────────── LIFECYCLE ──────────────── */
 
     ngAfterViewInit(): void {
-        this.viewReady = true;
+        this.viewReady.set(true);
     }
 
     initEffect = effect(() => {
@@ -279,7 +291,7 @@ export class Dashboard implements OnDestroy, OnInit {
         const users = this.users();
         const user = this.currentUser();
 
-        if (!this.viewReady) return;
+        if (!this.viewReady()) return;
         if (!tasks || !users.length || !user) return;
 
         const renderKey =

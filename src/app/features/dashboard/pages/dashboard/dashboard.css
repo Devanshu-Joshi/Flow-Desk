@@ -1,3 +1,82 @@
 :host {
     display: block;
 }
+
+/* ══════════════════════════════════════
+   SKELETON SHIMMER ANIMATIONS
+   ══════════════════════════════════════ */
+
+.skeleton-shimmer {
+    background: linear-gradient(110deg,
+            #f0f0f0 8%,
+            #e0e7ff 18%,
+            #f0f0f0 33%);
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+    border-radius: 0.375rem;
+}
+
+.skeleton-shimmer-ring {
+    background: conic-gradient(#e0e7ff 0deg,
+            #f0f0f0 60deg,
+            #c7d2fe 120deg,
+            #f0f0f0 180deg,
+            #e0e7ff 240deg,
+            #f0f0f0 300deg,
+            #e0e7ff 360deg);
+    animation: shimmer-rotate 2.4s linear infinite;
+}
+
+.skeleton-shimmer-svg {
+    fill: #e5e7eb;
+    animation: shimmer-svg 1.8s ease-in-out infinite alternate;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+@keyframes shimmer-rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes shimmer-svg {
+    0% {
+        fill: #e5e7eb;
+        opacity: 0.5;
+    }
+
+    100% {
+        fill: #c7d2fe;
+        opacity: 0.9;
+    }
+}
+
+/* Fade in transition when content loads */
+.animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
