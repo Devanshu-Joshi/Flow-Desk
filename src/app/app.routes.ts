@@ -7,6 +7,7 @@ import { User } from '@features/users/pages/user/user';
 import { Home } from '@features/home/pages/home/home';
 import { Dashboard } from '@features/dashboard/pages/dashboard/dashboard';
 import { DemoGraphs } from '@shared/components/demo-graphs/demo-graphs';
+import { Profile } from '@features/profile/profile';
 
 export const routes: Routes = [
     {
@@ -47,6 +48,12 @@ export const routes: Routes = [
     {
         path: 'demo-graphs',
         component: DemoGraphs,
+    },
+    {
+        path: 'profile',
+        component: Profile,
+        canActivate: [authGuard],
+        data: { requiresAuth: true }
     },
     { path: '**', redirectTo: '' }
 ];

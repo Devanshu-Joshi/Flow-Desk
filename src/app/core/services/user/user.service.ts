@@ -20,7 +20,6 @@ export class UserService {
   private loaded = false;
 
   getUsersByParent(force = false): Observable<UserModel[] | null> {
-    console.log("Entered in getUsersByParent");
     if (!this.loaded || force) {
       this.loaded = true;
       // this.userAuth.refreshCurrentUser();
