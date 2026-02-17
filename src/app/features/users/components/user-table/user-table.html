@@ -102,15 +102,15 @@
 
             <!-- 2. Table: Removed 'w-full', added 'min-w-full' to ensure it stretches if content is small, 
              but expands indefinitely if content is wide. Removed 'table-fixed'. -->
-            <table class="min-w-275 table-fixed text-xs sm:text-sm text-left border-collapse">
+            <table class="w-full min-w-275 text-xs sm:text-sm text-left border-collapse">
 
                 <thead class="bg-gray-50 text-gray-600 uppercase text-[10px] sm:text-xs sticky top-0 z-10 shadow-sm">
                     <tr>
-                        <th class="w-20 px-6 py-4 text-center">S.No</th>
-                        <th class="w-75 px-6 py-4 text-left">User</th>
-                        <th class="w-40 px-6 py-4 text-center whitespace-nowrap">Created Date</th>
-                        <th class="w-95 px-6 py-4 text-left">Permissions</th>
-                        <th class="w-45 px-6 py-4 text-center">Action</th>
+                        <th class="min-w-20 px-6 py-4 text-center">S.No</th>
+                        <th class="min-w-75 px-6 py-4 text-left">User</th>
+                        <th class="min-w-40 px-6 py-4 text-center whitespace-nowrap">Created Date</th>
+                        <th class="min-w-95 px-6 py-4 text-left">Permissions</th>
+                        <th class="min-w-45 px-6 py-4 text-center">Action</th>
                     </tr>
                 </thead>
 
@@ -129,7 +129,7 @@
                         </td>
 
                         <!-- User Info: Removed 'truncate' so full name/email shows -->
-                        <td class="w-75 px-6 py-4">
+                        <td class="min-w-75 px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <img [src]="user.avatar || 'assets/avatar-placeholder.png'"
                                     class="w-9 h-9 rounded-full object-cover border border-gray-200 shrink-0"
@@ -153,7 +153,7 @@
                         </td>
 
                         <!-- Permissions: The star of the show -->
-                        <td class="w-95 px-6 py-4">
+                        <td class="min-w-95 px-6 py-4">
                             <div class="w-full overflow-hidden">
                                 <div class="flex flex-nowrap gap-2 overflow-hidden">
 
@@ -177,7 +177,7 @@
                         </td>
 
                         <!-- Actions -->
-                        <td class="w-45 px-6 py-4 text-center" (click)="$event.stopPropagation()">
+                        <td class="min-w-45 px-6 py-4 text-center" (click)="$event.stopPropagation()">
                             <div class="flex justify-center gap-3 whitespace-nowrap">
                                 <button
                                     class="text-yellow-700 hover:text-yellow-600 hover:bg-yellow-50 px-2 py-1 rounded transition-colors duration-200 flex items-center gap-1.5 cursor-pointer"
