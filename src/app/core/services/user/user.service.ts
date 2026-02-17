@@ -1,10 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, defer, Observable, shareReplay, take, tap } from 'rxjs';
+import { BehaviorSubject, Observable, take, tap } from 'rxjs';
 import { environment } from "@environments/environment";
 import { UserModel } from '@core/models/UserModel';
-import { PermissionKey } from '@core/models/PermissionKey';
-import { UserAuth } from '@core/services/user-auth/user-auth';
 
 @Injectable({
   providedIn: 'root',

@@ -194,14 +194,14 @@ export class UserTable {
         const currentUser = this.authService.currentUserSignal();
 
         const filteredUsers = currentUser
-          ? users.filter(u => u.id !== currentUser.id)
+          ? users.filter(u =>
+            u.id !== currentUser.id &&
+            (currentUser.parentId !== '-1' ? u.id !== currentUser.parentId : true)
+          )
           : users;
 
         this.users.set(filteredUsers);
-        // console.log(this.users(), this.isLoading());
         this.isLoading.set(false);
-
-        // console.log('Loaded users:', filteredUsers);
       });
   }
 

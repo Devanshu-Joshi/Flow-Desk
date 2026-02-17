@@ -1,4 +1,4 @@
-import { Component, computed, OnInit, Signal } from '@angular/core';
+import { Component, computed, OnInit, signal, Signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserAuth } from '@core/services/user-auth/user-auth';
@@ -25,12 +25,14 @@ export class Profile implements OnInit {
   idCopied = false;
   user!: Signal<UserModel | null>;
 
+  // Signal to hold the parent user's name
+  parentName = signal<string | null>(null);
+
   editForm = {
     name: '',
     avatar: '',
   };
 
-  // All possible permissions in the system
   private allPermissionKeys: PermissionKey[] = [
     PermissionKey.TASK_VIEW,
     PermissionKey.TASK_CREATE,
@@ -132,7 +134,17 @@ export class Profile implements OnInit {
     this.user = this.authService.currentUserSignal;
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    const u = this.user();
+    if (u?.parentId && u.parentId !== '-1') {
+      this.userService.getUsersByParent().subscribe(users => {
+        if (users) {
+          const parent = users.find(usr => usr.id === u.parentId);
+          this.parentName.set(parent?.name ?? null);
+        }
+      });
+    }
+  }
 
   startEditing() {
     const u = this.user();
