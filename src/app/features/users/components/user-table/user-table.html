@@ -7,7 +7,7 @@
             <!-- Search Input -->
             <div class="relative w-full min-w-0 sm:col-span-2 lg:flex-1 lg:min-w-36.25">
                 <input type="search"
-                    class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm sm:text-base focus:outline-none h-11 placeholder:text-gray-400"
+                    class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm focus:outline-none h-11 placeholder:text-gray-400"
                     placeholder="Search..." [formControl]="searchControl" />
                 <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
             </div>
@@ -17,21 +17,21 @@
                 <ng-select [items]="permissions" [multiple]="true" bindLabel="label" bindValue="key" groupBy="group"
                     [closeOnSelect]="false" placeholder="Permissions" [ngModel]="selectedPermissions()"
                     (ngModelChange)="selectedPermissions.set($event)"
-                    class="permission-select modern-select placeholder:text-gray-400">
+                    class="permission-select placeholder:text-gray-400 cursor-pointer">
 
                     <ng-template ng-optgroup-tmp>
                         <label class="flex items-center gap-2 cursor-pointer select-none">
-                            <input type="checkbox" class="modern-checkbox" [checked]="isAllSelected()"
-                                [indeterminate]="selectedPermissions.length > 0 && !isAllSelected()"
-                                (click)="$event.stopPropagation()" (change)="toggleAll($event.target.checked)" />
+                            <input type="checkbox" class="modern-checkbox cursor-pointer" [checked]="isAllSelected()"
+                                [indeterminate]="selectedPermissions().length > 0 && !isAllSelected()"
+                                (click)="$event.stopPropagation()" (change)="toggleAll($any($event.target).checked)" />
                             <strong class="text-slate-700">All</strong>
                         </label>
                     </ng-template>
 
                     <ng-template ng-option-tmp let-item="item" let-item$="item$">
                         <div class="flex items-center gap-2">
-                            <input type="checkbox" class="modern-checkbox" [checked]="item$.selected" tabindex="-1"
-                                pointer-events="none" />
+                            <input type="checkbox" class="modern-checkbox pointer-events-none"
+                                [checked]="item$.selected" tabindex="-1" />
                             <span class="text-slate-700">{{ item.label }}</span>
                         </div>
                     </ng-template>
@@ -56,7 +56,7 @@
                 <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
                     [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
                     [linkedCalendars]="true" placeholder="Date range"
-                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
+                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm h-11 placeholder:text-gray-400"
                     (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate 
   ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
   : ''" />
@@ -68,7 +68,7 @@
                     [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize()"
                     (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true">
                     <ng-template ng-label-tmp let-item="item">
-                        <span class="text-sm sm:text-base whitespace-nowrap">
+                        <span class="text-sm whitespace-nowrap">
                             Users per page : <strong>{{ item }}</strong>
                         </span>
                     </ng-template>

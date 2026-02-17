@@ -235,6 +235,9 @@ export class UserTable {
     // Reset date range (show all dates)
     this.dateRange.set(null);
 
+    // Reset permissions to all selected
+    this.selectedPermissions.set([...this.allPermissionKeys]);
+
     // Reset tasks per page to default (5)
     this.selectedPageSize.set(5);
     this.itemsPerPage = 5;
