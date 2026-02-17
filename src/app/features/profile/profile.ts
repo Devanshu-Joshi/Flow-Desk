@@ -7,7 +7,10 @@ import { getPermissionLabel } from '@core/models/PERMISSION_LABELS';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { ToastrService } from 'ngx-toastr';
 import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
 import { UserModel } from '@core/models/UserModel';
+
+dayjs.extend(relativeTime);
 
 @Component({
   selector: 'app-profile',
@@ -19,12 +22,22 @@ export class Profile implements OnInit {
 
   isEditing = false;
   isSaving = false;
+  idCopied = false;
   user!: Signal<UserModel | null>;
 
   editForm = {
     name: '',
     avatar: '',
   };
+
+  // All possible permissions in the system
+  private allPermissionKeys: PermissionKey[] = [
+    PermissionKey.TASK_VIEW,
+    PermissionKey.TASK_CREATE,
+    PermissionKey.TASK_EDIT,
+    PermissionKey.TASK_DELETE,
+    PermissionKey.MANAGE_USER,
+  ];
 
   permissionLabels = computed(() => {
     const u = this.user();
@@ -35,10 +48,59 @@ export class Profile implements OnInit {
     }));
   });
 
+  missingPermissions = computed(() => {
+    const u = this.user();
+    if (!u?.permissions) {
+      return this.allPermissionKeys.map(p => ({
+        key: p,
+        label: getPermissionLabel(p),
+      }));
+    }
+    return this.allPermissionKeys
+      .filter(p => !u.permissions.includes(p))
+      .map(p => ({
+        key: p,
+        label: getPermissionLabel(p),
+      }));
+  });
+
   memberSince = computed(() => {
     const u = this.user();
     if (!u?.createdAt) return '';
     return dayjs(u.createdAt).format('MMMM D, YYYY');
+  });
+
+  accountAge = computed(() => {
+    const u = this.user();
+    if (!u?.createdAt) return '';
+    const created = dayjs(u.createdAt);
+    const now = dayjs();
+    const days = now.diff(created, 'day');
+
+    if (days < 1) return 'Today';
+    if (days === 1) return '1 day';
+    if (days < 30) return `${days} days`;
+
+    const months = now.diff(created, 'month');
+    if (months < 1) return `${days} days`;
+    if (months === 1) return '1 month';
+    if (months < 12) return `${months} months`;
+
+    const years = now.diff(created, 'year');
+    const remainingMonths = months % 12;
+    if (years === 1 && remainingMonths === 0) return '1 year';
+    if (remainingMonths === 0) return `${years} years`;
+    return `${years}y ${remainingMonths}m`;
+  });
+
+  accessLevel = computed(() => {
+    const u = this.user();
+    if (!u?.permissions) return 'No Access';
+    const count = u.permissions.length;
+    if (count >= 5) return 'Full Access';
+    if (count >= 3) return 'Standard Access';
+    if (count >= 1) return 'Limited Access';
+    return 'No Access';
   });
 
   avatarUrl = computed(() => {
@@ -55,7 +117,7 @@ export class Profile implements OnInit {
   });
 
   permissionIcon: Record<string, string> = {
-    [PermissionKey.TASK_VIEW]: 'bx-show',
+    [PermissionKey.TASK_VIEW]: 'bx-eye',
     [PermissionKey.TASK_CREATE]: 'bx-plus-circle',
     [PermissionKey.TASK_EDIT]: 'bx-edit',
     [PermissionKey.TASK_DELETE]: 'bx-trash',
@@ -113,6 +175,21 @@ export class Profile implements OnInit {
           this.toastr.error('Failed to update profile', 'Error');
         },
       });
+  }
+
+  copyUserId() {
+    const id = this.user()?.id;
+    if (!id) return;
+
+    navigator.clipboard.writeText(id).then(() => {
+      this.idCopied = true;
+      this.toastr.success('User ID copied to clipboard', 'Copied');
+      setTimeout(() => {
+        this.idCopied = false;
+      }, 2000);
+    }).catch(() => {
+      this.toastr.error('Failed to copy', 'Error');
+    });
   }
 
   getPermissionColor(key: string): string {
