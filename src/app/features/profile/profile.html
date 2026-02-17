@@ -246,26 +246,6 @@
                         <p class="text-sm font-semibold text-gray-800 break-all">{{ user()?.email }}</p>
                     </div>
 
-                    <!-- User ID -->
-                    <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
-                        <div class="flex items-center justify-between mb-1.5">
-                            <div class="flex items-center gap-2">
-                                <i class='bx bx-fingerprint text-purple-500'></i>
-                                <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">User
-                                    ID</span>
-                            </div>
-                            <button (click)="copyUserId()"
-                                class="text-gray-400 hover:text-purple-600 transition-colors cursor-pointer"
-                                title="Copy ID">
-                                <i class='bx text-base'
-                                    [ngClass]="idCopied ? 'bx-check text-green-500' : 'bx-copy'"></i>
-                            </button>
-                        </div>
-                        <p class="text-sm font-mono font-semibold text-gray-600 truncate" [title]="user()?.id ?? ''">
-                            {{ user()?.id }}
-                        </p>
-                    </div>
-
                     <!-- Account Type -->
                     <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
                         <div class="flex items-center gap-2 mb-1.5">
@@ -287,7 +267,7 @@
                     </div>
 
                     <!-- Parent Account (Full Width) -->
-                    <div class="sm:col-span-2 bg-gray-50/80 rounded-xl p-4 border border-gray-100">
+                    <div class="bg-gray-50/80 rounded-xl p-4 border border-gray-100">
                         <div class="flex items-center gap-2 mb-1.5">
                             <i class='bx bx-git-branch text-purple-500'></i>
                             <span class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Parent

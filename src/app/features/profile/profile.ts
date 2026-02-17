@@ -159,7 +159,6 @@ export class Profile implements OnInit {
 
     this.userService
       .updateUser({
-        id: u.id,
         name: trimmedName,
         avatar: this.editForm.avatar.trim(),
       })
@@ -175,21 +174,6 @@ export class Profile implements OnInit {
           this.toastr.error('Failed to update profile', 'Error');
         },
       });
-  }
-
-  copyUserId() {
-    const id = this.user()?.id;
-    if (!id) return;
-
-    navigator.clipboard.writeText(id).then(() => {
-      this.idCopied = true;
-      this.toastr.success('User ID copied to clipboard', 'Copied');
-      setTimeout(() => {
-        this.idCopied = false;
-      }, 2000);
-    }).catch(() => {
-      this.toastr.error('Failed to copy', 'Error');
-    });
   }
 
   getPermissionColor(key: string): string {
