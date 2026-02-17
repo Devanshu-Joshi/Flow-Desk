@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UserAuth } from '@core/services/user-auth/user-auth';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,9 +11,10 @@ import { CommonModule } from '@angular/common';
 })
 export class Header {
 
+  isUserMenuOpen = false;
   isMobileMenuOpen = false;
 
-  constructor(public authService: UserAuth) {
+  constructor(public authService: UserAuth, public router: Router) {
   }
 
   async logout() {
