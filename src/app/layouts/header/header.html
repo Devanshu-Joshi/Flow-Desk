@@ -11,8 +11,8 @@
             FlowDesk
         </div>
 
-        <!-- DESKTOP NAV -->
-        <div class="flex items-center text-sm font-semibold gap-3 md:gap-6 horizontalNavBar">
+        <!-- DESKTOP NAV — now visible from md (768px) and up -->
+        <div class="hidden md:flex items-center text-sm font-semibold gap-3 lg:gap-6">
 
             @if(authService.isLoggedIn()){
 
@@ -58,7 +58,8 @@
 
             }
 
-            @if(!authService.isLoggedIn() && !['/login','/signup'].includes(router.url)){
+            @if(!authService.isLoggedIn()
+            && !['/login','/signup'].includes(router.url)){
 
             <a routerLink="/login" routerLinkActive="ring-2 ring-purple-300" class="relative px-4 py-2 rounded-xl
                  bg-linear-to-r from-purple-600 to-indigo-600
@@ -74,7 +75,7 @@
 
         </div>
 
-        <!-- MOBILE HAMBURGER -->
+        <!-- MOBILE HAMBURGER — now hidden from md and up -->
         @if(authService.isLoggedIn()){
         <div class="mobileNavBar md:hidden">
             <button class="flex items-center justify-center w-10 h-10 rounded-xl
@@ -88,7 +89,7 @@
         </div>
         }
 
-        <!-- MOBILE MENU -->
+        <!-- MOBILE MENU — only for screens below md -->
         <div class="fixed top-0 left-0 w-full z-50
          bg-white backdrop-blur-xl
          shadow-[0_20px_40px_rgba(168,85,247,0.25)]
