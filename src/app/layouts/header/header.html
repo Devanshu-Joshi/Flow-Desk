@@ -88,6 +88,22 @@
             </button>
         </div>
         }
+        <!-- MOBILE LOGIN BUTTON (logged out users) -->
+        @if(!authService.isLoggedIn()
+        && !['/login','/signup'].includes(router.url)){
+
+        <div class="md:hidden">
+            <a routerLink="/login" class="flex items-center justify-center px-4 py-2 rounded-xl
+              bg-linear-to-r from-purple-600 to-indigo-600
+              text-white text-sm font-semibold
+              shadow-md shadow-purple-500/30
+              hover:shadow-lg hover:scale-105
+              transition-all duration-200">
+                Login
+            </a>
+        </div>
+
+        }
 
         <!-- MOBILE MENU — only for screens below md -->
         <div class="fixed top-0 left-0 w-full z-50
