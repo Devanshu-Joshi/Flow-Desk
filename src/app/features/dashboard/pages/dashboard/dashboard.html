@@ -8,20 +8,6 @@
     @if (!dataLoaded()) {
     <div class="animate-fade-in">
 
-        <!-- Skeleton Header -->
-        <div class="mb-8">
-            <div class="flex items-center gap-3 mb-1">
-                <div class="w-10 h-10 rounded-xl" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
-                </div>
-                <div class="space-y-2">
-                    <div class="h-7 w-52 rounded-lg" [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'">
-                    </div>
-                    <div class="h-3.5 w-72 rounded-md"
-                        [ngClass]="isDark ? 'skeleton-shimmer-dark' : 'skeleton-shimmer'"></div>
-                </div>
-            </div>
-        </div>
-
         <!-- Skeleton Stat Cards -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-8">
             @for (i of [1,2,3,4]; track i) {
