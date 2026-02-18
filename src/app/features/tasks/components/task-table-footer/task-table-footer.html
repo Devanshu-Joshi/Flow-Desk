@@ -1,29 +1,11 @@
 <div class="w-full border-t border-gray-200 bg-white px-3 sm:px-4 py-3">
 
-    <!--
-    Layout strategy:
-    - Mobile (default): stack everything vertically, centered
-    - Medium (md): two rows — [left controls | pagination] then [total] OR all in one row if space allows
-    - Large (lg): single row — [left controls] [pagination] [total]
-  -->
-
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
 
-        <!-- ───────── LEFT CONTROLS ───────── -->
-        <!--
-      Mobile  : stacked vertically, full width
-      Large   : side by side, auto width
-    -->
-        <div class="flex flex-col lg:flex-row items-center lg:items-center gap-2 lg:gap-3">
+        <div class="flex flex-row justify-center gap-2 lg:gap-3 btnContainer">
 
-            <!-- PAGE SIZE SELECT -->
-            <!--
-        Wrapped in a named container so ng-select dropdown appends here.
-        Full width on mobile so it doesn't get clipped.
-        Fixed width on large screens.
-      -->
-            <div class="paginationContainer lg:w-auto">
-                <ng-select class="items-per-page-select filter-select w-full lg:w-48" [items]="pageSizeOptions"
+            <div class="paginationContainer w-auto">
+                <ng-select class="items-per-page-select filter-select w-48" [items]="pageSizeOptions"
                     [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize"
                     (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true" [dropdownPosition]="'top'"
                     [appendTo]="'.paginationContainer'">
@@ -44,7 +26,7 @@
 
             <!-- CLEAR FILTERS BUTTON -->
             <button (click)="clearFilters.emit()"
-                class="px-3 py-2 text-sm font-semibold text-red-600 border border-red-200 rounded-md bg-red-50 hover:bg-red-100 hover:border-red-300 transition whitespace-nowrap">
+                class="px-3 text-sm font-semibold text-red-600 border border-red-200 rounded-md bg-red-50 hover:bg-red-100 hover:border-red-300 transition whitespace-nowrap clearBtn h-8">
                 Clear Filters
             </button>
 
@@ -58,10 +40,6 @@
         </div>
 
         <!-- ───────── TOTAL (right) ───────── -->
-        <!--
-      On mobile it sits below pagination (stacked).
-      On large screens it aligns to the right end of the footer row.
-    -->
         <div class="text-sm text-gray-500 whitespace-nowrap text-center lg:text-right">
             Total Tasks :
             <span class="ml-1 font-bold text-gray-900">{{ total }}</span>

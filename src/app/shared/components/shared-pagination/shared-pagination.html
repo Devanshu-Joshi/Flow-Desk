@@ -1,50 +1,5 @@
-<!--
-  Pagination component.
-
-  Visible page window logic (TypeScript-driven via getVisiblePages()):
-  - A fixed MAX_VISIBLE cap (5) is applied on ALL screen sizes.
-  - On smaller screens we use a tighter cap (3) via a CSS-driven
-    approach: we render two nav sets and show/hide them.
-  - Prev / Next are always visible.
-  - Ellipsis (...) buttons appear when the window doesn't cover
-    the start or end of the page range.
-
-  NOTE: getVisiblePages() must be added to the component .ts file.
-  See the comment block below for the implementation.
--->
-
-<!--
-  ┌─────────────────────────────────────────────────────────────┐
-  │  ADD THIS to your shared-pagination.component.ts            │
-  │                                                             │
-  │  readonly MAX_VISIBLE_PAGES = 5;                            │
-  │  readonly MAX_VISIBLE_PAGES_SM = 3;                         │
-  │                                                             │
-  │  getVisiblePages(max: number): number[] {                   │
-  │    if (this.totalPages <= max) {                            │
-  │      return Array.from({length: this.totalPages},           │
-  │                        (_, i) => i + 1);                    │
-  │    }                                                        │
-  │    const half = Math.floor(max / 2);                        │
-  │    let start = this.currentPage - half;                     │
-  │    let end   = this.currentPage + half;                     │
-  │    if (start < 1)              { start = 1; end = max; }    │
-  │    if (end > this.totalPages)  { end = this.totalPages;     │
-  │                                  start = end - max + 1; }   │
-  │    return Array.from({length: end - start + 1},             │
-  │                      (_, i) => start + i);                  │
-  │  }                                                          │
-  └─────────────────────────────────────────────────────────────┘
--->
-
 @if (total > itemsPerPage) {
 
-<!--
-    Single unified pagination bar.
-    We render ONE bar and control visible page numbers via two
-    separate @for loops hidden/shown by Tailwind responsive classes.
-    This avoids duplicating Prev/Next logic.
-  -->
 <nav aria-label="Pagination" class="flex items-center justify-center gap-1 text-sm select-none flex-wrap">
 
     <!-- ── PREV ── -->
@@ -59,11 +14,6 @@
         ‹ Prev
     </button>
 
-    <!-- ── PAGE NUMBERS : mobile/small — max 3 visible ── -->
-    <!--
-      Shown on screens smaller than md.
-      We use a tighter window (3 pages) so the bar fits on phones.
-    -->
     <div class="flex items-center gap-1 md:hidden">
 
         <!-- leading ellipsis -->
@@ -110,11 +60,7 @@
 
     </div>
 
-    <!-- ── PAGE NUMBERS : md and above — max 5 visible ── -->
-    <!--
-      On medium+ screens we can fit 5 page buttons comfortably.
-      The same ellipsis logic applies.
-    -->
+    <!-- ── PAGE NUMBERS ── -->
     <div class="hidden md:flex items-center gap-1">
 
         <!-- leading ellipsis -->

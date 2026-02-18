@@ -25,6 +25,21 @@
     }
 }
 
+@media (max-width: 400px) {
+    .btnContainer {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .paginationContainer {
+        width: 100%;
+    }
+
+    .clearBtn {
+        width: 100%;
+    }
+}
+
 /* ============================================================
    🔹 PAGE SIZE DROPDOWN (ng-select)
 ============================================================ */
