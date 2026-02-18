@@ -1,14 +1,39 @@
 <div class="w-full border-t border-gray-200 bg-white px-3 sm:px-4 py-4 overflow-x-visible">
     <div class="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 items-center">
 
-        <button (click)="clearFilters.emit()"
-            class="text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline focus:outline-none cursor-pointer text-left sm:text-center clear-filters-button underline">
-            Clear Filters
-        </button>
+        <div class="flex items-center gap-3">
+
+            <!-- ===================== PAGE SIZE DROPDOWN ===================== -->
+            <div class="relative paginationContainer">
+                <ng-select class="items-per-page-select filter-select w-full" [items]="pageSizeOptions"
+                    [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize"
+                    (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true" [dropdownPosition]="'top'"
+                    [appendTo]="'.paginationContainer'">
+
+                    <!-- Selected label -->
+                    <ng-template ng-label-tmp let-item="item">
+                        <span class="text-sm sm:text-base whitespace-nowrap">
+                            Items per page : <strong>{{ item }}</strong>
+                        </span>
+                    </ng-template>
+
+                    <!-- Options -->
+                    <ng-template ng-option-tmp let-item="item">
+                        {{ item }}
+                    </ng-template>
+
+                </ng-select>
+            </div>
+
+            <button (click)="clearFilters.emit()"
+                class="text-sm font-medium text-gray-500 hover:text-gray-700 hover:underline focus:outline-none cursor-pointer text-left sm:text-center clear-filters-button underline">
+                Clear Filters
+            </button>
+
+        </div>
 
         <app-shared-pagination [total]="total" [itemsPerPage]="itemsPerPage" [currentPage]="currentPage"
-            [totalPages]="totalPages" [pageSizeOptions]="pageSizeOptions" [selectedPageSize]="selectedPageSize"
-            (pageChange)="pageChange.emit($event)" (pageSizeChange)="pageSizeChangeTrigger.emit($event)">
+            [totalPages]="totalPages" (pageChange)="pageChange.emit($event)">
         </app-shared-pagination>
 
         <div class="text-sm text-gray-500 whitespace-nowrap flex justify-center">

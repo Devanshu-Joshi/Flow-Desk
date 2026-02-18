@@ -1,52 +1,28 @@
 <div class="w-full px-3 sm:px-4 overflow-x-visible">
-    <div class="flex flex-col sm:flex-row gap-3 items-center">
-        <!-- ===================== PAGE SIZE DROPDOWN ===================== -->
-        <div class="relative paginationContainer">
-            <ng-select class="items-per-page-select filter-select w-full" [items]="pageSizeOptions" [clearable]="false"
-                [searchable]="false" [ngModel]="selectedPageSize" (ngModelChange)="onPageSizeChange($event)"
-                [closeOnSelect]="true" [dropdownPosition]="'top'" [appendTo]="'.paginationContainer'">
+    <!-- ===================== PAGINATION CONTROLS ===================== -->
+    @if(total > itemsPerPage) {
+    <div class="flex items-center gap-2 text-sm">
 
-                <!-- Selected label -->
-                <ng-template ng-label-tmp let-item="item">
-                    <span class="text-sm sm:text-base whitespace-nowrap">
-                        Items per page : <strong>{{ item }}</strong>
-                    </span>
-                </ng-template>
+        <!-- Prev -->
+        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+            class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
+            Prev
+        </button>
 
-                <!-- Options -->
-                <ng-template ng-option-tmp let-item="item">
-                    {{ item }}
-                </ng-template>
-
-            </ng-select>
-        </div>
-
-
-        <!-- ===================== PAGINATION CONTROLS ===================== -->
-        @if(total > itemsPerPage) {
-        <div class="flex items-center gap-2 text-sm">
-
-            <!-- Prev -->
-            <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-                class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
-                Prev
-            </button>
-
-            <!-- Page Numbers -->
-            @for (page of [].constructor(totalPages); track i; let i = $index) {
-            <button (click)="onPageChange(i + 1)" [class.bg-indigo-600]="currentPage === i + 1"
-                [class.text-white]="currentPage === i + 1" class="px-3 py-1 border rounded">
-                {{ i + 1 }}
-            </button>
-            }
-
-            <!-- Next -->
-            <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-                class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
-                Next
-            </button>
-
-        </div>
+        <!-- Page Numbers -->
+        @for (page of [].constructor(totalPages); track i; let i = $index) {
+        <button (click)="onPageChange(i + 1)" [class.bg-indigo-600]="currentPage === i + 1"
+            [class.text-white]="currentPage === i + 1" class="px-3 py-1 border rounded">
+            {{ i + 1 }}
+        </button>
         }
+
+        <!-- Next -->
+        <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
+            Next
+        </button>
+
     </div>
+    }
 </div>
