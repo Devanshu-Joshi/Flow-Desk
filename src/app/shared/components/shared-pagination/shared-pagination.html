@@ -1,49 +1,179 @@
-<div class="w-full overflow-x-visible">
-    @if(total > itemsPerPage) {
+<!--
+  Pagination component.
 
-    <!-- MOBILE PAGINATION -->
-    <div class="flex sm:hidden justify-center items-center gap-3 text-sm">
+  Visible page window logic (TypeScript-driven via getVisiblePages()):
+  - A fixed MAX_VISIBLE cap (5) is applied on ALL screen sizes.
+  - On smaller screens we use a tighter cap (3) via a CSS-driven
+    approach: we render two nav sets and show/hide them.
+  - Prev / Next are always visible.
+  - Ellipsis (...) buttons appear when the window doesn't cover
+    the start or end of the page range.
 
-        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-            class="px-3 py-1 border rounded disabled:opacity-40">
-            Prev
+  NOTE: getVisiblePages() must be added to the component .ts file.
+  See the comment block below for the implementation.
+-->
+
+<!--
+  ┌─────────────────────────────────────────────────────────────┐
+  │  ADD THIS to your shared-pagination.component.ts            │
+  │                                                             │
+  │  readonly MAX_VISIBLE_PAGES = 5;                            │
+  │  readonly MAX_VISIBLE_PAGES_SM = 3;                         │
+  │                                                             │
+  │  getVisiblePages(max: number): number[] {                   │
+  │    if (this.totalPages <= max) {                            │
+  │      return Array.from({length: this.totalPages},           │
+  │                        (_, i) => i + 1);                    │
+  │    }                                                        │
+  │    const half = Math.floor(max / 2);                        │
+  │    let start = this.currentPage - half;                     │
+  │    let end   = this.currentPage + half;                     │
+  │    if (start < 1)              { start = 1; end = max; }    │
+  │    if (end > this.totalPages)  { end = this.totalPages;     │
+  │                                  start = end - max + 1; }   │
+  │    return Array.from({length: end - start + 1},             │
+  │                      (_, i) => start + i);                  │
+  │  }                                                          │
+  └─────────────────────────────────────────────────────────────┘
+-->
+
+@if (total > itemsPerPage) {
+
+<!--
+    Single unified pagination bar.
+    We render ONE bar and control visible page numbers via two
+    separate @for loops hidden/shown by Tailwind responsive classes.
+    This avoids duplicating Prev/Next logic.
+  -->
+<nav aria-label="Pagination" class="flex items-center justify-center gap-1 text-sm select-none flex-wrap">
+
+    <!-- ── PREV ── -->
+    <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1" aria-label="Previous page" class="inline-flex items-center justify-center
+             h-8 px-2.5 rounded
+             border border-gray-300 bg-white
+             text-gray-600 font-medium
+             hover:bg-gray-50 hover:border-gray-400
+             disabled:opacity-40 disabled:cursor-not-allowed
+             transition-colors duration-100
+             whitespace-nowrap">
+        ‹ Prev
+    </button>
+
+    <!-- ── PAGE NUMBERS : mobile/small — max 3 visible ── -->
+    <!--
+      Shown on screens smaller than md.
+      We use a tighter window (3 pages) so the bar fits on phones.
+    -->
+    <div class="flex items-center gap-1 md:hidden">
+
+        <!-- leading ellipsis -->
+        @if (getVisiblePages(3)[0] > 1) {
+        <button (click)="onPageChange(1)" class="inline-flex items-center justify-center
+                 h-8 w-8 rounded
+                 border border-gray-300 bg-white text-gray-600
+                 hover:bg-gray-50 hover:border-gray-400
+                 transition-colors duration-100">
+            1
         </button>
-
-        <span class="px-3 py-1 border rounded bg-indigo-600 text-white">
-            {{ currentPage }}
+        @if (getVisiblePages(3)[0] > 2) {
+        <span class="inline-flex items-center justify-center h-8 px-1 text-gray-400">
+            …
         </span>
+        }
+        }
 
-        <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-            class="px-3 py-1 border rounded disabled:opacity-40">
-            Next
-        </button>
-
-    </div>
-
-    <!-- DESKTOP PAGINATION -->
-    <div class="hidden sm:flex justify-center items-center gap-2 text-sm">
-
-        <!-- Prev -->
-        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-            class="px-3 py-1 border rounded disabled:opacity-40">
-            Prev
-        </button>
-
-        <!-- Page numbers -->
-        @for (page of [].constructor(totalPages); track i; let i = $index) {
-        <button (click)="onPageChange(i + 1)" [class.bg-indigo-600]="currentPage === i + 1"
-            [class.text-white]="currentPage === i + 1" class="px-3 py-1 border rounded">
-            {{ i + 1 }}
+        <!-- window pages -->
+        @for (page of getVisiblePages(3); track page) {
+        <button (click)="onPageChange(page)" [attr.aria-current]="currentPage === page ? 'page' : null"
+            [class]="currentPage === page
+            ? 'inline-flex items-center justify-center h-8 w-8 rounded border border-indigo-600 bg-indigo-600 text-white font-semibold transition-colors duration-100'
+            : 'inline-flex items-center justify-center h-8 w-8 rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-100'">
+            {{ page }}
         </button>
         }
 
-        <!-- Next -->
-        <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-            class="px-3 py-1 border rounded disabled:opacity-40">
-            Next
-        </button>
+        <!-- trailing ellipsis -->
+        @if (getVisiblePages(3)[getVisiblePages(3).length - 1] < totalPages) { @if
+            (getVisiblePages(3)[getVisiblePages(3).length - 1] < totalPages - 1) { <span
+            class="inline-flex items-center justify-center h-8 px-1 text-gray-400">
+            …
+            </span>
+            }
+            <button (click)="onPageChange(totalPages)" class="inline-flex items-center justify-center
+                 h-8 w-8 rounded
+                 border border-gray-300 bg-white text-gray-600
+                 hover:bg-gray-50 hover:border-gray-400
+                 transition-colors duration-100">
+                {{ totalPages }}
+            </button>
+            }
 
     </div>
 
-    }
-</div>
+    <!-- ── PAGE NUMBERS : md and above — max 5 visible ── -->
+    <!--
+      On medium+ screens we can fit 5 page buttons comfortably.
+      The same ellipsis logic applies.
+    -->
+    <div class="hidden md:flex items-center gap-1">
+
+        <!-- leading ellipsis -->
+        @if (getVisiblePages(5)[0] > 1) {
+        <button (click)="onPageChange(1)" class="inline-flex items-center justify-center
+                 h-8 w-8 rounded
+                 border border-gray-300 bg-white text-gray-600
+                 hover:bg-gray-50 hover:border-gray-400
+                 transition-colors duration-100">
+            1
+        </button>
+        @if (getVisiblePages(5)[0] > 2) {
+        <span class="inline-flex items-center justify-center h-8 px-1 text-gray-400">
+            …
+        </span>
+        }
+        }
+
+        <!-- window pages -->
+        @for (page of getVisiblePages(5); track page) {
+        <button (click)="onPageChange(page)" [attr.aria-current]="currentPage === page ? 'page' : null"
+            [class]="currentPage === page
+            ? 'inline-flex items-center justify-center h-8 w-8 rounded border border-indigo-600 bg-indigo-600 text-white font-semibold transition-colors duration-100'
+            : 'inline-flex items-center justify-center h-8 w-8 rounded border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 hover:border-gray-400 transition-colors duration-100'">
+            {{ page }}
+        </button>
+        }
+
+        <!-- trailing ellipsis -->
+        @if (getVisiblePages(5)[getVisiblePages(5).length - 1] < totalPages) { @if
+            (getVisiblePages(5)[getVisiblePages(5).length - 1] < totalPages - 1) { <span
+            class="inline-flex items-center justify-center h-8 px-1 text-gray-400">
+            …
+            </span>
+            }
+            <button (click)="onPageChange(totalPages)" class="inline-flex items-center justify-center
+                 h-8 w-8 rounded
+                 border border-gray-300 bg-white text-gray-600
+                 hover:bg-gray-50 hover:border-gray-400
+                 transition-colors duration-100">
+                {{ totalPages }}
+            </button>
+            }
+
+    </div>
+
+    <!-- ── NEXT ── -->
+    <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages" aria-label="Next page"
+        class="inline-flex items-center justify-center
+             h-8 px-2.5 rounded
+             border border-gray-300 bg-white
+             text-gray-600 font-medium
+             hover:bg-gray-50 hover:border-gray-400
+             disabled:opacity-40 disabled:cursor-not-allowed
+             transition-colors duration-100
+             whitespace-nowrap">
+        Next ›
+    </button>
+
+</nav>
+
+}
