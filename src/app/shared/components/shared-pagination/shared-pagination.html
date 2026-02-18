@@ -1,15 +1,35 @@
-<div class="w-full px-3 sm:px-4 overflow-x-visible">
-    <!-- ===================== PAGINATION CONTROLS ===================== -->
+<div class="w-full overflow-x-visible">
     @if(total > itemsPerPage) {
-    <div class="flex items-center gap-2 text-sm">
 
-        <!-- Prev -->
+    <!-- MOBILE PAGINATION -->
+    <div class="flex sm:hidden justify-center items-center gap-3 text-sm">
+
         <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
-            class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
+            class="px-3 py-1 border rounded disabled:opacity-40">
             Prev
         </button>
 
-        <!-- Page Numbers -->
+        <span class="px-3 py-1 border rounded bg-indigo-600 text-white">
+            {{ currentPage }}
+        </span>
+
+        <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
+            class="px-3 py-1 border rounded disabled:opacity-40">
+            Next
+        </button>
+
+    </div>
+
+    <!-- DESKTOP PAGINATION -->
+    <div class="hidden sm:flex justify-center items-center gap-2 text-sm">
+
+        <!-- Prev -->
+        <button (click)="onPageChange(currentPage - 1)" [disabled]="currentPage === 1"
+            class="px-3 py-1 border rounded disabled:opacity-40">
+            Prev
+        </button>
+
+        <!-- Page numbers -->
         @for (page of [].constructor(totalPages); track i; let i = $index) {
         <button (click)="onPageChange(i + 1)" [class.bg-indigo-600]="currentPage === i + 1"
             [class.text-white]="currentPage === i + 1" class="px-3 py-1 border rounded">
@@ -19,10 +39,11 @@
 
         <!-- Next -->
         <button (click)="onPageChange(currentPage + 1)" [disabled]="currentPage === totalPages"
-            class="px-3 py-1 border rounded disabled:opacity-40 cursor-pointer">
+            class="px-3 py-1 border rounded disabled:opacity-40">
             Next
         </button>
 
     </div>
+
     }
 </div>
