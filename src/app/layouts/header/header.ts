@@ -15,6 +15,14 @@ export class Header {
   isMobileMenuOpen = false;
 
   constructor(public authService: UserAuth, public router: Router) {
+    this.router.events.subscribe(() => {
+      this.isUserMenuOpen = false;
+      this.isMobileMenuOpen = false;
+    });
+  }
+
+  closeUserMenu() {
+    this.isUserMenuOpen = !this.isUserMenuOpen;
   }
 
   async logout() {
