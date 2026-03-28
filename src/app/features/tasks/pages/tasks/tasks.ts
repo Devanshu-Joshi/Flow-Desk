@@ -6,7 +6,6 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormControl, FormsModule 
 import { debounceTime, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import dayjs from 'dayjs';
@@ -35,7 +34,6 @@ export type TaskStatus = 'INCOMPLETE' | 'COMPLETED' | 'IN_PROGRESS';
     CommonModule,
     NgxDaterangepickerMd,
     FormsModule,
-    NgxPaginationModule,
     NgSelectModule,
     StatsCard,
     TaskFilters,

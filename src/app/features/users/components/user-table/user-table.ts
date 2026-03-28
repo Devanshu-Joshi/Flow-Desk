@@ -26,8 +26,8 @@ import { PermissionItem } from '@core/models/PermissionItem';
 import dayjs from 'dayjs';
 
 import { EmptyState } from '@shared/components/empty-state/empty-state';
+import { SharedPagination } from '@shared/components/shared-pagination/shared-pagination';
 
-import { NgxPaginationModule } from 'ngx-pagination';
 import { UserModel } from '@core/models/UserModel';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { UserService } from '@core/services/user/user.service';
@@ -46,7 +46,7 @@ import { LoadingOverlay } from '@shared/components/loading-overlay/loading-overl
     FormsModule,
     NgSelectModule,
     NgxDaterangepickerMd,
-    NgxPaginationModule,
+    SharedPagination,
     EmptyState,
     LoadingOverlay
   ],
@@ -128,6 +128,12 @@ export class UserTable {
   pageSizeOptions = [5, 10, 20, 'All'] as const;
 
   totalItems = computed(() => this.filteredTasks().length);
+
+  totalPages = computed(() => {
+    const total = this.totalItems();
+    const itemsPerPage = this.itemsPerPage;
+    return itemsPerPage > 0 ? Math.ceil(total / itemsPerPage) : 1;
+  });
 
   /* -------------------------------------------------------------------------- */
   /*                                   Data                                     */

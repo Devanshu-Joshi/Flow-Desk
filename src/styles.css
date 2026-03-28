@@ -117,65 +117,6 @@ body {
     gap: 1rem;
 }
 
-.ngx-pagination .current {
-    background: linear-gradient(to right, #411986, #4f46e5) !important;
-    color: #fff;
-    border-radius: 4px;
-}
-
-.ngx-pagination * {
-    font-size: 1rem;
-}
-
-.ngx-pagination {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.ngx-pagination li::before {
-    content: none !important;
-}
-
-.ngx-pagination li a::before {
-    content: none !important;
-}
-
-.ngx-pagination li::after {
-    content: none !important;
-}
-
-.ngx-pagination li a::after {
-    content: none !important;
-}
-
-.ngx-pagination .pagination-previous a {
-    border-radius: 20px 0 0 20px !important;
-    background: linear-gradient(to right, #4f46e5, #411986) !important;
-    color: #ffffff !important;
-}
-
-.ngx-pagination .disabled {
-    background: gray !important;
-    color: #ffffff !important;
-}
-
-.ngx-pagination .pagination-next a {
-    border-radius: 0 20px 20px 0 !important;
-    background: linear-gradient(to right, #411986, #4f46e5) !important;
-    color: #ffffff !important;
-}
-
-.ngx-pagination .pagination-previous.disabled {
-    border-radius: 20px 0px 0px 20px !important;
-    background: gray !important;
-    color: #ffffff !important;
-}
-
-.ngx-pagination .pagination-next.disabled {
-    border-radius: 0 20px 20px 0 !important;
-    background: gray !important;
-    color: #ffffff !important;
-}
 
 /* ng-select container */
 .ng-select {

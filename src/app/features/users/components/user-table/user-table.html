@@ -116,7 +116,7 @@
 
                 <tbody class="divide-y divide-gray-200">
                     @for (
-                    user of (filteredTasks() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
+                    user of filteredTasks().slice((p - 1) * itemsPerPage, p * itemsPerPage);
                     let i = $index;
                     track user.id
                     ) {
@@ -224,9 +224,13 @@
                     </button>
                     @if(totalItems() > itemsPerPage && totalItems() > 0) {
                     <div class="w-full sm:w-auto overflow-x-auto pagination-sm">
-                        <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]=true
-                            (pageChange)="p = $event">
-                        </pagination-controls>
+                        <app-shared-pagination
+                          [total]="totalItems()"
+                          [itemsPerPage]="itemsPerPage"
+                          [currentPage]="p"
+                          [totalPages]="totalPages()"
+                          (pageChange)="p = $event">
+                        </app-shared-pagination>
                     </div>
                     }
                 </div>
