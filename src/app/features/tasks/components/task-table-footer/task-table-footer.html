@@ -4,11 +4,11 @@
 
         <div class="flex flex-row justify-center gap-2 lg:gap-3 btnContainer">
 
-            <div class="paginationContainer w-auto">
-                <ng-select class="items-per-page-select filter-select w-48" [items]="pageSizeOptions"
+            <div class="paginationContainer w-auto relative">
+                <ng-select class="items-per-page-select filter-select w-48 absolute" [items]="pageSizeOptions"
                     [clearable]="false" [searchable]="false" [ngModel]="selectedPageSize"
                     (ngModelChange)="onPageSizeChange($event)" [closeOnSelect]="true" [dropdownPosition]="'top'"
-                    [appendTo]="'.paginationContainer'">
+                    appendTo=".paginationContainer">
 
                     <ng-template ng-label-tmp let-item="item">
                         <!-- whitespace-nowrap prevents "Items per page" from wrapping -->
