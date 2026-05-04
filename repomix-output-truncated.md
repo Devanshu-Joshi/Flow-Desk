@@ -29,8 +29,8 @@ The content is organized as follows:
 ## Notes
 - Some files may have been excluded based on .gitignore rules and Repomix's configuration
 - Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
-- Only files matching these patterns are included: src/**/*, projects/**/*, angular.json, package.json, package-lock.json, pnpm-lock.yaml, yarn.lock, tsconfig*.json, karma.conf.js, jest.config.*, eslint.config.*, .eslintrc*, .prettierrc*, proxy.conf*.json, README.md, src\app\features\tasks\components\task-table-footer\task-table-footer.html, src\app\features\tasks\components\task-table-footer\task-table-footer.ts, src\app\features\tasks\components\task-table-footer\task-table-footer.css, src\app\features\users\components\user-table\user-table.html, src\app\features\users\components\user-table\user-table.ts, src\app\features\users\components\user-table\user-table.css, src\styles.css
-- Files matching these patterns are excluded: **/node_modules/**, **/dist/**, **/coverage/**, **/.angular/**, **/.angular/cache/**, **/out-tsc/**, **/.cache/**, **/tmp/**, **/storybook-static/**, **/*.map
+- Only files matching these patterns are included: src/**/*, projects/**/*, angular.json, package.json, package-lock.json, pnpm-lock.yaml, yarn.lock, tsconfig*.json, karma.conf.js, jest.config.*, eslint.config.*, .eslintrc*, .prettierrc*, proxy.conf*.json, README.md
+- Files matching these patterns are excluded: **/node_modules/**, **/dist/**, **/coverage/**, **/.angular/**, **/.angular/cache/**, **/out-tsc/**, **/.cache/**, **/tmp/**, **/storybook-static/**, **/*.map, **/*.css
 - Files matching patterns in .gitignore are excluded
 - Files matching default ignore patterns are excluded
 - Code comments have been removed from supported file types
@@ -44,7 +44,6 @@ angular.json
 package.json
 README.md
 src/app/app.config.ts
-src/app/app.css
 src/app/app.html
 src/app/app.routes.ts
 src/app/app.spec.ts
@@ -68,91 +67,69 @@ src/app/core/services/user-auth/user-auth.spec.ts
 src/app/core/services/user-auth/user-auth.ts
 src/app/core/services/user/user.service.ts
 src/app/core/services/user/user.spec.ts
-src/app/features/auth/pages/login/login.css
 src/app/features/auth/pages/login/login.html
 src/app/features/auth/pages/login/login.spec.ts
 src/app/features/auth/pages/login/login.ts
-src/app/features/auth/pages/signup/signup.css
 src/app/features/auth/pages/signup/signup.html
 src/app/features/auth/pages/signup/signup.spec.ts
 src/app/features/auth/pages/signup/signup.ts
-src/app/features/dashboard/pages/dashboard/dashboard.css
 src/app/features/dashboard/pages/dashboard/dashboard.html
 src/app/features/dashboard/pages/dashboard/dashboard.spec.ts
 src/app/features/dashboard/pages/dashboard/dashboard.ts
-src/app/features/home/pages/home/home.css
 src/app/features/home/pages/home/home.html
 src/app/features/home/pages/home/home.spec.ts
 src/app/features/home/pages/home/home.ts
-src/app/features/profile/profile.css
 src/app/features/profile/profile.html
 src/app/features/profile/profile.spec.ts
 src/app/features/profile/profile.ts
-src/app/features/tasks/components/task-filters/task-filters.css
 src/app/features/tasks/components/task-filters/task-filters.html
 src/app/features/tasks/components/task-filters/task-filters.spec.ts
 src/app/features/tasks/components/task-filters/task-filters.ts
-src/app/features/tasks/components/task-table-footer/task-table-footer.css
 src/app/features/tasks/components/task-table-footer/task-table-footer.html
 src/app/features/tasks/components/task-table-footer/task-table-footer.spec.ts
 src/app/features/tasks/components/task-table-footer/task-table-footer.ts
-src/app/features/tasks/components/task-table-row/task-table-row.css
 src/app/features/tasks/components/task-table-row/task-table-row.html
 src/app/features/tasks/components/task-table-row/task-table-row.spec.ts
 src/app/features/tasks/components/task-table-row/task-table-row.ts
-src/app/features/tasks/components/task-table/task-table.css
 src/app/features/tasks/components/task-table/task-table.html
 src/app/features/tasks/components/task-table/task-table.spec.ts
 src/app/features/tasks/components/task-table/task-table.ts
-src/app/features/tasks/pages/tasks/tasks.css
 src/app/features/tasks/pages/tasks/tasks.html
 src/app/features/tasks/pages/tasks/tasks.spec.ts
 src/app/features/tasks/pages/tasks/tasks.ts
-src/app/features/users/components/sidebar/sidebar.css
 src/app/features/users/components/sidebar/sidebar.html
 src/app/features/users/components/sidebar/sidebar.spec.ts
 src/app/features/users/components/sidebar/sidebar.ts
-src/app/features/users/components/user-table/user-table.css
 src/app/features/users/components/user-table/user-table.html
 src/app/features/users/components/user-table/user-table.spec.ts
 src/app/features/users/components/user-table/user-table.ts
-src/app/features/users/pages/user/user.css
 src/app/features/users/pages/user/user.html
 src/app/features/users/pages/user/user.spec.ts
 src/app/features/users/pages/user/user.ts
-src/app/layouts/header/header.css
 src/app/layouts/header/header.html
 src/app/layouts/header/header.spec.ts
 src/app/layouts/header/header.ts
-src/app/shared/components/demo-graphs/demo-graphs.css
 src/app/shared/components/demo-graphs/demo-graphs.html
 src/app/shared/components/demo-graphs/demo-graphs.spec.ts
 src/app/shared/components/demo-graphs/demo-graphs.ts
-src/app/shared/components/empty-state/empty-state.css
 src/app/shared/components/empty-state/empty-state.html
 src/app/shared/components/empty-state/empty-state.spec.ts
 src/app/shared/components/empty-state/empty-state.ts
-src/app/shared/components/kanban-view/kanban-view.css
 src/app/shared/components/kanban-view/kanban-view.html
 src/app/shared/components/kanban-view/kanban-view.spec.ts
 src/app/shared/components/kanban-view/kanban-view.ts
-src/app/shared/components/loading-overlay/loading-overlay.css
 src/app/shared/components/loading-overlay/loading-overlay.html
 src/app/shared/components/loading-overlay/loading-overlay.spec.ts
 src/app/shared/components/loading-overlay/loading-overlay.ts
-src/app/shared/components/shared-pagination/shared-pagination.css
 src/app/shared/components/shared-pagination/shared-pagination.html
 src/app/shared/components/shared-pagination/shared-pagination.spec.ts
 src/app/shared/components/shared-pagination/shared-pagination.ts
-src/app/shared/components/stats-card/stats-card.css
 src/app/shared/components/stats-card/stats-card.html
 src/app/shared/components/stats-card/stats-card.spec.ts
 src/app/shared/components/stats-card/stats-card.ts
-src/app/shared/components/task-dialog/task-dialog.css
 src/app/shared/components/task-dialog/task-dialog.html
 src/app/shared/components/task-dialog/task-dialog.spec.ts
 src/app/shared/components/task-dialog/task-dialog.ts
-src/app/shared/components/task-form/task-form.css
 src/app/shared/components/task-form/task-form.html
 src/app/shared/components/task-form/task-form.spec.ts
 src/app/shared/components/task-form/task-form.ts
@@ -163,7 +140,6 @@ src/app/shared/pipes/truncate-pipe.ts
 src/app/shared/utils/.gitkeep
 src/index.html
 src/main.ts
-src/styles.css
 src/testing/with-app-providers.ts
 tsconfig.app.json
 tsconfig.json
@@ -341,11 +317,6 @@ import { provideToastr } from 'ngx-toastr';
 import { importProvidersFrom } from "@angular/core";
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
 import { authInterceptor } from '@core/interceptors/auth.interceptor';
-````
-
-## File: src/app/app.css
-````css
-
 ````
 
 ## File: src/app/app.html
@@ -604,13 +575,6 @@ import { TestBed } from '@angular/core/testing';
 import { UserService } from './user.service';
 ````
 
-## File: src/app/features/auth/pages/login/login.css
-````css
-.shake {
-⋮----
-.login-wrapper {
-````
-
 ## File: src/app/features/auth/pages/login/login.spec.ts
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -636,11 +600,6 @@ submit()
 shakeFirstInvalidControl()
 get email()
 get password()
-````
-
-## File: src/app/features/auth/pages/signup/signup.css
-````css
-.shake {
 ````
 
 ## File: src/app/features/auth/pages/signup/signup.html
@@ -855,11 +814,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Dashboard } from './dashboard';
 ````
 
-## File: src/app/features/home/pages/home/home.css
-````css
-
-````
-
 ## File: src/app/features/home/pages/home/home.html
 ````html
 <section class="relative overflow-hidden bg-linear-to-br from-purple-50 via-white to-indigo-50 py-24 px-6">
@@ -1068,21 +1022,11 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TaskTable } from './task-table';
 ````
 
-## File: src/app/features/tasks/pages/tasks/tasks.css
-````css
-.page-wrapper.loading {
-````
-
 ## File: src/app/features/tasks/pages/tasks/tasks.spec.ts
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Dashboard } from './dashboard';
 import { appConfig } from '../../../../app.config';
-````
-
-## File: src/app/features/users/components/sidebar/sidebar.css
-````css
-
 ````
 
 ## File: src/app/features/users/components/sidebar/sidebar.spec.ts
@@ -1095,11 +1039,6 @@ import { Sidebar } from './sidebar';
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UserTable } from './user-table';
-````
-
-## File: src/app/features/users/pages/user/user.css
-````css
-
 ````
 
 ## File: src/app/features/users/pages/user/user.html
@@ -1127,11 +1066,6 @@ import { User } from './user';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Header } from './header';
 import { appConfig } from '../../../app/app.config';
-````
-
-## File: src/app/shared/components/empty-state/empty-state.css
-````css
-
 ````
 
 ## File: src/app/shared/components/empty-state/empty-state.html
@@ -1169,11 +1103,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DragDropExample } from './kanban-view';
 ````
 
-## File: src/app/shared/components/loading-overlay/loading-overlay.css
-````css
-
-````
-
 ## File: src/app/shared/components/loading-overlay/loading-overlay.html
 ````html
 @if (show) {
@@ -1199,11 +1128,6 @@ import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 ⋮----
 export class LoadingOverlay
-````
-
-## File: src/app/shared/components/task-dialog/task-dialog.css
-````css
-
 ````
 
 ## File: src/app/shared/components/task-dialog/task-dialog.html
@@ -1283,55 +1207,6 @@ import { TaskForm } from './task-form';
 import { bootstrapApplication } from '@angular/platform-browser';
 import { appConfig } from './app/app.config';
 import { App } from './app/app';
-````
-
-## File: src/styles.css
-````css
-* {
-body {
-.body-lock {
-.md-drppicker,
-.md-drppicker {
-.md-drppicker .buttons {
-.md-drppicker .btn {
-.md-drppicker .btn.btn-default {
-.md-drppicker .btn.btn-default svg {
-.md-drppicker .buttons_input {
-⋮----
-.md-drppicker .btn:hover {
-⋮----
-.ngx-pagination .current {
-.ngx-pagination * {
-.ngx-pagination {
-.ngx-pagination li::before {
-.ngx-pagination li a::before {
-.ngx-pagination li::after {
-.ngx-pagination li a::after {
-.ngx-pagination .pagination-previous a {
-.ngx-pagination .disabled {
-.ngx-pagination .pagination-next a {
-.ngx-pagination .pagination-previous.disabled {
-.ngx-pagination .pagination-next.disabled {
-.ng-select {
-⋮----
-@apply text-sm;
-⋮----
-.filter-select .ng-select-container {
-.filter-select .ng-select-container:hover {
-.filter-select .ng-value {
-.filter-select .ng-arrow-wrapper {
-.filter-select {
-.filter-select .ng-option {
-.filter-select .ng-option:hover {
-.filter-select .ng-option-selected {
-::-webkit-scrollbar {
-::-webkit-scrollbar-track {
-::-webkit-scrollbar-thumb {
-::-webkit-scrollbar-thumb:active {
-tr[cdkdrag] {
-.cdk-drag-preview {
-.cdk-drag-placeholder {
-.cdk-drag-handle {
 ````
 
 ## File: src/testing/with-app-providers.ts
@@ -1439,91 +1314,107 @@ import { appConfig } from '../app/app.config';
 }
 ````
 
-## File: package.json
-````json
-{
-  "name": "flow-desk",
-  "version": "0.0.0",
-  "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test"
-  },
-  "prettier": {
-    "printWidth": 100,
-    "singleQuote": true,
-    "overrides": [
-      {
-        "files": "*.html",
-        "options": {
-          "parser": "angular"
-        }
-      }
-    ]
-  },
-  "private": true,
-  "dependencies": {
-    "@angular/animations": "^20.3.16",
-    "@angular/cdk": "^20.2.14",
-    "@angular/common": "^20.3.0",
-    "@angular/compiler": "^20.3.0",
-    "@angular/core": "^20.3.0",
-    "@angular/fire": "^20.0.1",
-    "@angular/forms": "^20.3.0",
-    "@angular/platform-browser": "^20.3.0",
-    "@angular/router": "^20.3.0",
-    "@ng-select/ng-select": "^20.0.1",
-    "@tailwindcss/postcss": "^4.1.18",
-    "chart.js": "^4.5.1",
-    "dayjs": "^1.11.19",
-    "firebase": "^11.10.0",
-    "moment": "^2.30.1",
-    "ngx-daterangepicker-material": "^6.0.4",
-    "ngx-pagination": "^6.0.3",
-    "ngx-toastr": "^19.1.0",
-    "postcss": "^8.5.6",
-    "rxjs": "~7.8.0",
-    "tailwindcss": "^4.1.18",
-    "tslib": "^2.3.0"
-  },
-  "devDependencies": {
-    "@angular/build": "^20.3.13",
-    "@angular/cli": "^20.3.13",
-    "@angular/compiler-cli": "^20.3.0",
-    "@types/jasmine": "~5.1.0",
-    "jasmine-core": "~5.9.0",
-    "karma": "~6.4.0",
-    "karma-chrome-launcher": "~3.2.0",
-    "karma-coverage": "~2.2.0",
-    "karma-jasmine": "~5.1.0",
-    "karma-jasmine-html-reporter": "~2.1.0",
-    "typescript": "~5.9.2",
-    "zone.js": "^0.15.1"
-  }
-}
-````
-
-## File: src/app/features/profile/profile.css
-````css
-
-````
-
 ## File: src/app/features/profile/profile.spec.ts
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Profile } from './profile';
 ````
 
-## File: src/app/features/tasks/components/task-table/task-table.css
-````css
-.cdk-drag-preview {
-.cdk-drag-placeholder {
-.cdk-drag-animating {
-tr[cdkdrag] {
-⋮----
-.cdk-drag-preview td {
+## File: src/app/features/tasks/components/task-filters/task-filters.html
+````html
+<div class="flex flex-col w-full gap-4 mb-5">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full min-w-0 lg:flex lg:flex-row relative">
+        <div class="relative w-full min-w-0 sm:col-span-2 lg:flex-1 lg:min-w-36.25">
+            <input type="search"
+                class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm sm:text-base focus:outline-none h-11 placeholder:text-gray-400"
+                placeholder="Search..." [formControl]="searchControl" />
+            <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
+        </div>
+        <div class="min-w-35 sm:col-span-1">
+            <ng-select class="user-select w-full" [items]="assignedUserOptions()" [clearable]="false" bindLabel="name"
+                bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false" [closeOnSelect]="true"
+                [clearable]="true">
+                <ng-template ng-placeholder-tmp #placeholder>
+                    <span class="text-gray-400 font-semibold whitespace-nowrap">Users</span>
+                </ng-template>
+            </ng-select>
+        </div>
+        <div class="sm:col-span-2 grid grid-cols-1 sm:flex gap-3">
+            <div class="min-w-60 flex-[1_0_15rem]">
+                <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
+                    [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
+                    [linkedCalendars]="true" placeholder="Date range"
+                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
+                    (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate
+                ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
+                : ''" />
+            </div>
+            <div class="relative flex-[0_1_10rem] min-w-25">
+                <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
+                    bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
+                    [closeOnSelect]="true">
+                    <ng-template ng-placeholder-tmp #statusPlaceholder>
+                        <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
+                    </ng-template>
+                    <ng-template ng-label-tmp let-item="item">
+                        @if (item?.value !== null) {
+                        <span class="whitespace-nowrap" [ngClass]="{
+                        'text-green-600': item.value === 'COMPLETED',
+                        'text-yellow-600': item.value === 'IN_PROGRESS',
+                        'text-red-600': item.value === 'INCOMPLETE'
+                    }">
+                            {{ item.label }}
+                        </span>
+                        } @else {
+                        <ng-template [ngTemplateOutlet]="statusPlaceholder"></ng-template>
+                        }
+                    </ng-template>
+                    <ng-template ng-option-tmp let-item="item">
+                        <span class="whitespace-nowrap" [ngClass]="{
+                        'text-gray-700': item.value === null,
+                        'text-green-600': item.value === 'COMPLETED',
+                        'text-yellow-600': item.value === 'IN_PROGRESS',
+                        'text-red-600': item.value === 'INCOMPLETE'
+                    }">
+                            {{ item.label }}
+                        </span>
+                    </ng-template>
+                </ng-select>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 sm:col-span-1">
+            <button [disabled]="!canCreateTaskSig()" [class.opacity-40]="!canCreateTaskSig()"
+                [class.cursor-not-allowed]="!canCreateTaskSig()" class="w-full h-11 px-4 rounded-lg
+  bg-linear-to-r from-purple-600 to-indigo-600
+  text-white text-base
+  shadow-md shadow-purple-500/30
+  hover:shadow-lg hover:shadow-purple-500/40
+  lg:hover:scale-105 transition-all duration-200
+  whitespace-nowrap min-w-20 flex items-center justify-center cursor-pointer leading-none"
+                (click)="canCreateTaskSig() && addTask.emit()" [title]="'Add Task'">
+                <span>Add Task</span>
+            </button>
+            <label class="relative inline-flex items-center cursor-pointer select-none"
+                [title]="isUISwitched() ? 'Switch to Grid View' : 'Switch to Kanban View'">
+                <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
+                    (change)="isUISwitched.set($event.target.checked)" />
+                <div class="w-20 h-11 bg-gray-200 rounded-xl peer-checked:bg-indigo-100
+                    transition-colors duration-300 shadow-inner flex items-center px-1">
+                    <div class="w-full flex justify-between px-2 text-gray-400">
+                        <i class="bx bx-table text-lg"></i>
+                        <i class="bx bx-columns-3 text-lg"></i>
+                    </div>
+                </div>
+                <div class="absolute left-1 top-1 h-9 w-9 rounded-lg
+                    bg-linear-to-r from-purple-600 to-indigo-600
+                    shadow-md transition-all duration-300
+                    peer-checked:translate-x-9 flex items-center justify-center text-white">
+                    <i class="bx text-lg" [ngClass]="isUISwitched() ? 'bx-columns-3' : 'bx-table'"></i>
+                </div>
+            </label>
+        </div>
+    </div>
+</div>
 ````
 
 ## File: src/app/features/tasks/components/task-table/task-table.ts
@@ -1775,53 +1666,6 @@ toggleAllPermissions(): void
 private showNoPermission(): void
 ````
 
-## File: src/app/features/users/components/user-table/user-table.css
-````css
-:host ::ng-deep .users-per-page-select.ng-select {
-:host ::ng-deep .users-per-page-select .ng-select-container {
-:host ::ng-deep .users-per-page-select .ng-placeholder {
-:host ::ng-deep .users-per-page-select .ng-select-container:hover {
-:host ::ng-deep .users-per-page-select.ng-select-focused .ng-select-container {
-:host ::ng-deep .users-per-page-select .ng-value-container {
-:host ::ng-deep .users-per-page-select .ng-input {
-:host ::ng-deep .users-per-page-select .ng-arrow {
-:host ::ng-deep .users-per-page-select .ng-has-value {
-:host ::ng-deep .users-per-page-select .ng-select-container * {
-:host ::ng-deep .users-per-page-select .ng-dropdown-panel {
-:host ::ng-deep .users-per-page-select .ng-dropdown-panel-items {
-:host ::ng-deep .users-per-page-select .ng-option {
-:host ::ng-deep .users-per-page-select .ng-option:hover,
-:host ::ng-deep .users-per-page-select .ng-option.ng-option-selected {
-:host ::ng-deep .users-per-page-select.ng-select-opened .ng-select-container {
-:host ::ng-deep .users-per-page-select.ng-select-opened .ng-select-bottom {
-.permission-select {
-.permission-select ::ng-deep .ng-select-container {
-.permission-select ::ng-deep .ng-placeholder {
-.permission-select ::ng-deep .ng-select-container:hover {
-:host ::ng-deep .permission-select.ng-select-focused .ng-select-container {
-.permission-select ::ng-deep .ng-value-container {
-.permission-select ::ng-deep .ng-select-container * {
-.permission-select ::ng-deep .ng-arrow {
-.permission-select ::ng-deep .ng-dropdown-panel {
-.permission-select ::ng-deep .ng-dropdown-panel-items {
-.permission-select ::ng-deep .ng-option {
-.permission-select ::ng-deep .ng-option:hover,
-.permission-select ::ng-deep .ng-option.ng-option-selected {
-.permission-select ::ng-deep .ng-optgroup {
-.permission-select ::ng-deep .ng-value,
-:host ::ng-deep .permission-select.ng-select-opened .ng-select-container {
-:host ::ng-deep .permission-select.ng-select-opened .ng-select-bottom {
-.permission-select ::ng-deep .ng-clear-wrapper {
-.permission-select ::ng-deep .ng-clear-wrapper:hover {
-.modern-checkbox {
-.badge {
-.badge-success {
-.badge-warning {
-:host ::ng-deep .md-drppicker {
-⋮----
-:host ::ng-deep .md-drppicker,
-````
-
 ## File: src/app/features/users/pages/user/user.ts
 ````typescript
 import { HttpClient } from '@angular/common/http';
@@ -1843,16 +1687,6 @@ onEditUser(user: UserModel)
 onDeleteUser(user: UserModel)
 ````
 
-## File: src/app/layouts/header/header.css
-````css
-
-````
-
-## File: src/app/shared/components/demo-graphs/demo-graphs.css
-````css
-
-````
-
 ## File: src/app/shared/components/demo-graphs/demo-graphs.spec.ts
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
@@ -1863,11 +1697,6 @@ import { DemoGraphs } from './demo-graphs';
 ````typescript
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SharedPagination } from './shared-pagination';
-````
-
-## File: src/app/shared/components/stats-card/stats-card.css
-````css
-
 ````
 
 ## File: src/app/shared/components/stats-card/stats-card.html
@@ -1920,6 +1749,71 @@ export class TruncatePipe implements PipeTransform
 transform(value: string, limit: number = 30, completeWords: boolean = false, ellipsis: string = '...'): string
 ⋮----
 // Optional: don't cut in the middle of a word
+````
+
+## File: package.json
+````json
+{
+  "name": "flow-desk",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "^20.3.16",
+    "@angular/cdk": "^20.2.14",
+    "@angular/common": "^20.3.0",
+    "@angular/compiler": "^20.3.0",
+    "@angular/core": "^20.3.0",
+    "@angular/fire": "^20.0.1",
+    "@angular/forms": "^20.3.0",
+    "@angular/platform-browser": "^20.3.0",
+    "@angular/router": "^20.3.0",
+    "@ng-select/ng-select": "^20.0.1",
+    "@tailwindcss/postcss": "^4.1.18",
+    "chart.js": "^4.5.1",
+    "dayjs": "^1.11.19",
+    "firebase": "^11.10.0",
+    "moment": "^2.30.1",
+    "ngx-daterangepicker-material": "^6.0.4",
+    "ngx-toastr": "^19.1.0",
+    "postcss": "^8.5.6",
+    "rxjs": "~7.8.0",
+    "tailwindcss": "^4.1.18",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^20.3.13",
+    "@angular/cli": "^20.3.13",
+    "@angular/compiler-cli": "^20.3.0",
+    "@types/jasmine": "~5.1.0",
+    "jasmine-core": "~5.9.0",
+    "karma": "~6.4.0",
+    "karma-chrome-launcher": "~3.2.0",
+    "karma-coverage": "~2.2.0",
+    "karma-jasmine": "~5.1.0",
+    "karma-jasmine-html-reporter": "~2.1.0",
+    "typescript": "~5.9.2",
+    "zone.js": "^0.15.1"
+  }
+}
 ````
 
 ## File: src/app/app.routes.ts
@@ -2007,138 +1901,6 @@ import { Profile } from '@features/profile/profile';
 <app-loading-overlay [show]="isLoading()" text="Logging in..."></app-loading-overlay>
 ````
 
-## File: src/app/features/tasks/components/task-filters/task-filters.css
-````css
-.status-select {
-.status-select ::ng-deep .ng-select-container {
-.status-select ::ng-deep .ng-select-container:hover {
-.status-select ::ng-deep .ng-value-container {
-.status-select ::ng-deep .ng-arrow {
-.status-select ::ng-deep .ng-dropdown-panel {
-.status-select ::ng-deep .ng-value,
-:host ::ng-deep .status-select.ng-select-opened .ng-select-container {
-:host ::ng-deep .status-select.ng-select-opened .ng-select-bottom {
-:host ::ng-deep .md-drppicker {
-⋮----
-:host ::ng-deep .md-drppicker,
-⋮----
-.filter-select ::ng-deep .ng-select-container {
-.filter-select ::ng-deep .ng-select-container:hover {
-.filter-select ::ng-deep .ng-value {
-.filter-select ::ng-deep .ng-arrow-wrapper {
-.filter-select ::ng-deep .ng-dropdown-panel {
-.filter-select ::ng-deep .ng-option {
-.filter-select ::ng-deep .ng-option:hover {
-.filter-select ::ng-deep .ng-option-selected {
-.filter-select ::ng-deep .ng-select-container .ng-clear-wrapper {
-.user-select ::ng-deep .ng-select-container {
-.user-select ::ng-deep .ng-select-container:hover {
-.user-select ::ng-deep .ng-value {
-.user-select ::ng-deep .ng-arrow-wrapper {
-.user-select ::ng-deep .ng-dropdown-panel {
-.user-select ::ng-deep .ng-option {
-.user-select ::ng-deep .ng-option:hover {
-.user-select ::ng-deep .ng-option-selected {
-.user-select ::ng-deep .ng-select-container .ng-clear-wrapper {
-````
-
-## File: src/app/features/tasks/components/task-filters/task-filters.html
-````html
-<div class="flex flex-col w-full gap-4 mb-5">
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full min-w-0 lg:flex lg:flex-row relative">
-        <div class="relative w-full min-w-0 sm:col-span-2 lg:flex-1 lg:min-w-36.25">
-            <input type="search"
-                class="w-full border-2 border-gray-300 pr-10 pl-4 py-2 rounded-lg text-sm sm:text-base focus:outline-none h-11 placeholder:text-gray-400"
-                placeholder="Search..." [formControl]="searchControl" />
-            <i class="bx bx-search absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 cursor-pointer"></i>
-        </div>
-        <div class="min-w-35 sm:col-span-1">
-            <ng-select class="user-select w-full" [items]="assignedUserOptions()" [clearable]="false" bindLabel="name"
-                bindValue="id" [(ngModel)]="selectedAssignedUser" [searchable]="false" [closeOnSelect]="true"
-                [clearable]="true">
-                <ng-template ng-placeholder-tmp #placeholder>
-                    <span class="text-gray-400 font-semibold whitespace-nowrap">Users</span>
-                </ng-template>
-            </ng-select>
-        </div>
-        <div class="sm:col-span-2 grid grid-cols-1 sm:flex gap-3">
-            <div class="min-w-60 flex-[1_0_15rem]">
-                <input ngxDaterangepickerMd [(ngModel)]="dateRange" [autoApply]="false" [alwaysShowCalendars]="true"
-                    [showClearButton]="true" [drops]="'down'" [opens]="'right'" [locale]="{ format: 'DD/MM/YYYY' }"
-                    [linkedCalendars]="true" placeholder="Date range"
-                    class="border-2 border-gray-300 px-4 py-2 rounded-lg w-full cursor-pointer text-sm sm:text-base h-11 placeholder:text-gray-400"
-                    (click)="toggleDatePicker()" [title]="dateRange()?.startDate && dateRange()?.endDate
-                ? ( (dateRange()?.startDate | date:'dd/MM/yyyy':'UTC') + ' to ' + (dateRange()?.endDate | date:'dd/MM/yyyy':'UTC') )
-                : ''" />
-            </div>
-            <div class="relative flex-[0_1_10rem] min-w-25">
-                <ng-select class="status-select filter-select w-full" [items]="statusOptions()" bindLabel="label"
-                    bindValue="value" [(ngModel)]="selectedStatus" [clearable]="false" [searchable]="false"
-                    [closeOnSelect]="true">
-                    <ng-template ng-placeholder-tmp #statusPlaceholder>
-                        <span class="text-gray-400 font-semibold whitespace-nowrap">Status</span>
-                    </ng-template>
-                    <ng-template ng-label-tmp let-item="item">
-                        @if (item?.value !== null) {
-                        <span class="whitespace-nowrap" [ngClass]="{
-                        'text-green-600': item.value === 'COMPLETED',
-                        'text-yellow-600': item.value === 'IN_PROGRESS',
-                        'text-red-600': item.value === 'INCOMPLETE'
-                    }">
-                            {{ item.label }}
-                        </span>
-                        } @else {
-                        <ng-template [ngTemplateOutlet]="statusPlaceholder"></ng-template>
-                        }
-                    </ng-template>
-                    <ng-template ng-option-tmp let-item="item">
-                        <span class="whitespace-nowrap" [ngClass]="{
-                        'text-gray-700': item.value === null,
-                        'text-green-600': item.value === 'COMPLETED',
-                        'text-yellow-600': item.value === 'IN_PROGRESS',
-                        'text-red-600': item.value === 'INCOMPLETE'
-                    }">
-                            {{ item.label }}
-                        </span>
-                    </ng-template>
-                </ng-select>
-            </div>
-        </div>
-        <div class="flex items-center gap-3 sm:col-span-1">
-            <button [disabled]="!canCreateTaskSig()" [class.opacity-40]="!canCreateTaskSig()"
-                [class.cursor-not-allowed]="!canCreateTaskSig()" class="w-full h-11 px-4 rounded-lg
-  bg-linear-to-r from-purple-600 to-indigo-600
-  text-white text-base
-  shadow-md shadow-purple-500/30
-  hover:shadow-lg hover:shadow-purple-500/40
-  lg:hover:scale-105 transition-all duration-200
-  whitespace-nowrap min-w-20 flex items-center justify-center cursor-pointer leading-none"
-                (click)="canCreateTaskSig() && addTask.emit()" [title]="'Add Task'">
-                <span>Add Task</span>
-            </button>
-            <label class="relative inline-flex items-center cursor-pointer select-none"
-                [title]="isUISwitched() ? 'Switch to Grid View' : 'Switch to Kanban View'">
-                <input type="checkbox" class="sr-only peer" [checked]="isUISwitched()"
-                    (change)="isUISwitched.set($event.target.checked)" />
-                <div class="w-20 h-11 bg-gray-200 rounded-xl peer-checked:bg-indigo-100
-                    transition-colors duration-300 shadow-inner flex items-center px-1">
-                    <div class="w-full flex justify-between px-2 text-gray-400">
-                        <i class="bx bx-table text-lg"></i>
-                        <i class="bx bx-columns-3 text-lg"></i>
-                    </div>
-                </div>
-                <div class="absolute left-1 top-1 h-9 w-9 rounded-lg
-                    bg-linear-to-r from-purple-600 to-indigo-600
-                    shadow-md transition-all duration-300
-                    peer-checked:translate-x-9 flex items-center justify-center text-white">
-                    <i class="bx text-lg" [ngClass]="isUISwitched() ? 'bx-columns-3' : 'bx-table'"></i>
-                </div>
-            </label>
-        </div>
-    </div>
-</div>
-````
-
 ## File: src/app/features/tasks/components/task-table-footer/task-table-footer.ts
 ````typescript
 import { Component, EventEmitter, input, Input, model, Output } from '@angular/core';
@@ -2164,55 +1926,6 @@ export class Header
 constructor(public authService: UserAuth, public router: Router)
 closeUserMenu()
 async logout()
-````
-
-## File: src/app/shared/components/shared-pagination/shared-pagination.css
-````css
-button {
-button:disabled {
-button:not(:disabled):hover {
-button.bg-indigo-600 {
-````
-
-## File: src/app/shared/components/task-form/task-form.css
-````css
-.shake {
-.submit-btn {
-.submit-btn:hover {
-.edit-btn {
-.edit-btn:hover {
-.delete-btn {
-.delete-btn:hover {
-:host ::ng-deep ng-select {
-:host ::ng-deep .ng-select-container {
-:host ::ng-deep .ng-value-container {
-.assignedTo-select ::ng-deep .ng-value-container {
-:host ::ng-deep .ng-placeholder {
-:host ::ng-deep .ng-select-multiple .ng-value {
-:host ::ng-deep .ng-select-single .ng-value {
-:host ::ng-deep .ng-value-icon {
-:host ::ng-deep .ng-value-icon:hover {
-:host ::ng-deep .ng-dropdown-panel {
-:host ::ng-deep .ng-option {
-:host ::ng-deep .ng-option:hover {
-:host ::ng-deep .ng-option-selected {
-:host ::ng-deep .ng-input>input {
-:host ::ng-deep .ng-arrow-wrapper {
-:host ::ng-deep .ng-input {
-:host ::ng-deep .ng-value-container::-webkit-scrollbar {
-:host ::ng-deep .ng-value-container::-webkit-scrollbar-thumb {
-:host ::ng-deep ng-select.ng-select-focused .ng-select-container {
-.filter-select ::ng-deep .ng-select-container,
-.filter-select ::ng-deep .ng-select-container .ng-clear-wrapper,
-.filter-select ::ng-deep .ng-select-container .ng-clear-wrapper .ng-clear,
-.filter-select ::ng-deep .ng-select-container:hover,
-.filter-select ::ng-deep .ng-arrow-wrapper,
-.filter-select ::ng-deep .ng-dropdown-panel,
-.filter-select ::ng-deep .ng-option,
-.filter-select ::ng-deep .ng-option:hover,
-.filter-select ::ng-deep .ng-option-selected,
-:host ::ng-deep .filter-select .ng-dropdown-panel,
-:host ::ng-deep .filter-select .ng-dropdown-panel .ng-dropdown-panel-items,
 ````
 
 ## File: src/app/core/services/user/user.service.ts
@@ -2363,35 +2076,6 @@ saveProfile()
 getPermissionColor(key: string): string
 ````
 
-## File: src/app/features/tasks/components/task-table-footer/task-table-footer.css
-````css
-:host {
-.pagination-sm ::ng-deep .ngx-pagination {
-⋮----
-.pagination-sm {
-.pagination-sm ::ng-deep .small-screen {
-.clear-filters-button {
-⋮----
-.btnContainer {
-.paginationContainer {
-.clearBtn {
-⋮----
-:host ::ng-deep .ng-dropdown-panel-items {
-:host ::ng-deep .items-per-page-select.ng-select {
-:host ::ng-deep .items-per-page-select .ng-select-container {
-:host ::ng-deep .items-per-page-select .ng-select-container:hover {
-:host ::ng-deep .items-per-page-select .ng-value-container {
-:host ::ng-deep .items-per-page-select .ng-input {
-:host ::ng-deep .ng-select .ng-arrow-wrapper {
-:host ::ng-deep .ng-select .ng-arrow {
-:host ::ng-deep .ng-select .ng-arrow-wrapper::after {
-:host ::ng-deep .ng-select.ng-select-opened .ng-arrow-wrapper::after {
-:host ::ng-deep .items-per-page-select .ng-value,
-:host ::ng-deep .items-per-page-select .ng-has-value {
-:host ::ng-deep .items-per-page-select.ng-select-opened .ng-select-container {
-:host ::ng-deep .items-per-page-select.ng-select-opened .ng-select-bottom {
-````
-
 ## File: src/app/features/tasks/components/task-table/task-table.html
 ````html
 <div class="border border-gray-200 rounded-xl shadow-sm overflow-hidden bg-white">
@@ -2481,7 +2165,6 @@ import { ReactiveFormsModule, FormBuilder, Validators, FormControl, FormsModule 
 import { debounceTime, Observable } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { NgxDaterangepickerMd } from 'ngx-daterangepicker-material';
-import { NgxPaginationModule } from 'ngx-pagination';
 import { NgSelectModule } from '@ng-select/ng-select';
 import { ToastrService } from 'ngx-toastr';
 import dayjs from 'dayjs';
@@ -2626,7 +2309,7 @@ cancelDialog()
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     @for (
-                    user of (filteredTasks() | paginate: { itemsPerPage: itemsPerPage, currentPage: p });
+                    user of filteredTasks().slice((p - 1) * itemsPerPage, p * itemsPerPage);
                     let i = $index;
                     track user.id
                     ) {
@@ -2713,9 +2396,13 @@ cancelDialog()
                     </button>
                     @if(totalItems() > itemsPerPage && totalItems() > 0) {
                     <div class="w-full sm:w-auto overflow-x-auto pagination-sm">
-                        <pagination-controls previousLabel="Prev" nextLabel="Next" [responsive]=true
-                            (pageChange)="p = $event">
-                        </pagination-controls>
+                        <app-shared-pagination
+                          [total]="totalItems()"
+                          [itemsPerPage]="itemsPerPage"
+                          [currentPage]="p"
+                          [totalPages]="totalPages()"
+                          (pageChange)="p = $event">
+                        </app-shared-pagination>
                     </div>
                     }
                 </div>
@@ -2753,7 +2440,7 @@ import { TaskStatus } from '@features/tasks/pages/tasks/tasks';
 import { PermissionItem } from '@core/models/PermissionItem';
 import dayjs from 'dayjs';
 import { EmptyState } from '@shared/components/empty-state/empty-state';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { SharedPagination } from '@shared/components/shared-pagination/shared-pagination';
 import { UserModel } from '@core/models/UserModel';
 import { PermissionKey } from '@core/models/PermissionKey';
 import { UserService } from '@core/services/user/user.service';
@@ -2801,59 +2488,6 @@ setItemsPerPage(value: number | 'All'): void
 ⋮----
 resetForm(): void
 getPermissionClass(permission: string): string
-````
-
-## File: src/app/shared/components/kanban-view/kanban-view.css
-````css
-.cdk-drag-preview {
-.cdk-drag-preview>div {
-.cdk-drag-preview>div::before {
-.cdk-drag-placeholder>div {
-#incompleteList .cdk-drag-placeholder>div {
-#inProgressList .cdk-drag-placeholder>div {
-#completedList .cdk-drag-placeholder>div {
-.cdk-drag-animating {
-.cdk-drop-list-dragging .cdk-drag:not(.cdk-drag-placeholder) {
-.cdk-drag {
-.cdk-drag-dragging {
-.cdk-drop-list-dragging {
-⋮----
-.cdk-drop-list-dragging .empty-state {
-#boardScroller {
-````
-
-## File: src/app/features/dashboard/pages/dashboard/dashboard.css
-````css
-:host {
-.skeleton-shimmer {
-.skeleton-shimmer-ring {
-.skeleton-shimmer-svg {
-.skeleton-shimmer-dark {
-.skeleton-shimmer-ring-dark {
-.skeleton-shimmer-svg-dark {
-⋮----
-.animate-fade-in {
-````
-
-## File: src/app/features/tasks/components/task-table-row/task-table-row.css
-````css
-.assignees-container {
-⋮----
-.content-area {
-.content-wrapper {
-.assignees-container.expanded .content-wrapper {
-.assignees-container.expanded .content-wrapper::-webkit-scrollbar {
-.chips-row {
-.assignee-chip {
-.avatar {
-.name {
-.more-chip {
-.more-chip:hover {
-.more-chip:focus {
-.fade-overlay {
-.empty-state {
-.assignees-container.expanded {
-.assignees-container.expanded .chips-row {
 ````
 
 ## File: src/app/shared/components/task-form/task-form.html

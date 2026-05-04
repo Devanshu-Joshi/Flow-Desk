@@ -57,7 +57,8 @@
             "**/.cache/**",
             "**/tmp/**",
             "**/storybook-static/**",
-            "**/*.map"
+            "**/*.map",
+	     "**/*.css"
         ]
     },
     "security": {
